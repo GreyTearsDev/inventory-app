@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<h1><%= title %></h1>
+<p>Welcome to <em>ComiKing</em>, an AWESOME Express website developed by <a href="https://github.com/GreyTearsDev">GreyTearsDev</a>.</p>
+<hr>
+<p>Currenty, we have the following record counts</p>
+<ul>
+  <li><strong>Comics: </strong><%=comic_count%></li>
+  <li><strong>Volumes: </strong><%=volume_count%></li>
+  <li><strong>Authors: </strong><%=author_count%></li>
+  <li><strong>Genres: </strong><%= genre_count%></li>
+  <li><strong>Publishers: </strong> <%=publishe_count%></li>
+</ul>
