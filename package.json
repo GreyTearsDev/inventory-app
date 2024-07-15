@@ -5,15 +5,16 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "inspectserver": "nodemon --inspect=8000 ./bin/www"
+    "debug": "nodemon --inspect./bin/www"
   },
   "dependencies": {
-    "async-handler": "^0.0.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
+    "express-ejs-layouts": "^2.5.1",
     "http-errors": "~1.6.3",
     "luxon": "^3.4.4",
     "mongoose": "^8.5.1",
