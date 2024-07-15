@@ -8,5 +8,8 @@ const comic_controller = require("../controllers/comicController");
 // Get home page
 router.get("/", comic_controller.index);
 
+// Display list of all comics
+router.get("/comics", comic_controller.comic_list);
+
 // Author routes
 module.exports = router;
