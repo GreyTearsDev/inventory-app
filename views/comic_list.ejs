@@ -1,0 +1,32 @@
+<h1><%= title %></h1>
+
+<% if (comic_list.length > 0) { %>
+
+  <section class="container">
+    <% comic_list.forEach(comic => { %>
+
+      <article class="comic">
+        <h3 class="comic__title"><%= comic.title %></h3>
+        <p class="comic__summary"><%= comic.summary %></p>
+
+        <div class="comic__genres">
+          <ul>
+            <% comic.genres.forEach(genre => { %>
+              <li><%= genre.name %></li>
+            <% }) %>
+
+          </ul>
+        </div>
+      </article>
+
+     <% }) %>
+  </section>
+
+<% } else { %>
+
+  <p>There are no <%= title %></p>
+
+<% } %>
+
+
+
