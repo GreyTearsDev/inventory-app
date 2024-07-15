@@ -9,3 +9,4 @@ const comic_controller = require("../controllers/comicController");
 router.get("/", comic_controller.index);
 
 // Author routes
+module.exports = router;
