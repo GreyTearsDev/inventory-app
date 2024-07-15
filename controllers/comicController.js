@@ -26,3 +26,17 @@ exports.index = asyncHandler(async (req, res, next) => {
     genre_count: genreCount,
   });
 });
+
+// List all currently available comics
+exports.comic_list = asyncHandler(async (req, res, next) => {
+  const allComics = await Comic.find({}, "title genres summary")
+    .sort({ title: 1 })
+    .populate("author")
+    .populate("genres")
+    .exec();
+
+  res.render("comic_list", {
+    title: "Comics",
+    comic_list: allComics,
+  });
+});
