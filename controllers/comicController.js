@@ -46,6 +46,7 @@ exports.comic_detail = asyncHandler(async(req, res, next) => {
     .populate("publisher")
     .populate("author")
     .populate("genres")
+    .populate("volumes")
     .exec()
 
   if (!comic) {
