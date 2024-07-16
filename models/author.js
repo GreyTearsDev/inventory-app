@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const AuthorSchema = new Schema({
   first_name: { type: String, required: true, maxLength: 40 },
   last_name: { type: String, required: true, maxLength: 40 },
+  biography: {type: String, maxLength: 400}
 });
 
 AuthorSchema.virtual("name").get(function () {
