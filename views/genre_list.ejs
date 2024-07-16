@@ -1,1 +1,20 @@
+<h1><%= title %></h1>
+
+<% if (genre_list.length > 0) { %>
+
+  <section class="container">
+    <% genre_list.forEach(genre => { %>
+      <article class="genre">
+        <h3 class="genre__name"><a href="<%=genre.url %>"><%= genre.name%></a></h3>
+      </article>
+    <% }) %>
+  </section>
+
+<% } else { %>
+
+  <p>There are no <%= title %></p>
+
+<% } %>
+
+
 
