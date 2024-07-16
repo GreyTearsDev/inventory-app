@@ -27,13 +27,14 @@ async function main() {
   console.log("Debug: About to connect");
   await mongoose.connect(uri);
   console.log("Debug: Should be connected?");
-  // await createGenres();
-  // await createAuthor();
-  comicList = await Comic.find().exec();
-  authorList = await Author.find().exec();
-  genreList = await Genre.find().exec();
+  await createGenres();
+  await createAuthor();
+  // comicList = await Comic.find().exec();
+  // authorList = await Author.find().exec();
+  // genreList = await Genre.find().exec();
+  // publisherList = await Publisher.find(); 
   await createPublisher();
-  // await createComics();
+  await createComics();
   console.log("Debug: Closing mongoose");
   mongoose.connection.close();
 }
@@ -44,28 +45,22 @@ async function main() {
 async function genreCreate(index, name) {
   const genre = new Genre({ name: name });
   await genre.save();
-  genreList[index] = genre;
+  genreList[index] = genre._id;
   console.log(`Added genre: ${name}`);
 }
 
-async function volumeCreate(
-  volumeNumber,
-  comicId,
-  title,
-  description,
-  releaseDate,
-) {
-  const volumeDetails = {
-    volume_number: volumeNumber,
-    comic: comicId,
+async function volumeCreate(volNum, comic, title, description, relDate) {
+  const volDetails = {
+    volume_number: volNum,
+    comic: comic,
     title: title,
     description: description,
-    release_date: releaseDate,
+    release_date: relDate,
   };
-  const volume = new Volume(volumeDetails);
 
+  const volume = new Volume(volDetails);
   await volume.save();
-  console.log(`----Added volume: ${volumeNumber}`);
+  console.log(`----Added volume: ${volNum}`);
 }
 
 async function authorCreate(index, firstName, lastName) {
@@ -73,26 +68,17 @@ async function authorCreate(index, firstName, lastName) {
   const author = new Author(authorDetails);
 
   await author.save();
-  authorList[index] = author;
+  authorList[index] = author._id;
   console.log(`Added author: ${firstName} ${lastName}`);
 }
 
-async function comicCreate(
-  index,
-  title,
-  summary,
-  author,
-  genres,
-  releaseDate,
-  publisher,
-) {
-  console.log(author, publisher);
+async function comicCreate( index, title, summary, author, genres, relDate, publisher, ) {
   const comicDetails = {
     title: title,
-    author: author._id,
+    author: author,
     summary: summary,
-    release_date: releaseDate,
-    publisher: publisher._id,
+    release_date: relDate,
+    publisher: publisher,
   };
 
   if (genres) {
@@ -101,19 +87,19 @@ async function comicCreate(
 
   const comic = new Comic(comicDetails);
   await comic.save();
-  comicList[index] = comic;
+  comicList[index] = comic._id;
 
   // Create two volumes for each comic
   await volumeCreate(
     1,
-    comic._id,
+    comic,
     `Volume 1 - ${title} `,
     `This is the description for ${title}, Volume 1`,
     new Date(),
   );
   await volumeCreate(
     2,
-    comic._id,
+    comic,
     `Volume 2 - ${title}`,
     `This is the description for ${title}, Volume 2`,
     new Date(),
@@ -121,14 +107,10 @@ async function comicCreate(
   console.log(`Added comic: ${title}`);
 }
 
-async function publisherCreate(index, name, headquarters, comics) {
+async function publisherCreate(index, name, headquarters) {
   const publisherDetails = {
     name: name,
   };
-
-  if (comics) {
-    publisherDetails.comics = comics;
-  }
 
   if (headquarters) {
     publisherDetails.headquarters = headquarters;
@@ -136,7 +118,7 @@ async function publisherCreate(index, name, headquarters, comics) {
 
   const publisher = new Publisher(publisherDetails);
   await publisher.save();
-  publisherList[index] = publisher;
+  publisherList[index] = publisher._id;
   console.log(`Added publisher: ${name}`);
 }
 
@@ -555,81 +537,23 @@ async function createComics() {
 async function createPublisher() {
   console.log("Adding publisher");
   await Promise.all([
-    publisherCreate(0, "Shueisha", "Japan", [
-      comicList[1]._id,
-      comicList[2]._id,
-    ]),
-    publisherCreate(1, "Kodansha", "Japan", [
-      comicList[0]._id,
-      comicList[3]._id,
-      comicList[4]._id,
-    ]),
-    publisherCreate(2, "Shogakukan", "Japan", [
-      comicList[5]._id,
-      comicList[6]._id,
-    ]),
-    publisherCreate(3, "Viz Media", "United States", [
-      comicList[7]._id,
-      comicList[8]._id,
-    ]),
-    publisherCreate(4, "Dark Horse Publisher", "United States", [
-      comicList[9]._id,
-      comicList[10]._id,
-    ]),
-    publisherCreate(5, "DC Publisher", "United States", [
-      comicList[11]._id,
-      comicList[12]._id,
-      comicList[13]._id,
-    ]),
-    publisherCreate(6, "Marvel Publisher", "United States", [
-      comicList[14]._id,
-      comicList[15]._id,
-      comicList[16]._id,
-    ]),
-    publisherCreate(7, "Image Publisher", "United States", [
-      comicList[17]._id,
-      comicList[18]._id,
-      comicList[19]._id,
-    ]),
-    publisherCreate(8, "Vertical", "Japan", [
-      comicList[20]._id,
-      comicList[21]._id,
-    ]),
-    publisherCreate(9, "Yen Press", "United States", [
-      comicList[22]._id,
-      comicList[23]._id,
-    ]),
-    publisherCreate(10, "Kodansha USA", "United States", [
-      comicList[24]._id,
-      comicList[25]._id,
-    ]),
-    publisherCreate(11, "Seven Seas Entertainment", "United States", [
-      comicList[26]._id,
-      comicList[27]._id,
-    ]),
-    publisherCreate(12, "Tokyopop", "United States", [
-      comicList[28]._id,
-      comicList[29]._id,
-    ]),
-    publisherCreate(13, "Square Enix Manga & Books", "Japan", [
-      comicList[30]._id,
-      comicList[31]._id,
-    ]),
-    publisherCreate(14, "Vertical Publisher", "United States", [
-      comicList[32]._id,
-      comicList[33]._id,
-    ]),
-    publisherCreate(15, "VIZ Signature", "United States", [
-      comicList[34]._id,
-      comicList[35]._id,
-    ]),
-    publisherCreate(16, "Kodansha Publisher", "United States", [
-      comicList[36]._id,
-      comicList[37]._id,
-    ]),
-    publisherCreate(17, "Seven Seas", "United States", [
-      comicList[38]._id,
-      comicList[39]._id,
-    ]),
+    publisherCreate(0, "Shueisha", "Japan" ),
+    publisherCreate(1, "Kodansha", "Japan" ),
+    publisherCreate(2, "Shogakukan", "Japan" ),
+    publisherCreate(3, "Viz Media", "United States" ),
+    publisherCreate(4, "Dark Horse Publisher", "United States" ),
+    publisherCreate(5, "DC Publisher", "United States" ),
+    publisherCreate(6, "Marvel Publisher", "United States" ),
+    publisherCreate(7, "Image Publisher", "United States" ),
+    publisherCreate(8, "Vertical", "Japan" ),
+    publisherCreate(9, "Yen Press", "United States" ),
+    publisherCreate(10, "Kodansha USA", "United States" ),
+    publisherCreate(11, "Seven Seas Entertainment", "United States" ),
+    publisherCreate(12, "Tokyopop", "United States" ),
+    publisherCreate(13, "Square Enix Manga & Books", "Japan" ),
+    publisherCreate(14, "Vertical Publisher", "United States" ),
+    publisherCreate(15, "VIZ Signature", "United States" ),
+    publisherCreate(16, "Kodansha Publisher", "United States" ),
+    publisherCreate(17, "Seven Seas", "United States" ),
   ]);
 }
