@@ -1,1 +1,12 @@
+<section class="container">
+  <h1><%= title %></h1>
+  <p><strong>Name:</strong> <%= author.name%><p>
+  <p><strong>Biography:</strong> <%= author.biography %></p>
 
+  <p> Work by <%= author.name %></p>
+  <ul>
+    <% comic_list.forEach((comic, index) => { %>
+      <li><a href="<%= comic.url %>"><%= comic.title %></a></li>
+    <% }) %>
+  </ul>
+</section>
