@@ -11,10 +11,10 @@ const Publisher = require("./models/publisher");
 const Genre = require("./models/genre");
 const Volume = require("./models/volume");
 
-const comicList = [];
-const authorList = [];
-const genreList = [];
-const publisherList = [];
+let comicList = [];
+let authorList = [];
+let genreList = [];
+let publisherList = [];
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -27,10 +27,13 @@ async function main() {
   console.log("Debug: About to connect");
   await mongoose.connect(uri);
   console.log("Debug: Should be connected?");
-  await createGenres();
-  await createAuthor();
+  // await createGenres();
+  // await createAuthor();
+  comicList = await Comic.find().exec();
+  authorList = await Author.find().exec();
+  genreList = await Genre.find().exec();
   await createPublisher();
-  await createComics();
+  // await createComics();
   console.log("Debug: Closing mongoose");
   mongoose.connection.close();
 }
@@ -552,72 +555,81 @@ async function createComics() {
 async function createPublisher() {
   console.log("Adding publisher");
   await Promise.all([
-    publisherCreate(0, "Shueisha", "Japan", [comicList[1], comicList[2]]),
+    publisherCreate(0, "Shueisha", "Japan", [
+      comicList[1]._id,
+      comicList[2]._id,
+    ]),
     publisherCreate(1, "Kodansha", "Japan", [
-      comicList[0],
-      comicList[3],
-      comicList[4],
+      comicList[0]._id,
+      comicList[3]._id,
+      comicList[4]._id,
     ]),
-    publisherCreate(2, "Shogakukan", "Japan", [comicList[5], comicList[6]]),
+    publisherCreate(2, "Shogakukan", "Japan", [
+      comicList[5]._id,
+      comicList[6]._id,
+    ]),
     publisherCreate(3, "Viz Media", "United States", [
-      comicList[7],
-      comicList[8],
+      comicList[7]._id,
+      comicList[8]._id,
     ]),
-    publisherCreate(4, "Dark Horse ComicList", "United States", [
-      comicList[9],
-      comicList[10],
+    publisherCreate(4, "Dark Horse Publisher", "United States", [
+      comicList[9]._id,
+      comicList[10]._id,
     ]),
-    publisherCreate(5, "DC ComicList", "United States", [
-      comicList[11],
-      comicList[12],
-      comicList[13],
+    publisherCreate(5, "DC Publisher", "United States", [
+      comicList[11]._id,
+      comicList[12]._id,
+      comicList[13]._id,
     ]),
-    publisherCreate(6, "Marvel ComicList", "United States", [
-      comicList[14],
-      comicList[15],
-      comicList[16],
+    publisherCreate(6, "Marvel Publisher", "United States", [
+      comicList[14]._id,
+      comicList[15]._id,
+      comicList[16]._id,
     ]),
-    publisherCreate(7, "Image ComicList", "United States", [
-      comicList[17],
-      comicList[18],
-      comicList[19],
+    publisherCreate(7, "Image Publisher", "United States", [
+      comicList[17]._id,
+      comicList[18]._id,
+      comicList[19]._id,
     ]),
-    publisherCreate(8, "Vertical", "Japan", [comicList[20], comicList[21]]),
+    publisherCreate(8, "Vertical", "Japan", [
+      comicList[20]._id,
+      comicList[21]._id,
+    ]),
     publisherCreate(9, "Yen Press", "United States", [
-      comicList[22],
-      comicList[23],
+      comicList[22]._id,
+      comicList[23]._id,
     ]),
     publisherCreate(10, "Kodansha USA", "United States", [
-      comicList[24],
-      comicList[25],
+      comicList[24]._id,
+      comicList[25]._id,
     ]),
     publisherCreate(11, "Seven Seas Entertainment", "United States", [
-      comicList[26],
-      comicList[27],
+      comicList[26]._id,
+      comicList[27]._id,
     ]),
     publisherCreate(12, "Tokyopop", "United States", [
-      comicList[28],
-      comicList[29],
+      comicList[28]._id,
+      comicList[29]._id,
     ]),
     publisherCreate(13, "Square Enix Manga & Books", "Japan", [
-      comicList[30],
-      comicList[31],
+      comicList[30]._id,
+      comicList[31]._id,
     ]),
-    publisherCreate(14, "Vertical ComicList", "United States", [
-      comicList[32],
-      comicList[33],
+    publisherCreate(14, "Vertical Publisher", "United States", [
+      comicList[32]._id,
+      comicList[33]._id,
     ]),
     publisherCreate(15, "VIZ Signature", "United States", [
-      comicList[34],
-      comicList[35],
+      comicList[34]._id,
+      comicList[35]._id,
     ]),
-    publisherCreate(16, "Kodansha ComicList", "United States", [
-      comicList[36],
-      comicList[37],
+    publisherCreate(16, "Kodansha Publisher", "United States", [
+      comicList[36]._id,
+      comicList[37]._id,
     ]),
     publisherCreate(17, "Seven Seas", "United States", [
-      comicList[38],
-      comicList[39],
+      comicList[38]._id,
+      comicList[39]._id,
     ]),
   ]);
 }
