@@ -29,7 +29,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // List all currently available comics
 exports.comic_list = asyncHandler(async (req, res, next) => {
-  const allComics = await Comic.find({}, "title genres summary")
+  const allComics = await Comic.find({}, "title summary")
     .sort({ title: 1 })
     .populate("author")
     .populate("genres")
@@ -40,3 +40,22 @@ exports.comic_list = asyncHandler(async (req, res, next) => {
     comic_list: allComics,
   });
 });
+
+exports.comic_detail = asyncHandler(async(req, res, next) => {
+  const comic = await Comic.findById(req.params.id)
+    .populate("publisher")
+    .populate("author")
+    .populate("genres")
+    .exec()
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("comic_detail", {
+    title: comic.title,
+    comic: comic,
+  });
+})
