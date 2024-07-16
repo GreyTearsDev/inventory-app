@@ -11,7 +11,7 @@ const ComicSchema = new Schema({
   genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
 });
 
-ComicSchema.virtual("release_date_formatted").get(function () {
+ComicSchema.virtual("date_formatted").get(function () {
   return this.release_date
     ? DateTime.fromJSDate(this.release_date).toLocaleString(DateTime.DATE_MED)
     : "";
