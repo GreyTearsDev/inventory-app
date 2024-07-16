@@ -1,0 +1,20 @@
+<h1><%= title %></h1>
+
+<% if (author_list.length > 0) { %>
+
+  <section class="container">
+    <% author_list.forEach(author => { %>
+      <article class="author">
+        <h3 class="author__name"><a href="<%=author.url %>"><%= author.name%></a></h3>
+      </article>
+    <% }) %>
+  </section>
+
+<% } else { %>
+
+  <p>There are no <%= title %></p>
+
+<% } %>
+
+
+
