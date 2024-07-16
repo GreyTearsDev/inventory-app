@@ -29,10 +29,6 @@ async function main() {
   console.log("Debug: Should be connected?");
   await createGenres();
   await createAuthor();
-  // comicList = await Comic.find().exec();
-  // authorList = await Author.find().exec();
-  // genreList = await Genre.find().exec();
-  // publisherList = await Publisher.find(); 
   await createPublisher();
   await createComics();
   console.log("Debug: Closing mongoose");
@@ -47,20 +43,6 @@ async function genreCreate(index, name) {
   await genre.save();
   genreList[index] = genre._id;
   console.log(`Added genre: ${name}`);
-}
-
-async function volumeCreate(volNum, comic, title, description, relDate) {
-  const volDetails = {
-    volume_number: volNum,
-    comic: comic,
-    title: title,
-    description: description,
-    release_date: relDate,
-  };
-
-  const volume = new Volume(volDetails);
-  await volume.save();
-  console.log(`----Added volume: ${volNum}`);
 }
 
 async function authorCreate(index, firstName, lastName, biography) {
@@ -91,24 +73,32 @@ async function comicCreate( index, title, summary, author, genres, relDate, publ
   }
 
   const comic = new Comic(comicDetails);
-  await comic.save();
-  comicList[index] = comic._id;
 
   // Create two volumes for each comic
-  await volumeCreate(
-    1,
-    comic,
-    `Volume 1 - ${title} `,
-    `This is the description for ${title}, Volume 1`,
-    new Date(),
-  );
-  await volumeCreate(
-    2,
-    comic,
-    `Volume 2 - ${title}`,
-    `This is the description for ${title}, Volume 2`,
-    new Date(),
-  );
+  const vol1 = {
+    volume_number: 1,
+    title: `Volume 1 - ${title} `,
+    description: `This is the description for ${title}, Volume 1`,
+    release_date: new Date(),
+  };
+
+  const vol2 = {
+    volume_number: 2,
+    title: `Volume 2 - ${title} `,
+    description: `This is the description for ${title}, Volume 2`,
+    release_date: new Date(),
+  };
+
+  const volume1 = new Volume(vol1);
+  await volume1.save();
+  comic.volumes.push(volume1);
+
+  const volume2 = new Volume(vol2);
+  await volume2.save();
+  comic.volumes.push(volume2);
+
+  await comic.save();
+  comicList[index] = comic._id;
   console.log(`Added comic: ${title}`);
 }
 
