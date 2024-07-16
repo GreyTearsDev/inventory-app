@@ -14,14 +14,20 @@ router.get("/", comic_controller.index);
 
 // Display list of all comics
 router.get("/comics", comic_controller.comic_list);
+router.get("/comics/:id", comic_controller.comic_detail);
 
 // == AUTHOR controller == //
 router.get("/authors", author_controller.author_list);
+router.get("/authors/:id", author_controller.author_detail);
 
 // == GENRE controller == //
 router.get("/genres", genre_controller.genre_list);
+router.get("/genres/:id", genre_controller.genre_detail);
 
 // == PUBLISHER controller == //
 router.get("/publishers", publisher_controller.publisher_list);
+router.get("/publishers/:id", publisher_controller.publisher_detail);
 
 module.exports = router;
+
+
