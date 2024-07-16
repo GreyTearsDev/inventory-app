@@ -11,4 +11,13 @@
   </ul>
 
   <p><strong>Summary</strong>: <%= comic.summary %></p>
+
+  <div>
+    <% comic.volumes.forEach((volume, index) => { %>
+      <p>
+        <a href="<%= volume.url %>">
+        <%= volume.title%></a>
+      </p>
+    <% }) %>
+  </div>
 </section>
