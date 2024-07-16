@@ -6,6 +6,7 @@ const author_controller = require("../controllers/authorController");
 const comic_controller = require("../controllers/comicController");
 const genre_controller = require("../controllers/genreController");
 const publisher_controller = require("../controllers/publisherController");
+const volume_controller = require("../controllers/volumeController");
 
 // == COMIC controller == //
 
@@ -27,6 +28,10 @@ router.get("/genres", genre_controller.genre_list);
 // == PUBLISHER controller == //
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 router.get("/publishers", publisher_controller.publisher_list);
+
+// == VOLUME controller == //
+router.get("/volume/:id", volume_controller.volume_detail);
+
 
 module.exports = router;
 
