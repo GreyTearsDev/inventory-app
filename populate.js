@@ -63,8 +63,13 @@ async function volumeCreate(volNum, comic, title, description, relDate) {
   console.log(`----Added volume: ${volNum}`);
 }
 
-async function authorCreate(index, firstName, lastName) {
+async function authorCreate(index, firstName, lastName, biography) {
   const authorDetails = { first_name: firstName, last_name: lastName };
+
+  if (biography) {
+    authorDetails.biography = biography;
+  }
+  
   const author = new Author(authorDetails);
 
   await author.save();
@@ -144,29 +149,30 @@ async function createGenres() {
 async function createAuthor() {
   console.log("Adding author");
   await Promise.all([
-    authorCreate(0, "Osamu", "Tezuka"),
-    authorCreate(1, "Akira", "Toriyama"),
-    authorCreate(2, "Naoko", "Takeuchi"),
-    authorCreate(3, "Eiichiro", "Oda"),
-    authorCreate(4, "Rumiko", "Takahashi"),
-    authorCreate(5, "Katsuhiro", "Otomo"),
-    authorCreate(6, "Hajime", "Isayama"),
-    authorCreate(7, "CLAMP", "a"),
-    authorCreate(8, "Kazuo", "Koike"),
-    authorCreate(9, "Masashi", "Kishimoto"),
-    authorCreate(10, "Stan", "Lee"),
-    authorCreate(11, "Jack", "Kirby"),
-    authorCreate(12, "Neil", "Gaiman"),
-    authorCreate(13, "Frank", "Miller"),
-    authorCreate(14, "Alan", "Moore"),
-    authorCreate(15, "Jim", "Lee"),
-    authorCreate(16, "Joe", "Quesada"),
-    authorCreate(17, "Steve", "Ditko"),
-    authorCreate(18, "Todd", "McFarlane"),
-    authorCreate(19, "Brian", "Bolland"),
-    authorCreate(20, "Will", "Eisner"),
+    authorCreate(0, "Osamu", "Tezuka", "Osamu Tezuka is known as the 'God of Manga' and created influential works such as 'Astro Boy' and 'Black Jack'."),
+    authorCreate(1, "Akira", "Toriyama", "Akira Toriyama is a renowned manga artist best known for creating the 'Dragon Ball' series."),
+    authorCreate(2, "Naoko", "Takeuchi", "Naoko Takeuchi is a manga artist famous for her work on the 'Sailor Moon' series."),
+    authorCreate(3, "Eiichiro", "Oda", "Eiichiro Oda is the creator of 'One Piece', one of the best-selling manga series in history."),
+    authorCreate(4, "Rumiko", "Takahashi", "Rumiko Takahashi is one of Japan's wealthiest manga artists, known for 'Inuyasha' and 'Ranma ½'."),
+    authorCreate(5, "Katsuhiro", "Otomo", "Katsuhiro Otomo is a manga artist and film director, best known for creating 'Akira'."),
+    authorCreate(6, "Hajime", "Isayama", "Hajime Isayama is a manga artist known for creating the popular series 'Attack on Titan'."),
+    authorCreate(7, "CLAMP", "a", "CLAMP is a team of female manga artists famous for works like 'Cardcaptor Sakura' and 'xxxHolic'."),
+    authorCreate(8, "Kazuo", "Koike", "Kazuo Koike was a manga artist and writer best known for 'Lone Wolf and Cub'."),
+    authorCreate(9, "Masashi", "Kishimoto", "Masashi Kishimoto is the creator of 'Naruto', one of the most successful manga series globally."),
+    authorCreate(10, "Stan", "Lee", "Stan Lee was an American comic book writer, editor, and publisher, famous for co-creating iconic superheroes such as Spider-Man, the X-Men, and Iron Man."),
+    authorCreate(11, "Jack", "Kirby", "Jack Kirby was a legendary comic book artist and writer, co-creating many famous characters including Captain America and the Fantastic Four."),
+    authorCreate(12, "Neil", "Gaiman", "Neil Gaiman is an English author known for his work on 'The Sandman' comic series and numerous novels."),
+    authorCreate(13, "Frank", "Miller", "Frank Miller is a comic book writer and artist, famous for 'The Dark Knight Returns' and 'Sin City'."),
+    authorCreate(14, "Alan", "Moore", "Alan Moore is a British writer known for his groundbreaking work on 'Watchmen', 'V for Vendetta', and 'Swamp Thing'."),
+    authorCreate(15, "Jim", "Lee", "Jim Lee is a Korean American comic book artist, writer, and publisher known for his work on X-Men and as a co-founder of Image Comics."),
+    authorCreate(16, "Joe", "Quesada", "Joe Quesada is an American comic book editor, writer, and artist, known for his work with Marvel Comics."),
+    authorCreate(17, "Steve", "Ditko", "Steve Ditko was an American comic book artist and writer, best known for co-creating Spider-Man and Doctor Strange."),
+    authorCreate(18, "Todd", "McFarlane", "Todd McFarlane is a comic book artist and writer, known for his work on 'The Amazing Spider-Man' and for creating 'Spawn'."),
+    authorCreate(19, "Brian", "Bolland", "Brian Bolland is a British comic artist, known for his work on 'Judge Dredd' and 'Batman: The Killing Joke'."),
+    authorCreate(20, "Will", "Eisner", "Will Eisner was a pioneering comic book writer and artist, best known for 'The Spirit' and for popularizing the graphic novel format."),
   ]);
 }
+
 
 async function createComics() {
   console.log("Adding comics");
