@@ -6,10 +6,6 @@ const PublisherSchema = new Schema({
   headquarters: { type: String, maxLength: 40 },
 });
 
-PublisherSchema.virtual("info").get(function () {
-  return `${this.name}, ${this.headquarters}`;
-});
-
 PublisherSchema.virtual("url").get(function () {
   return `/catalog/publisher/${this._id}`;
 });
