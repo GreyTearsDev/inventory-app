@@ -1,0 +1,14 @@
+<article>
+  <h2>Publisher: <%= publisher.name%></h2>
+
+  <% if (comic_list.length > 0) { %>
+    <p>Works under <%=publisher.name%>'s catalog</p>
+    <ul>
+      <% comic_list.forEach(comic => { %>
+        <li><a href="<%= comic.url%>"><%= comic.title%></a></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p><%= publisher.name%> hasn't published any work yet!</p>
+  <% } %>
+</article>
