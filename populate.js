@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // Get arguments passed on command line
 const userArgs = process.argv.slice(2);
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI || userArgs[0];
 
 const Comic = require("./models/comic");
 const Author = require("./models/author");
@@ -19,20 +19,23 @@ let publisherList = [];
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
-const mongoDB = userArgs[0];
-
 main().catch((err) => console.log(err));
 
 async function main() {
   console.log("Debug: About to connect");
-  await mongoose.connect(uri);
-  console.log("Debug: Should be connected?");
-  await createGenres();
-  await createAuthor();
-  await createPublisher();
-  await createComics();
-  console.log("Debug: Closing mongoose");
-  mongoose.connection.close();
+  try {
+    await mongoose.connect(uri);
+    console.log("Debug: Should be connected?");
+    await createGenres();
+    await createAuthors();
+    await createPublishers();
+    await createComics();
+  } catch (err) {
+    console.error("Error in main:", err);
+  } finally {
+    console.log("Debug: Closing mongoose");
+    mongoose.connection.close();
+  }
 }
 
 // We pass the index to the ...Create functions so that, for example,
@@ -51,21 +54,29 @@ async function authorCreate(index, firstName, lastName, biography) {
   if (biography) {
     authorDetails.biography = biography;
   }
-  
-  const author = new Author(authorDetails);
 
+  const author = new Author(authorDetails);
   await author.save();
   authorList[index] = author._id;
   console.log(`Added author: ${firstName} ${lastName}`);
 }
 
-async function comicCreate( index, title, summary, author, genres, relDate, publisher, ) {
+async function comicCreate(
+  index,
+  title,
+  summary,
+  author,
+  genres,
+  relDate,
+  publisher,
+) {
   const comicDetails = {
     title: title,
     author: author,
     summary: summary,
     release_date: relDate,
     publisher: publisher,
+    volumes: [],
   };
 
   if (genres) {
@@ -120,49 +131,164 @@ async function publisherCreate(index, name, headquarters) {
 async function createGenres() {
   console.log("Adding genres");
   await Promise.all([
-    genreCreate(1, "Science Fiction"),
-    genreCreate(2, "Super Hero"),
-    genreCreate(3, "Graphic Novel"),
-    genreCreate(4, "Shounen"),
-    genreCreate(5, "Shoujo"),
-    genreCreate(6, "Mystery"),
-    genreCreate(7, "Isekai"),
-    genreCreate(8, "Romance"),
-    genreCreate(9, "Mecha"),
-    genreCreate(10, "Adventure"),
-    genreCreate(11, "Comedy"),
-    genreCreate(12, "Slice of Life"),
-    genreCreate(13, "Horror"),
+    genreCreate(0, "Science Fiction"),
+    genreCreate(1, "Super Hero"),
+    genreCreate(2, "Graphic Novel"),
+    genreCreate(3, "Shounen"),
+    genreCreate(4, "Shoujo"),
+    genreCreate(5, "Mystery"),
+    genreCreate(6, "Isekai"),
+    genreCreate(7, "Romance"),
+    genreCreate(8, "Mecha"),
+    genreCreate(9, "Adventure"),
+    genreCreate(10, "Comedy"),
+    genreCreate(11, "Slice of Life"),
+    genreCreate(12, "Horror"),
   ]);
 }
 
-async function createAuthor() {
-  console.log("Adding author");
+async function createAuthors() {
+  console.log("Adding authors");
   await Promise.all([
-    authorCreate(0, "Osamu", "Tezuka", "Osamu Tezuka is known as the 'God of Manga' and created influential works such as 'Astro Boy' and 'Black Jack'."),
-    authorCreate(1, "Akira", "Toriyama", "Akira Toriyama is a renowned manga artist best known for creating the 'Dragon Ball' series."),
-    authorCreate(2, "Naoko", "Takeuchi", "Naoko Takeuchi is a manga artist famous for her work on the 'Sailor Moon' series."),
-    authorCreate(3, "Eiichiro", "Oda", "Eiichiro Oda is the creator of 'One Piece', one of the best-selling manga series in history."),
-    authorCreate(4, "Rumiko", "Takahashi", "Rumiko Takahashi is one of Japan's wealthiest manga artists, known for 'Inuyasha' and 'Ranma ½'."),
-    authorCreate(5, "Katsuhiro", "Otomo", "Katsuhiro Otomo is a manga artist and film director, best known for creating 'Akira'."),
-    authorCreate(6, "Hajime", "Isayama", "Hajime Isayama is a manga artist known for creating the popular series 'Attack on Titan'."),
-    authorCreate(7, "CLAMP", "a", "CLAMP is a team of female manga artists famous for works like 'Cardcaptor Sakura' and 'xxxHolic'."),
-    authorCreate(8, "Kazuo", "Koike", "Kazuo Koike was a manga artist and writer best known for 'Lone Wolf and Cub'."),
-    authorCreate(9, "Masashi", "Kishimoto", "Masashi Kishimoto is the creator of 'Naruto', one of the most successful manga series globally."),
-    authorCreate(10, "Stan", "Lee", "Stan Lee was an American comic book writer, editor, and publisher, famous for co-creating iconic superheroes such as Spider-Man, the X-Men, and Iron Man."),
-    authorCreate(11, "Jack", "Kirby", "Jack Kirby was a legendary comic book artist and writer, co-creating many famous characters including Captain America and the Fantastic Four."),
-    authorCreate(12, "Neil", "Gaiman", "Neil Gaiman is an English author known for his work on 'The Sandman' comic series and numerous novels."),
-    authorCreate(13, "Frank", "Miller", "Frank Miller is a comic book writer and artist, famous for 'The Dark Knight Returns' and 'Sin City'."),
-    authorCreate(14, "Alan", "Moore", "Alan Moore is a British writer known for his groundbreaking work on 'Watchmen', 'V for Vendetta', and 'Swamp Thing'."),
-    authorCreate(15, "Jim", "Lee", "Jim Lee is a Korean American comic book artist, writer, and publisher known for his work on X-Men and as a co-founder of Image Comics."),
-    authorCreate(16, "Joe", "Quesada", "Joe Quesada is an American comic book editor, writer, and artist, known for his work with Marvel Comics."),
-    authorCreate(17, "Steve", "Ditko", "Steve Ditko was an American comic book artist and writer, best known for co-creating Spider-Man and Doctor Strange."),
-    authorCreate(18, "Todd", "McFarlane", "Todd McFarlane is a comic book artist and writer, known for his work on 'The Amazing Spider-Man' and for creating 'Spawn'."),
-    authorCreate(19, "Brian", "Bolland", "Brian Bolland is a British comic artist, known for his work on 'Judge Dredd' and 'Batman: The Killing Joke'."),
-    authorCreate(20, "Will", "Eisner", "Will Eisner was a pioneering comic book writer and artist, best known for 'The Spirit' and for popularizing the graphic novel format."),
+    authorCreate(
+      0,
+      "Osamu",
+      "Tezuka",
+      "Osamu Tezuka is known as the 'God of Manga' and created influential works such as 'Astro Boy' and 'Black Jack'.",
+    ),
+    authorCreate(
+      1,
+      "Akira",
+      "Toriyama",
+      "Akira Toriyama is a renowned manga artist best known for creating the 'Dragon Ball' series.",
+    ),
+    authorCreate(
+      2,
+      "Naoko",
+      "Takeuchi",
+      "Naoko Takeuchi is a manga artist famous for her work on the 'Sailor Moon' series.",
+    ),
+    authorCreate(
+      3,
+      "Eiichiro",
+      "Oda",
+      "Eiichiro Oda is the creator of 'One Piece', one of the best-selling manga series in history.",
+    ),
+    authorCreate(
+      4,
+      "Rumiko",
+      "Takahashi",
+      "Rumiko Takahashi is one of Japan's wealthiest manga artists, known for 'Inuyasha' and 'Ranma ½'.",
+    ),
+    authorCreate(
+      5,
+      "Katsuhiro",
+      "Otomo",
+      "Katsuhiro Otomo is a manga artist and film director, best known for creating 'Akira'.",
+    ),
+    authorCreate(
+      6,
+      "Hajime",
+      "Isayama",
+      "Hajime Isayama is a manga artist known for creating the popular series 'Attack on Titan'.",
+    ),
+    authorCreate(
+      7,
+      "CLAMP",
+      ".",
+      "CLAMP is a team of female manga artists famous for works like 'Cardcaptor Sakura' and 'xxxHolic'.",
+    ),
+    authorCreate(
+      8,
+      "Kazuo",
+      "Koike",
+      "Kazuo Koike was a manga artist and writer best known for 'Lone Wolf and Cub'.",
+    ),
+    authorCreate(
+      9,
+      "Masashi",
+      "Kishimoto",
+      "Masashi Kishimoto is the creator of 'Naruto', one of the most successful manga series globally.",
+    ),
+    authorCreate(
+      10,
+      "Stan",
+      "Lee",
+      "Stan Lee was an American comic book writer, editor, and publisher, famous for co-creating iconic superheroes such as Spider-Man, the X-Men, and Iron Man.",
+    ),
+    authorCreate(
+      11,
+      "Jack",
+      "Kirby",
+      "Jack Kirby was a legendary comic book artist and writer, co-creating many famous characters including Captain America and the Fantastic Four.",
+    ),
+    authorCreate(
+      12,
+      "Neil",
+      "Gaiman",
+      "Neil Gaiman is an English author known for his work on 'The Sandman' comic series and numerous novels.",
+    ),
+    authorCreate(
+      13,
+      "Frank",
+      "Miller",
+      "Frank Miller is a comic book writer and artist, famous for 'The Dark Knight Returns' and 'Sin City'.",
+    ),
+    authorCreate(
+      14,
+      "Alan",
+      "Moore",
+      "Alan Moore is a British writer known for his groundbreaking work on 'Watchmen', 'V for Vendetta', and 'Swamp Thing'.",
+    ),
+    authorCreate(
+      15,
+      "Jim",
+      "Lee",
+      "Jim Lee is a Korean American comic book artist, writer, and publisher known for his work on X-Men and as a co-founder of Image Comics.",
+    ),
+    authorCreate(
+      16,
+      "Joe",
+      "Quesada",
+      "Joe Quesada is an American comic book editor, writer, and artist, known for his work with Marvel Comics.",
+    ),
+    authorCreate(
+      17,
+      "Steve",
+      "Ditko",
+      "Steve Ditko was an American comic book artist and writer, best known for co-creating Spider-Man and Doctor Strange.",
+    ),
+    authorCreate(
+      18,
+      "Todd",
+      "McFarlane",
+      "Todd McFarlane is a comic book artist and writer, known for his work on 'The Amazing Spider-Man' and for creating 'Spawn'.",
+    ),
+    authorCreate(
+      19,
+      "Brian",
+      "Bolland",
+      "Brian Bolland is a British comic artist, known for his work on 'Judge Dredd' and 'Batman: The Killing Joke'.",
+    ),
+    authorCreate(
+      20,
+      "Will",
+      "Eisner",
+      "Will Eisner was a pioneering comic book writer and artist, best known for 'The Spirit' and for popularizing the graphic novel format.",
+    ),
   ]);
 }
 
+async function createPublishers() {
+  console.log("Adding publishers");
+  await Promise.all([
+    publisherCreate(0, "Shueisha", "Japan"),
+    publisherCreate(1, "Marvel Comics", "United States"),
+    publisherCreate(2, "DC Comics", "United States"),
+    publisherCreate(3, "Image Comics", "United States"),
+    publisherCreate(4, "Dark Horse Comics", "United States"),
+  ]);
+}
 
 async function createComics() {
   console.log("Adding comics");
@@ -172,384 +298,162 @@ async function createComics() {
       "Astro Boy",
       "A story about a robot boy with extraordinary powers.",
       authorList[0],
-      [genreList[4]],
-      new Date("1952-04-07"),
+      [genreList[3]],
+      new Date(1952, 3, 3),
       publisherList[0],
     ),
     comicCreate(
       1,
       "Dragon Ball",
-      "The adventures of Goku and his friends in search of the Dragon Balls.",
+      "An adventure following the journey of Goku.",
       authorList[1],
-      [genreList[4], genreList[9]],
-      new Date("1984-12-03"),
+      [genreList[3]],
+      new Date(1984, 11, 20),
       publisherList[0],
     ),
     comicCreate(
       2,
       "Sailor Moon",
-      "A group of magical girls fighting against the forces of evil.",
+      "A magical girl story about love and justice.",
       authorList[2],
-      [genreList[5], genreList[8]],
-      new Date("1991-07-06"),
+      [genreList[4]],
+      new Date(1991, 11, 28),
       publisherList[0],
     ),
     comicCreate(
       3,
       "One Piece",
-      "A young pirate's quest to find the ultimate treasure.",
+      "A story of pirates searching for the ultimate treasure.",
       authorList[3],
-      [genreList[4], genreList[10]],
-      new Date("1997-07-22"),
+      [genreList[9]],
+      new Date(1997, 6, 22),
       publisherList[0],
     ),
     comicCreate(
       4,
       "Inuyasha",
-      "A girl travels back in time to feudal Japan and meets a half-demon.",
+      "A time-traveling adventure filled with demons and romance.",
       authorList[4],
-      [genreList[4], genreList[8], genreList[10]],
-      new Date("1996-11-13"),
+      [genreList[7]],
+      new Date(1996, 10, 13),
       publisherList[0],
     ),
     comicCreate(
       5,
       "Akira",
-      "A dystopian future where a biker gang member gains psychic powers.",
+      "A dystopian story set in a post-apocalyptic Tokyo.",
       authorList[5],
-      [genreList[1], genreList[9]],
-      new Date("1982-12-20"),
+      [genreList[0]],
+      new Date(1982, 12, 6),
       publisherList[0],
     ),
     comicCreate(
       6,
       "Attack on Titan",
-      "Humanity's fight for survival against giant humanoid creatures.",
+      "A world where humanity fights for survival against giant humanoids.",
       authorList[6],
-      [genreList[4], genreList[6], genreList[13]],
-      new Date("2009-09-09"),
+      [genreList[12]],
+      new Date(2009, 8, 9),
       publisherList[0],
     ),
     comicCreate(
       7,
       "Cardcaptor Sakura",
-      "A young girl discovers magical powers and must capture mystical cards.",
+      "A young girl must capture magical cards that have escaped.",
       authorList[7],
-      [genreList[5], genreList[8]],
-      new Date("1996-05-24"),
+      [genreList[4]],
+      new Date(1996, 5, 11),
       publisherList[0],
     ),
     comicCreate(
       8,
       "Lone Wolf and Cub",
-      "A samurai assassin and his young son on a quest for revenge.",
+      "A ronin and his infant son travel through Japan seeking revenge.",
       authorList[8],
-      [genreList[6], genreList[10]],
-      new Date("1970-09-25"),
+      [genreList[10]],
+      new Date(1970, 9, 25),
       publisherList[0],
     ),
     comicCreate(
       9,
       "Naruto",
-      "A young ninja's journey to become the strongest ninja and gain respect.",
+      "A young ninja's quest to become the strongest ninja and gain recognition.",
       authorList[9],
-      [genreList[4], genreList[10]],
-      new Date("1999-09-21"),
+      [genreList[3]],
+      new Date(1999, 8, 21),
       publisherList[0],
     ),
     comicCreate(
       10,
       "Spider-Man",
-      "The adventures of Peter Parker as Spider-Man.",
+      "A young man gains spider-like powers and fights crime.",
       authorList[10],
-      [genreList[2], genreList[10]],
-      new Date("1962-08-01"),
+      [genreList[1]],
+      new Date(1962, 7, 15),
       publisherList[1],
     ),
     comicCreate(
       11,
-      "Fantastic Four",
-      "A team of superheroes with extraordinary powers.",
-      authorList[11],
-      [genreList[2], genreList[1]],
-      new Date("1961-11-01"),
+      "X-Men",
+      "A team of mutants fighting for a world that fears and hates them.",
+      authorList[10],
+      [genreList[1]],
+      new Date(1963, 8, 10),
       publisherList[1],
     ),
     comicCreate(
       12,
       "The Sandman",
-      "A story about the adventures of Dream, one of the Endless.",
+      "A dark fantasy series about the king of dreams.",
       authorList[12],
-      [genreList[3], genreList[6]],
-      new Date("1989-01-01"),
+      [genreList[2]],
+      new Date(1989, 10, 15),
       publisherList[2],
     ),
     comicCreate(
       13,
-      "Sin City",
-      "A series of crime stories set in a dark and violent city.",
+      "The Dark Knight Returns",
+      "A retired Batman returns to fight crime in Gotham City.",
       authorList[13],
-      [genreList[3], genreList[13]],
-      new Date("1991-04-01"),
+      [genreList[1]],
+      new Date(1986, 2, 1),
       publisherList[2],
     ),
     comicCreate(
       14,
       "Watchmen",
-      "A dark and complex story about superheroes in an alternate history.",
+      "A deconstruction of the superhero genre set in an alternate history.",
       authorList[14],
-      [genreList[2], genreList[3]],
-      new Date("1986-09-01"),
-      publisherList[3],
+      [genreList[2]],
+      new Date(1986, 9, 1),
+      publisherList[2],
     ),
     comicCreate(
       15,
-      "Batman: Hush",
-      "Batman faces a mysterious new villain known as Hush.",
-      authorList[15],
-      [genreList[2], genreList[6]],
-      new Date("2002-01-01"),
-      publisherList[1],
-    ),
-    comicCreate(
-      16,
-      "Daredevil",
-      "The story of a blind lawyer who fights crime as Daredevil.",
-      authorList[16],
-      [genreList[2], genreList[10]],
-      new Date("1964-04-01"),
-      publisherList[1],
-    ),
-    comicCreate(
-      17,
-      "Doctor Strange",
-      "The adventures of the Sorcerer Supreme, Doctor Strange.",
-      authorList[17],
-      [genreList[2], genreList[0]],
-      new Date("1963-07-01"),
-      publisherList[1],
-    ),
-    comicCreate(
-      18,
       "Spawn",
-      "A former soldier resurrected as a hellspawn.",
+      "A former soldier becomes a Hellspawn and fights against evil.",
       authorList[18],
-      [genreList[2], genreList[13]],
-      new Date("1992-05-01"),
+      [genreList[12]],
+      new Date(1992, 5, 2),
       publisherList[3],
     ),
     comicCreate(
-      19,
-      "Batman: The Killing Joke",
-      "The origin story of the Joker and his battle with Batman.",
-      authorList[19],
-      [genreList[2], genreList[13]],
-      new Date("1988-03-01"),
-      publisherList[1],
-    ),
-    comicCreate(
-      20,
-      "The Spirit",
-      "The adventures of a masked vigilante in Central City.",
+      16,
+      "Hellboy",
+      "A demon raised by humans works to protect the world from supernatural threats.",
       authorList[20],
-      [genreList[2], genreList[6]],
-      new Date("1940-06-02"),
+      [genreList[12]],
+      new Date(1993, 12, 4),
       publisherList[4],
     ),
     comicCreate(
-      21,
-      "Death Note",
-      "A high school student discovers a notebook that can kill anyone whose name is written in it.",
-      authorList[0],
-      [genreList[6], genreList[13]],
-      new Date("2003-12-01"),
-      publisherList[0],
+      17,
+      "Batman: The Killing Joke",
+      "A graphic novel exploring the origins of the Joker and his relationship with Batman.",
+      authorList[19],
+      [genreList[1]],
+      new Date(1988, 3, 29),
+      publisherList[2],
     ),
-    comicCreate(
-      22,
-      "Fullmetal Alchemist",
-      "Two brothers use alchemy in their quest to restore their bodies.",
-      authorList[3],
-      [genreList[4], genreList[10]],
-      new Date("2001-07-12"),
-      publisherList[0],
-    ),
-    comicCreate(
-      23,
-      "Berserk",
-      "A dark fantasy story about a lone mercenary's quest for revenge.",
-      authorList[8],
-      [genreList[4], genreList[10], genreList[13]],
-      new Date("1989-08-25"),
-      publisherList[0],
-    ),
-    comicCreate(
-      24,
-      "Bleach",
-      "A teenager becomes a Soul Reaper to protect the living world from evil spirits.",
-      authorList[9],
-      [genreList[4], genreList[10]],
-      new Date("2001-08-07"),
-      publisherList[0],
-    ),
-    comicCreate(
-      25,
-      "My Hero Academia",
-      "A world where almost everyone has superpowers and a boy's dream to become a hero.",
-      authorList[1],
-      [genreList[4], genreList[2]],
-      new Date("2014-07-07"),
-      publisherList[0],
-    ),
-    comicCreate(
-      26,
-      "Tokyo Ghoul",
-      "A young man transforms into a half-ghoul after a near-fatal accident.",
-      authorList[5],
-      [genreList[4], genreList[13]],
-      new Date("2011-09-08"),
-      publisherList[0],
-    ),
-    comicCreate(
-      27,
-      "Black Clover",
-      "A boy born without magic in a world where everyone else has it.",
-      authorList[6],
-      [genreList[4], genreList[10]],
-      new Date("2015-02-16"),
-      publisherList[0],
-    ),
-    comicCreate(
-      28,
-      "Fairy Tail",
-      "A young mage's adventures in a world of magic and guilds.",
-      authorList[4],
-      [genreList[4], genreList[10]],
-      new Date("2006-08-23"),
-      publisherList[0],
-    ),
-    comicCreate(
-      29,
-      "JoJo's Bizarre Adventure",
-      "The strange and fantastical adventures of the Joestar family.",
-      authorList[8],
-      [genreList[4], genreList[10], genreList[11]],
-      new Date("1987-01-01"),
-      publisherList[0],
-    ),
-    comicCreate(
-      30,
-      "One Punch Man",
-      "A superhero who can defeat any opponent with a single punch.",
-      authorList[7],
-      [genreList[4], genreList[11]],
-      new Date("2009-06-14"),
-      publisherList[0],
-    ),
-    comicCreate(
-      31,
-      "Vagabond",
-      "The life of a legendary samurai warrior.",
-      authorList[8],
-      [genreList[6], genreList[10]],
-      new Date("1998-09-25"),
-      publisherList[0],
-    ),
-    comicCreate(
-      32,
-      "Rurouni Kenshin",
-      "A wandering swordsman in Meiji-era Japan.",
-      authorList[9],
-      [genreList[4], genreList[10], genreList[12]],
-      new Date("1994-04-25"),
-      publisherList[0],
-    ),
-    comicCreate(
-      33,
-      "Yotsuba&!",
-      "The everyday adventures of a quirky young girl.",
-      authorList[7],
-      [genreList[11], genreList[12]],
-      new Date("2003-03-21"),
-      publisherList[0],
-    ),
-    comicCreate(
-      34,
-      "Monster",
-      "A brilliant doctor is drawn into a web of conspiracy and murder.",
-      authorList[8],
-      [genreList[6], genreList[13]],
-      new Date("1994-12-05"),
-      publisherList[0],
-    ),
-    comicCreate(
-      35,
-      "Gantz",
-      "A group of people who have died are forced to participate in a deadly game.",
-      authorList[5],
-      [genreList[6], genreList[13]],
-      new Date("2000-07-13"),
-      publisherList[0],
-    ),
-    comicCreate(
-      36,
-      "Sword Art Online",
-      "Players of a virtual reality MMORPG are trapped and must fight their way to freedom.",
-      authorList[3],
-      [genreList[4], genreList[7], genreList[10]],
-      new Date("2009-04-10"),
-      publisherList[0],
-    ),
-    comicCreate(
-      37,
-      "Toriko",
-      "A gourmet hunter's quest to find the most delicious foods in the world.",
-      authorList[1],
-      [genreList[4], genreList[10], genreList[11]],
-      new Date("2008-05-26"),
-      publisherList[0],
-    ),
-    comicCreate(
-      38,
-      "Vinland Saga",
-      "A young Viking's journey for revenge and discovery.",
-      authorList[8],
-      [genreList[6], genreList[10], genreList[12]],
-      new Date("2005-04-13"),
-      publisherList[0],
-    ),
-    comicCreate(
-      39,
-      "Claymore",
-      "A group of female warriors battle against monstrous beings.",
-      authorList[4],
-      [genreList[4], genreList[10], genreList[13]],
-      new Date("2001-05-08"),
-      publisherList[0],
-    ),
-  ]);
-}
-
-async function createPublisher() {
-  console.log("Adding publisher");
-  await Promise.all([
-    publisherCreate(0, "Shueisha", "Japan" ),
-    publisherCreate(1, "Kodansha", "Japan" ),
-    publisherCreate(2, "Shogakukan", "Japan" ),
-    publisherCreate(3, "Viz Media", "United States" ),
-    publisherCreate(4, "Dark Horse Publisher", "United States" ),
-    publisherCreate(5, "DC Publisher", "United States" ),
-    publisherCreate(6, "Marvel Publisher", "United States" ),
-    publisherCreate(7, "Image Publisher", "United States" ),
-    publisherCreate(8, "Vertical", "Japan" ),
-    publisherCreate(9, "Yen Press", "United States" ),
-    publisherCreate(10, "Kodansha USA", "United States" ),
-    publisherCreate(11, "Seven Seas Entertainment", "United States" ),
-    publisherCreate(12, "Tokyopop", "United States" ),
-    publisherCreate(13, "Square Enix Manga & Books", "Japan" ),
-    publisherCreate(14, "Vertical Publisher", "United States" ),
-    publisherCreate(15, "VIZ Signature", "United States" ),
-    publisherCreate(16, "Kodansha Publisher", "United States" ),
-    publisherCreate(17, "Seven Seas", "United States" ),
   ]);
 }
