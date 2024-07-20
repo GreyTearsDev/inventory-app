@@ -1,0 +1,14 @@
+<h1><%= title%></h1>
+
+<form method="POST">
+  <div class="form-group">
+    <label for="name">Publisher: </label>
+    <input id="name" class="form-control" type="text" placeholder="Shounen, Mecha, etc." name="name" required value="<%= publisher ? publisher.name : '' %>" />
+    <label for="headquarters">Headquarters: </label>
+    <input id="headquarters" class="form-control" type="text" placeholder="e.g.: Italy, France, etc." name="headquarters" value="<%= publisher ? publisher.headquarters: '' %>" />
+  </div>
+  <button class="btn btn-primary" type="submit">Submit</button>
+
+<%- include("./partials/form_error_messages_display")%>
+</form>
+
