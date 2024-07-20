@@ -30,3 +30,11 @@ exports.publisher_detail = asyncHandler(async (req, res, next) => {
     comic_list: comicsFromPublisher,
   });
 });
+
+exports.publisher_create_get = (req, res, next) => {
+  res.render("publisher_form", {
+    title: "Create new publisher",
+    publisher: undefined,
+    errors: [],
+  });
+};
