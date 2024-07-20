@@ -1,8 +1,9 @@
 <h1><%= title%></h1>
 
 <form method="POST">
+  <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
-    <label for="title">Title: </label>
+    <label for="title">* Title: </label>
     <input 
       id="title" 
       class="form-control" 
@@ -13,7 +14,7 @@
       required value="<%= comic ? comic.title : '' %>" 
       />
 
-    <label for="summary">Summary: </label>
+    <label for="summary">* Summary: </label>
     <textarea 
       id="summary" 
       class="form-control" 
@@ -31,7 +32,7 @@
       <p>There aren't any authors in the system yet.</p>
       <p><a href="/author/create">Add one now!</a></p>      
     <% } else { %>
-      <label for="author">Author: </label>
+      <label for="author">* Author: </label>
       <select id="author" class="form-control" name="author"/>
         <option value="">Choose an author<option>
 
@@ -45,7 +46,7 @@
       <p>There aren't any genres in the system yet.</p>
       <p><a href="/genre/create">Add one now!</a></p>      
     <% } else { %>
-      <label for="genre">Genre: </label>
+      <label for="genre">* Genre: </label>
       <select id="genre" class="form-control" name="genre"/>
         <option value="">Choose a genre<option>
 

@@ -1,11 +1,12 @@
 <h1><%= title%></h1>
 
 <form method="POST">
+  <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
-    <label for="first_name">First Name: </label>
+    <label for="first_name">* First name: </label>
     <input id="first_name" class="form-control" type="text" maxLength=40 placeholder="John" name="first_name" required value="<%= author ? author.first_name : '' %>" />
 
-    <label for="last_name">Last Name: </label>
+    <label for="last_name">* Last name: </label>
     <input id="last_name" class="form-control" type="text" maxLength=40 placeholder="Doe" name="last_name" required value="<%= author ? author.last_name : '' %>" />
 
     <label for="biography">Biography: </label>

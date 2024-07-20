@@ -1,8 +1,9 @@
 <h1><%= title%></h1>
 
 <form method="POST">
+  <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
-    <label for="name">Genre: </label>
+    <label for="name">* Name: </label>
     <input id="name" class="form-control" type="text" maxLength=20 placeholder="Shounen, Mecha, etc." name="name" required value="<%= genre ? genre.name : '' %>" />
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
