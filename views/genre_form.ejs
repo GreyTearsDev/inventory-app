@@ -1,0 +1,18 @@
+<h1><%= title%></h1>
+
+<form method="POST">
+  <div class="form-group">
+    <label for="name">Genre: </label>
+    <input id="name" class="form-control" type="text" placeholder="Shounen, Mecha, etc." name="name" required value="<%= genre ? genre.name : '' %>" />
+  </div>
+  <button class="btn btn-primary" type="submit">Submit</button>
+
+  <% if (errors) { %>
+    <ul>
+      <% errors.forEach(error => { %>
+        <li>⚠️ <%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+</form>
+
