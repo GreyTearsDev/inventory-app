@@ -18,6 +18,7 @@ router.get("/comic/:id", comic_controller.comic_detail);
 router.get("/comics", comic_controller.comic_list);
 
 // == AUTHOR controller == //
+router.get("/author/create", author_controller.author_create_get);
 router.get("/author/:id", author_controller.author_detail);
 router.get("/authors", author_controller.author_list);
 
