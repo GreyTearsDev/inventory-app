@@ -4,10 +4,25 @@
   <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
     <label for="name">* Publisher's name: </label>
-    <input id="name" class="form-control" type="text" maxLength=40 placeholder="Marvel, Shueisha" name="name" required value="<%= publisher ? publisher.name : '' %>" />
+    <input id="name" 
+      class="form-control" 
+      type="text" 
+      maxLength=40 
+      placeholder="Marvel, Shueisha" 
+      name="name" 
+      required 
+      value="<%= publisher ? publisher.name : '' %>" 
+      />
 
     <label for="headquarters">Headquarters: </label>
-    <input id="headquarters" class="form-control" type="text" maxLength=40 placeholder="e.g.: Italy, France, etc." name="headquarters" value="<%= publisher ? publisher.headquarters: '' %>" />
+    <input id="headquarters" 
+      class="form-control" 
+      type="text" 
+      maxLength=40 
+      placeholder="e.g.: Italy, France, etc." 
+      name="headquarters" 
+      value="<%= publisher ? publisher.headquarters: '' %>" 
+      />
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
 
