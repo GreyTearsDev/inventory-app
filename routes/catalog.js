@@ -25,7 +25,7 @@ router.get("/authors", author_controller.author_list);
 
 // == GENRE controller == //
 router.get("/genre/create", genre_controller.genre_create_get);
-// router.post("/genre/create", genre_controller.genre_create_post);
+router.post("/genre/create", genre_controller.genre_create_post);
 router.get("/genre/:id", genre_controller.genre_detail);
 router.get("/genres", genre_controller.genre_list);
 
