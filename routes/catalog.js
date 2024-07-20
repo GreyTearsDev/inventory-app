@@ -14,6 +14,7 @@ const volume_controller = require("../controllers/volumeController");
 router.get("/", comic_controller.index);
 
 // Display list of all comics
+router.get("/comic/create", comic_controller.comic_create_get);
 router.get("/comic/:id", comic_controller.comic_detail);
 router.get("/comics", comic_controller.comic_list);
 
