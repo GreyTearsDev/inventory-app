@@ -1,6 +1,7 @@
 const Publisher = require("../models/publisher");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 // List all currently available publishers
 exports.publisher_list = asyncHandler(async (req, res, next) => {
@@ -38,3 +39,46 @@ exports.publisher_create_get = (req, res, next) => {
     errors: [],
   });
 };
+
+exports.publisher_create_post = [
+  body("name", "Publisher's name field must be filled")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("headquarters").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const publisher = new Publisher({
+      name: req.body.name,
+      headquarters: req.body.headquarters,
+    });
+
+    if (!errors.isEmpty) {
+      res.render("publisher_form", {
+        title: "Create new publisher",
+        publisher: undefined,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // check if publisher already exists
+      const publisherWithSameNameExists = await Publisher.findOne({
+        name: req.body.name,
+      })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+
+      if (
+        publisherWithSameNameExists &&
+        publisherWithSameNameExists.headquarters === req.body.headquarters
+      ) {
+        res.redirect(publisherWithSameNameExists.url);
+      } else {
+        await publisher.save();
+        res.redirect(publisher.url);
+      }
+    }
+  }),
+];
