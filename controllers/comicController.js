@@ -41,13 +41,13 @@ exports.comic_list = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.comic_detail = asyncHandler(async(req, res, next) => {
+exports.comic_detail = asyncHandler(async (req, res, next) => {
   const comic = await Comic.findById(req.params.id)
     .populate("publisher")
     .populate("author")
     .populate("genres")
     .populate("volumes")
-    .exec()
+    .exec();
 
   if (!comic) {
     const err = new Error("Comic not found");
@@ -59,4 +59,24 @@ exports.comic_detail = asyncHandler(async(req, res, next) => {
     title: comic.title,
     comic: comic,
   });
-})
+});
+
+exports.comic_create_get = asyncHandler(async (req, res, next) => {
+  const [authors, genres, publishers] = await Promise.all([
+    Author.find().sort({ first_name: 1 }).exec(),
+    Genre.find().sort({ name: 1 }).exec(),
+    Publisher.find().sort({ name: 1 }).exec(),
+  ]);
+
+  res.render("comic_form", {
+    title: "Add a new comic",
+    comic: undefined,
+    author_list: authors,
+    genre_list: genres,
+    publisher_list: publishers,
+    selected_author: undefined,
+    selected_genre: undefined,
+    selected_publisher: undefined,
+    errors: [],
+  });
+});
