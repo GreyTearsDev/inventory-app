@@ -22,6 +22,8 @@ router.get("/author/:id", author_controller.author_detail);
 router.get("/authors", author_controller.author_list);
 
 // == GENRE controller == //
+router.get("/genre/create", genre_controller.genre_create_get);
+// router.post("/genre/create", genre_controller.genre_create_post);
 router.get("/genre/:id", genre_controller.genre_detail);
 router.get("/genres", genre_controller.genre_list);
 
@@ -32,7 +34,4 @@ router.get("/publishers", publisher_controller.publisher_list);
 // == VOLUME controller == //
 router.get("/volume/:id", volume_controller.volume_detail);
 
-
 module.exports = router;
-
-
