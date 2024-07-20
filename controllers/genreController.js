@@ -1,6 +1,5 @@
 const Genre = require("../models/genre");
 const Comic = require("../models/comic");
-const { ObjectId } = require("mongoose").Types;
 const asyncHandler = require("express-async-handler");
 
 // List all currently available genres
@@ -29,3 +28,13 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
     comic_list: comicsOfGenre,
   });
 });
+
+exports.genre_create_get = (req, res, next) => {
+  res.render("genre_form", {
+    title: "Create new genre",
+    genre: undefined,
+    errors: [],
+  });
+};
+
+// exports.genre_create_post = [asyncHandler(async (req, res, next) => {})];
