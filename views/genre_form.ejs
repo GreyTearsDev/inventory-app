@@ -4,16 +4,18 @@
   <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
     <label for="name">* Name: </label>
-    <input id="name" class="form-control" type="text" maxLength=20 placeholder="Shounen, Mecha, etc." name="name" required value="<%= genre ? genre.name : '' %>" />
+    <input id="name" 
+      class="form-control" 
+      type="text" 
+      maxLength=20 
+      placeholder="Shounen, Mecha, etc." 
+      name="name" 
+      required 
+      value="<%= genre ? genre.name : '' %>" 
+    />
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
 
-  <% if (errors) { %>
-    <ul>
-      <% errors.forEach(error => { %>
-        <li>⚠️ <%= error.msg %></li>
-      <% }) %>
-    </ul>
-  <% } %>
+<%- include("./partials/form_error_messages_display")%>
 </form>
 
