@@ -8,8 +8,8 @@ const ComicSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
   release_date: { type: Date, default: Date.now },
   publisher: { type: Schema.Types.ObjectId, ref: "Publisher", required: true },
-  genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
-  volumes:[{type: Schema.Types.ObjectId, ref: "Volume"}]
+  genres: [{ type: Schema.Types.ObjectId, ref: "Genre", required: true }],
+  volumes: [{ type: Schema.Types.ObjectId, ref: "Volume" }],
 });
 
 ComicSchema.virtual("date_formatted").get(function () {
