@@ -3,6 +3,7 @@ const Author = require("../models/author");
 const Publisher = require("../models/publisher");
 const Genre = require("../models/genre");
 const Volume = require("../models/volume");
+const { body, validationResult } = require("express-validator");
 
 const asyncHandler = require("express-async-handler");
 
@@ -116,4 +117,17 @@ exports.comic_create_post = [
     .isLength({ min: 1 })
     .escape(),
   body("genre.*").escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const comic = new Comic({
+      title: req.body.title,
+      summary: req.body.summary,
+      author: req.body.author,
+      publisher: req.body.publisher,
+      genre: req.body.genre,
+      release_date: req.body.release_date,
+    });
+  }),
 ];
