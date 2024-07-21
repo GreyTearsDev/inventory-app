@@ -163,7 +163,7 @@ exports.comic_create_post = [
 ];
 
 exports.comic_volume_create_get = (req, res, next) => {
-  res.render("volume_create", {
+  res.render("volume_form", {
     title: "Create new volume",
     volume_number: undefined,
     volume_title: undefined,
@@ -174,18 +174,14 @@ exports.comic_volume_create_get = (req, res, next) => {
 };
 
 exports.comic_volume_create_post = [
-  body("volume_volume")
-    .isNumeric()
-    .withMessage("Volume number must be a numeric value")
-    .isInt({ min: 0, max: 1000000 })
-    .withMessage(
-      "Volume number must be between at least 0 and not greater than 1.000.000",
-    )
+  body("volume_number", "Volume number field must be filled")
+    .trim()
+    .notEmpty()
     .escape(),
 
   body("volume_title")
     .trim()
-    .isLength({ min: 1 })
+    .notEmpty()
     .withMessage("Title field must be filled")
     .isLength({ max: 100 })
     .withMessage("This title is too long")
@@ -193,7 +189,7 @@ exports.comic_volume_create_post = [
 
   body("volume_description")
     .trim()
-    .isLength({ min: 1 })
+    .notEmpty()
     .withMessage("Description field must be filled")
     .isLength({ max: 200 })
     .withMessage("This description is too long")
