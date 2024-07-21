@@ -58,6 +58,16 @@ exports.author_create_post = [
         errors: errors.array(),
       });
       return;
+    } else {
+      const existingAuthor = await Author.findOne({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        headquarters: req.body.headquarters,
+      });
+
+      if (existingAuthor) {
+        res.redirect(existingAuthor.url);
+      }
     }
   }),
 ];
