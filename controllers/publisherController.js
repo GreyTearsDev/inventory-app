@@ -98,3 +98,54 @@ exports.publisher_update_get = asyncHandler(async (req, res, next) => {
     errors: [],
   });
 });
+
+exports.publisher_update_post = [
+  body("name", "Publisher's name field must be filled")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("headquarters").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const publisher = new Publisher({
+      name: req.body.name,
+      headquarters: req.body.headquarters,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty) {
+      res.render("publisher_form", {
+        title: "Update publisher info",
+        publisher: publisher,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    // check if publisher already exists
+    const existingPublishers = await Publisher.find({ name: req.body.name })
+      .collation({ locale: "en", strength: 2 })
+      .exec();
+
+    if (existingPublishers.length > 0) {
+      existingPublishers.forEach((publisher) => {
+        if (publisher.headquarters === req.body.headquarters) {
+          const error = {
+            msg: "A publisher with the same name and headquarters already exists",
+          };
+
+          res.render("publisher_form", {
+            title: "Update publisher info",
+            publisher: publisher,
+            errors: [error],
+          });
+        }
+      });
+    } else {
+      console.log("here");
+      await Publisher.findByIdAndUpdate(req.params.id, publisher, {});
+      res.redirect(publisher.url);
+    }
+  }),
+];
