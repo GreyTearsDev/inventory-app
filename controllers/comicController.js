@@ -129,5 +129,32 @@ exports.comic_create_post = [
       genre: req.body.genre,
       release_date: req.body.release_date,
     });
+
+    if (!errors.isEmpty()) {
+      const [authors, genres, publishers] = await Promise.all([
+        Author.find().sort({ first_name: 1 }).exec(),
+        Genre.find().sort({ name: 1 }).exec(),
+        Publisher.find().sort({ name: 1 }).exec(),
+      ]);
+
+      for (const gen of genres) {
+        if (req.body.genre.includes(gen._id.toString())) {
+          gen.checked = "true";
+        }
+      }
+
+      res.render("comic_form", {
+        title: "Add a new comic",
+        comic: undefined,
+        author_list: authors,
+        genre_list: genres,
+        publisher_list: publishers,
+        selected_author_id: req.body.author || undefined,
+        selected_publisher_id: req.body.publisher || undefined,
+        errors: errors.array(),
+      });
+
+      return;
+    }
   }),
 ];
