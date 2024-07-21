@@ -79,3 +79,13 @@ exports.comic_create_get = asyncHandler(async (req, res, next) => {
     errors: [],
   });
 });
+
+exports.comic_create_post = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.genre)) {
+      req.body.genre =
+        typeof req.body.genre === "undefined" ? [] : [req.body.genre];
+    }
+    next();
+  },
+];
