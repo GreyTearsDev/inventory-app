@@ -6,7 +6,7 @@ const VolumeSchema = new Schema({
   volume_number: { type: Number, min: 0, required: true },
   title: { type: String, maxLength: 100, required: true },
   description: { type: String, maxLength: 200, required: true },
-  release_date: { type: Date, default: Date.now },
+  release_date: { type: Date, default: Date.now, required: true },
 });
 
 VolumeSchema.virtual("date_formatted").get(function () {
