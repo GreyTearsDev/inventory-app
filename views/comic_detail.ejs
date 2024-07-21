@@ -21,9 +21,9 @@
         </p>
       <% }) %>
     </div>
-    <p><a href="/catalog/volume/create">Add a new volume</a></p>
+    <p><a href="<%= comic.url %>/volume/create">Add a new volume</a></p>
   <% } else { %>
     <p>There are no volumes yet!</p>
-    <p><a href="/catalog/volume/create">Add the first volume</a></p>
+    <p><a href="<%= comic.url %>/volume/create">Add the first volume</a></p>
   <% } %>
 </section>
