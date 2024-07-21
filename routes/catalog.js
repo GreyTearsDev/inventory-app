@@ -8,18 +8,18 @@ const genre_controller = require("../controllers/genreController");
 const publisher_controller = require("../controllers/publisherController");
 const volume_controller = require("../controllers/volumeController");
 
-// == COMIC controller == //
-
 // Get home page
 router.get("/", comic_controller.index);
 
-// Display list of all comics
+// == COMIC controller == //
 router.get("/comic/create", comic_controller.comic_create_get);
+router.post("/comic/create", comic_controller.comic_create_post);
 router.get("/comic/:id", comic_controller.comic_detail);
 router.get("/comics", comic_controller.comic_list);
 
 // == AUTHOR controller == //
 router.get("/author/create", author_controller.author_create_get);
+router.post("/author/create", author_controller.author_create_post);
 router.get("/author/:id", author_controller.author_detail);
 router.get("/authors", author_controller.author_list);
 
