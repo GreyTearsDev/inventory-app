@@ -50,5 +50,14 @@ exports.author_create_post = [
       last_name: req.body.last_name,
       headquarters: req.body.headquarters,
     });
+
+    if (!errors.isEmpty) {
+      res.render("author_form", {
+        title: "Add a new author",
+        author: undefined,
+        errors: errors.array(),
+      });
+      return;
+    }
   }),
 ];
