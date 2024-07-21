@@ -88,14 +88,14 @@ async function comicCreate(
   // Create two volumes for each comic
   const vol1 = {
     volume_number: 1,
-    title: `Volume 1 - ${title} `,
+    title: `${title}`,
     description: `This is the description for ${title}, Volume 1`,
     release_date: new Date(),
   };
 
   const vol2 = {
     volume_number: 2,
-    title: `Volume 2 - ${title} `,
+    title: `${title}`,
     description: `This is the description for ${title}, Volume 2`,
     release_date: new Date(),
   };
