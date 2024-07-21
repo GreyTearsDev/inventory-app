@@ -222,7 +222,27 @@ exports.comic_volume_create_post = [
       });
       return;
     } else {
-      console.log(req.params.id);
+      // Check if a volume with the same number already exists
+      const comic = await Comic.findById(req.params.id, "volumes")
+        .populate("volumes")
+        .exec();
+
+      const existingVolume = comic.volumes.find(
+        (volume) => volume.volume_number == req.body.volume_number,
+      );
+
+      if (existingVolume) {
+        const error = { msg: "A volume with this number already exists" };
+        res.render("volume_form", {
+          title: "Create a new volume",
+          volume_number: req.body.volume_number || undefined,
+          volume_title: req.body.volume_title || undefined,
+          volume_description: req.body.volume_description || undefined,
+          volume_release_date: req.body.volume_release_date || undefined,
+          errors: [error],
+        });
+        return;
+      }
     }
   }),
 ];
