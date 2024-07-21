@@ -242,6 +242,13 @@ exports.comic_volume_create_post = [
           errors: [error],
         });
         return;
+      } else {
+        await volume.save();
+        await Comic.updateOne(
+          { _id: comic._id },
+          { $push: { volumes: volume } },
+        );
+        res.redirect(comic.url);
       }
     }
   }),
