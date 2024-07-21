@@ -17,7 +17,8 @@
       <% comic.volumes.forEach((volume, index) => { %>
         <p>
           <a href="<%= volume.url %>">
-          <%= volume.title%></a>
+            Volume <%= volume.volume_number%> - <%= volume.title%>
+          </a>
         </p>
       <% }) %>
     </div>
