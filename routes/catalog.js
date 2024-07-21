@@ -11,7 +11,18 @@ const volume_controller = require("../controllers/volumeController");
 // Get home page
 router.get("/", comic_controller.index);
 
+// == VOLUME controller == //
+router.get("/volume/:id", volume_controller.volume_detail);
+
 // == COMIC controller == //
+router.get(
+  "/comic/:id/volume/create",
+  comic_controller.comic_volume_create_get,
+);
+router.post(
+  "/comic/:id/volume/create",
+  comic_controller.comic_volume_create_post,
+);
 router.get("/comic/create", comic_controller.comic_create_get);
 router.post("/comic/create", comic_controller.comic_create_post);
 router.get("/comic/:id", comic_controller.comic_detail);
@@ -34,9 +45,5 @@ router.get("/publisher/create", publisher_controller.publisher_create_get);
 router.post("/publisher/create", publisher_controller.publisher_create_post);
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 router.get("/publishers", publisher_controller.publisher_list);
-
-// == VOLUME controller == //
-router.get("/volume/create", volume_controller.volume_create_get);
-router.get("/volume/:id", volume_controller.volume_detail);
 
 module.exports = router;
