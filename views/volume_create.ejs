@@ -5,7 +5,23 @@
   <%- include("./partials/required_form_fields_warning") %>
   <div class="form-group">
     <label for="volume_number">* Volume number</label>
-    <input id="volume_number" type="number" name="volume_number" min="0" required/>
+    <input 
+      id="volume_number" 
+      type="number" 
+      name="volume_number" 
+      min="0" 
+      required
+    />
+
+    <label for="volume_title">* Title</label>
+    <input 
+      id="volume_title" 
+      type="text" 
+      name="volume_title" 
+      maxLength="100"
+      placeholder="e.g.: Naruto, Bakuman, etc." 
+      required
+    />
   </div>
   <%- include("./partials/form_error_messages_display")%>
 </form>
