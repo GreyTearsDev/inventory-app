@@ -59,5 +59,12 @@ exports.volume_creat_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+
+    const volume = new Volume({
+      volume_number: req.body.volume_number,
+      title: req.body.volume_title,
+      description: req.body.volume_description,
+      release_date: req.body.volume_release_date,
+    });
   }),
 ];
