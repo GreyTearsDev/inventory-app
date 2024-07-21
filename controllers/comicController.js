@@ -88,4 +88,32 @@ exports.comic_create_post = [
     }
     next();
   },
+
+  body("title")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Title field must be filled")
+    .isLength({ max: 100 })
+    .withMessage("This title is too long")
+    .escape(),
+  body("summary")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Summary field must be filled")
+    .isLength({ max: 200 })
+    .withMessage("This summary is too long")
+    .escape(),
+  body("release_date", "Invalid date")
+    .optional({ value: "falsy" })
+    .isISO8601()
+    .toDate(),
+  body("author", "You must choose an author for the comic")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("publisher", "You must choose an publisher for the comic")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("genre.*").escape(),
 ];
