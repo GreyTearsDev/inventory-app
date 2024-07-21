@@ -66,5 +66,17 @@ exports.volume_creat_post = [
       description: req.body.volume_description,
       release_date: req.body.volume_release_date,
     });
+
+    if (!errors.isEmpty) {
+      res.render("volume_form", {
+        title: "Create a new volume",
+        volume_number: req.body.volume_number || undefined,
+        volume_title: req.body.volume_title || undefined,
+        volume_description: req.body.volume_description || undefined,
+        volume_release_date: req.body.volume_release_date || undefined,
+        errors: errors.array(),
+      });
+      return;
+    }
   }),
 ];
