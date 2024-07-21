@@ -1,6 +1,7 @@
 const Author = require("../models/author");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 // Display list of all authors
 exports.author_list = asyncHandler(async (req, res, next) => {
@@ -35,3 +36,19 @@ exports.author_create_get = (req, res, next) => {
     errors: [],
   });
 };
+
+exports.author_create_post = [
+  body("first_name").trim().escape(),
+  body("last_name").trim().escape(),
+  body("biography").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const author = new Author({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      headquarters: req.body.headquarters,
+    });
+  }),
+];
