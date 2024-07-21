@@ -43,6 +43,11 @@ router.get("/genres", genre_controller.genre_list);
 // == PUBLISHER controller == //
 router.get("/publisher/create", publisher_controller.publisher_create_get);
 router.post("/publisher/create", publisher_controller.publisher_create_post);
+router.get("/publisher/:id/update", publisher_controller.publisher_update_get);
+router.post(
+  "/publisher/:id/update",
+  publisher_controller.publisher_update_post,
+);
 router.get("/publisher/:id", publisher_controller.publisher_detail);
 router.get("/publishers", publisher_controller.publisher_list);
 
