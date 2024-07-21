@@ -6,7 +6,7 @@ const ComicSchema = new Schema({
   title: { type: String, required: true, maxLength: 100 },
   summary: { type: String, required: true, maxLength: 200 },
   author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
-  release_date: { type: Date, default: Date.now },
+  release_date: { type: Date, default: Date.now, required: true },
   publisher: { type: Schema.Types.ObjectId, ref: "Publisher", required: true },
   genres: [{ type: Schema.Types.ObjectId, ref: "Genre", required: true }],
   volumes: [{ type: Schema.Types.ObjectId, ref: "Volume" }],
