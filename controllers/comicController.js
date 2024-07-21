@@ -211,7 +211,7 @@ exports.comic_volume_create_post = [
       release_date: req.body.volume_release_date,
     });
 
-    if (!errors.isEmpty) {
+    if (!errors.isEmpty()) {
       res.render("volume_form", {
         title: "Create a new volume",
         volume_number: req.body.volume_number || undefined,
