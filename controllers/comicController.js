@@ -155,6 +155,9 @@ exports.comic_create_post = [
       });
 
       return;
+    } else {
+      await comic.save();
+      res.redirect(comic.url);
     }
   }),
 ];
