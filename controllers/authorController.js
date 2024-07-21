@@ -16,7 +16,7 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
   ]);
 
   if (!author) {
-    const err = new Erro("Author not found");
+    const err = new Error("Author not found");
     err.status = 404;
     return next(err);
   }
