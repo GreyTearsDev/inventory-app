@@ -74,9 +74,8 @@ exports.comic_create_get = asyncHandler(async (req, res, next) => {
     author_list: authors,
     genre_list: genres,
     publisher_list: publishers,
-    selected_author: undefined,
-    selected_genre: undefined,
-    selected_publisher: undefined,
+    selected_author_id: undefined,
+    selected_publisher_id: undefined,
     errors: [],
   });
 });
