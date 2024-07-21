@@ -24,6 +24,14 @@
       placeholder="e.g.: Naruto, Bakuman, etc." 
       required
     />
+
+    <label for="volume_description">* Description</label>
+    <textarea
+      id="volume_description" 
+      name="volume_description" 
+      maxLength="200"
+      required
+    ><%= volume_description ? volume_description : ''%></textarea>
   </div>
   <%- include("./partials/form_error_messages_display")%>
 </form>
