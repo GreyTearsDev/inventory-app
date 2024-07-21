@@ -64,17 +64,17 @@ exports.publisher_create_post = [
       return;
     } else {
       // check if publisher already exists
-      const publisherWithSameNameExists = await Publisher.findOne({
+      const existingPublisher = await Publisher.findOne({
         name: req.body.name,
       })
         .collation({ locale: "en", strength: 2 })
         .exec();
 
       if (
-        publisherWithSameNameExists &&
-        publisherWithSameNameExists.headquarters === req.body.headquarters
+        existingPublisher &&
+        existingPublisher.headquarters === req.body.headquarters
       ) {
-        res.redirect(publisherWithSameNameExists.url);
+        res.redirect(existingPublisher.url);
       } else {
         await publisher.save();
         res.redirect(publisher.url);
