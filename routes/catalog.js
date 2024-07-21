@@ -36,6 +36,7 @@ router.get("/publisher/:id", publisher_controller.publisher_detail);
 router.get("/publishers", publisher_controller.publisher_list);
 
 // == VOLUME controller == //
+router.get("/volume/create", volume_controller.volume_create_get);
 router.get("/volume/:id", volume_controller.volume_detail);
 
 module.exports = router;
