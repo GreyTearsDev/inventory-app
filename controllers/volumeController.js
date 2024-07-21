@@ -43,7 +43,7 @@ exports.volume_creat_post = [
     .withMessage("This title is too long")
     .escape(),
 
-  bosy("volume_description")
+  body("volume_description")
     .trim()
     .isLength({ min: 1 })
     .withMessage("Description field must be filled")
@@ -56,4 +56,8 @@ exports.volume_creat_post = [
     .isISO8601()
     .toDate()
     .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+  }),
 ];
