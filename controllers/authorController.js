@@ -67,6 +67,9 @@ exports.author_create_post = [
 
       if (existingAuthor) {
         res.redirect(existingAuthor.url);
+      } else {
+        await author.save();
+        res.redirect(author.url);
       }
     }
   }),
