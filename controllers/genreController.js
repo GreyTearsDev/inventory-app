@@ -51,7 +51,7 @@ exports.genre_create_post = [
       name: req.body.name,
     });
 
-    if (!errors.isEmpty) {
+    if (!errors.isEmpty()) {
       res.render("genre_form", {
         title: "Create new genre",
         genre: undefined,

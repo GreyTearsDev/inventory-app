@@ -51,7 +51,7 @@ exports.author_create_post = [
       headquarters: req.body.headquarters,
     });
 
-    if (!errors.isEmpty) {
+    if (!errors.isEmpty()) {
       res.render("author_form", {
         title: "Add a new author",
         author: undefined,
