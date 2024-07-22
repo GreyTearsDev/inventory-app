@@ -49,7 +49,6 @@ exports.publisher_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
     const publisher = new Publisher({
       name: req.body.name,
       headquarters: req.body.headquarters,
@@ -62,24 +61,23 @@ exports.publisher_create_post = [
         errors: errors.array(),
       });
       return;
-    } else {
-      // check if publisher already exists
-      const existingPublisher = await Publisher.findOne({
-        name: req.body.name,
-      })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-
-      if (
-        existingPublisher &&
-        existingPublisher.headquarters === req.body.headquarters
-      ) {
-        res.redirect(existingPublisher.url);
-      } else {
-        await publisher.save();
-        res.redirect(publisher.url);
-      }
     }
+    // check if publisher already exists
+    const existingPublisher = await Publisher.findOne({
+      name: req.body.name,
+    })
+      .collation({ locale: "en", strength: 2 })
+      .exec();
+
+    if (
+      existingPublisher &&
+      existingPublisher.headquarters === req.body.headquarters
+    ) {
+      res.redirect(existingPublisher.url);
+      return;
+    }
+    await publisher.save();
+    res.redirect(publisher.url);
   }),
 ];
 
