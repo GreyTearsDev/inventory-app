@@ -25,6 +25,7 @@ router.post(
 );
 router.get("/comic/create", comic_controller.comic_create_get);
 router.post("/comic/create", comic_controller.comic_create_post);
+router.get("/comic/:id/update", comic_controller.comic_update_get);
 router.get("/comic/:id", comic_controller.comic_detail);
 router.get("/comics", comic_controller.comic_list);
 
