@@ -124,26 +124,16 @@ exports.publisher_update_post = [
     }
 
     // check if publisher already exists
-    const existingPublishers = await Publisher.find({ name: req.body.name })
+    const existingPublisher = await Publisher.findOne({
+      name: req.body.name,
+      headquarters: req.body.headquarters,
+    })
       .collation({ locale: "en", strength: 2 })
       .exec();
 
-    if (existingPublishers.length > 0) {
-      existingPublishers.forEach((publisher) => {
-        if (publisher.headquarters === req.body.headquarters) {
-          const error = {
-            msg: "A publisher with the same name and headquarters already exists",
-          };
-
-          res.render("publisher_form", {
-            title: "Update publisher info",
-            publisher: publisher,
-            errors: [error],
-          });
-        }
-      });
+    if (existingPublisher) {
+      res.redirect(existingPublisher.url);
     } else {
-      console.log("here");
       await Publisher.findByIdAndUpdate(req.params.id, publisher, {});
       res.redirect(publisher.url);
     }
