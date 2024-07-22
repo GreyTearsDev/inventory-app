@@ -1,7 +1,7 @@
 <section class="container">
-  <h2><%= title %></h2>
-  <p><strong>Author:</strong> <a href="<%= comic.author.url %>"><%= comic.author.name %></a></p>
-  <p><strong>Publisher:</strong> <a href="<%= comic.publisher.url %>"><%= comic.publisher.name %></a></p>
+  <h1><strong>Title: </strong><%= comic.title %></h1>
+  <p><strong>Author: </strong><a href="<%= comic.author.url %>"><%= comic.author.name %></a></p>
+  <p><strong>Publisher: </strong><a href="<%= comic.publisher.url %>"><%= comic.publisher.name %></a></p>
   <p><strong>Release date:</strong> <%= comic.date_formatted %><p>
 
   <ul>
