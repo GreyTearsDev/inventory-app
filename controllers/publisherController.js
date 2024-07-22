@@ -65,14 +65,12 @@ exports.publisher_create_post = [
     // check if publisher already exists
     const existingPublisher = await Publisher.findOne({
       name: req.body.name,
+      headquarters: req.body.headquarters,
     })
       .collation({ locale: "en", strength: 2 })
       .exec();
 
-    if (
-      existingPublisher &&
-      existingPublisher.headquarters === req.body.headquarters
-    ) {
+    if (existingPublisher) {
       res.redirect(existingPublisher.url);
       return;
     }
