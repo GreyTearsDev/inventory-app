@@ -59,7 +59,7 @@ exports.author_create_post = [
     const author = new Author({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      headquarters: req.body.headquarters,
+      biography: req.body.biography,
     });
 
     if (!errors.isEmpty()) {
@@ -74,7 +74,7 @@ exports.author_create_post = [
     const existingAuthor = await Author.findOne({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      headquarters: req.body.headquarters,
+      biography: req.body.biography,
     });
 
     if (existingAuthor) {
