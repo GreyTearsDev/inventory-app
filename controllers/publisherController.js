@@ -128,7 +128,7 @@ exports.publisher_update_post = [
       name: req.body.name,
       headquarters: req.body.headquarters,
     })
-      .collation({ locale: "en", strength: 2 })
+      .collation({ locale: "en", strength: 3 })
       .exec();
 
     if (existingPublisher) {

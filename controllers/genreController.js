@@ -114,7 +114,7 @@ exports.genre_update_post = [
     } else {
       // check if genre with the same name already exists
       const genreExists = await Genre.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
+        .collation({ locale: "en", strength: 3 })
         .exec();
 
       if (genreExists) {
