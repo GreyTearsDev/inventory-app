@@ -106,3 +106,57 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
     errors: [],
   });
 });
+
+exports.author_update_post = [
+  body("first_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a First Name")
+    .escape(),
+  body("last_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a Last Name")
+    .escape(),
+  body("biography")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a Biography")
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const author = new Author({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      biography: req.body.biography,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const comicsByAuthor = await Author.findById(req.params.id).exec();
+
+      res.render("author_form", {
+        title: "Update author's info",
+        author: author,
+        comic_list: comicsByAuthor,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const existingAuthor = await Author.findOne({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      biography: req.body.biography,
+    }).collation({ locale: "en", strength: 3 });
+
+    if (existingAuthor) {
+      res.redirect(existingAuthor.url);
+      return;
+    }
+
+    await Author.findByIdAndUpdate(req.params.id, author);
+    res.redirect(author.url);
+  }),
+];
