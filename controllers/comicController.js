@@ -4,6 +4,7 @@ const Publisher = require("../models/publisher");
 const Genre = require("../models/genre");
 const Volume = require("../models/volume");
 const { body, validationResult } = require("express-validator");
+const { ObjectId } = require("mongoose").Types;
 
 const asyncHandler = require("express-async-handler");
 
@@ -125,7 +126,7 @@ exports.comic_create_post = [
       summary: req.body.summary,
       author: req.body.author,
       publisher: req.body.publisher,
-      genre: req.body.genre,
+      genres: req.body.genres.map((id) => new ObjectId(id)),
       release_date: req.body.release_date,
     });
 
@@ -174,6 +175,12 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
+  for (const gen of genres) {
+    if (comic.genres.includes(gen._id.toString())) {
+      gen.checked = "true";
+    }
+  }
+
   res.render("comic_form", {
     title: "Update the comic's info",
     comic: comic,
@@ -186,6 +193,102 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
   });
 });
 
+exports.comic_update_post = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.genres)) {
+      req.body.genres =
+        typeof req.body.genres === "undefined" ? [] : [req.body.genres];
+    }
+    next();
+  },
+
+  body("title")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Title field must be filled")
+    .isLength({ max: 100 })
+    .withMessage("This title is too long")
+    .escape(),
+  body("summary")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Summary field must be filled")
+    .isLength({ max: 200 })
+    .withMessage("This summary is too long")
+    .escape(),
+  body("release_date", "Invalid date")
+    .optional({ value: "falsy" })
+    .isISO8601()
+    .toDate(),
+  body("author", "You must choose an author for the comic")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("publisher", "You must choose an publisher for the comic")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("genre.*").escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    const comic = new Comic({
+      title: req.body.title,
+      summary: req.body.summary,
+      author: req.body.author,
+      publisher: req.body.publisher,
+      genres: req.body.genres.map((id) => new ObjectId(id)),
+      release_date: req.body.release_date,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const [comic, authors, genres, publishers] = await Promise.all([
+        Comic.findById(req.params.id).exec(),
+        Author.find().sort({ first_name: 1 }).exec(),
+        Genre.find().sort({ name: 1 }).exec(),
+        Publisher.find().sort({ name: 1 }).exec(),
+      ]);
+
+      for (const gen of genres) {
+        if (req.body.genres.includes(gen._id.toString())) {
+          gen.checked = "true";
+        }
+      }
+
+      res.render("comic_form", {
+        title: "Update the comic's info",
+        comic: comic,
+        author_list: authors,
+        genre_list: genres,
+        publisher_list: publishers,
+        selected_author_id: comic.author._id,
+        selected_publisher_id: comic.publisher._id,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const existingComic = await Comic.findOne({
+      title: req.body.title,
+      summary: req.body.summary,
+      author: req.body.author,
+      publisher: req.body.publisher,
+      genres: req.body.genres,
+    });
+    console.log(existingComic);
+
+    if (existingComic) {
+      res.redirect(existingComic.url);
+      return;
+    }
+
+    await Comic.findByIdAndUpdate(req.params.id, comic);
+    res.redirect(comic.url);
+  }),
+];
+
+// == COMIC_VOLUME RELATED FUNCTIONALITY ==//
 exports.comic_volume_create_get = (req, res, next) => {
   res.render("volume_form", {
     title: "Create new volume",
