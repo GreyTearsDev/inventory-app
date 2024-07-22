@@ -38,9 +38,21 @@ exports.author_create_get = (req, res, next) => {
 };
 
 exports.author_create_post = [
-  body("first_name").trim().escape(),
-  body("last_name").trim().escape(),
-  body("biography").trim().escape(),
+  body("first_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a First Name")
+    .escape(),
+  body("last_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a Last Name")
+    .escape(),
+  body("biography")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("You must enter a Biography")
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
