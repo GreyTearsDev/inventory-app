@@ -44,7 +44,6 @@ exports.author_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
     const author = new Author({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
@@ -58,19 +57,20 @@ exports.author_create_post = [
         errors: errors.array(),
       });
       return;
-    } else {
-      const existingAuthor = await Author.findOne({
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        headquarters: req.body.headquarters,
-      });
-
-      if (existingAuthor) {
-        res.redirect(existingAuthor.url);
-      } else {
-        await author.save();
-        res.redirect(author.url);
-      }
     }
+
+    const existingAuthor = await Author.findOne({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      headquarters: req.body.headquarters,
+    });
+
+    if (existingAuthor) {
+      res.redirect(existingAuthor.url);
+      return;
+    }
+
+    await author.save();
+    res.redirect(author.url);
   }),
 ];
