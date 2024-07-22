@@ -4,11 +4,11 @@
   <p><strong>Publisher: </strong><a href="<%= comic.publisher.url %>"><%= comic.publisher.name %></a></p>
   <p><strong>Release date:</strong> <%= comic.date_formatted %><p>
 
-  <ul>
-    <% comic.genres.forEach((genre, index) => { %>
-      <li><%= genre.name %></li>
+  <div>
+    <% comic.genres.forEach((genre) => { %>
+      <div><a href="<%= genre.url %>"><%= genre.name %></a></div>
     <% }) %>
-  </ul>
+  </div>
 
   <p><strong>Summary</strong>: <%= comic.summary %></p>
 
@@ -24,8 +24,7 @@
     </div>
     <p><a href="<%= comic.url %>/volume/create">Add a new volume</a></p>
   <% } else { %>
-    <p>There are no volumes yet!</p>
-    <p><a href="<%= comic.url %>/volume/create">Add the first volume</a></p>
+    <p>There are no volumes yet! <a href="<%= comic.url %>/volume/create">Add the first volume</a></p>
   <% } %>
   <p><a href="<%= comic.url %>/update">Update the comic's info</a></p>
 </section>
