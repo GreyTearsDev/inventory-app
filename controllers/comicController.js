@@ -160,6 +160,32 @@ exports.comic_create_post = [
   }),
 ];
 
+exports.comic_update_get = asyncHandler(async (req, res, next) => {
+  const [comic, authors, genres, publishers] = await Promise.all([
+    Comic.findById(req.params.id).exec(),
+    Author.find().sort({ first_name: 1 }).exec(),
+    Genre.find().sort({ name: 1 }).exec(),
+    Publisher.find().sort({ name: 1 }).exec(),
+  ]);
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("comic_form", {
+    title: "Update the comic's info",
+    comic: comic,
+    author_list: authors,
+    genre_list: genres,
+    publisher_list: publishers,
+    selected_author_id: comic.author._id,
+    selected_publisher_id: comic.publisher._id,
+    errors: [],
+  });
+});
+
 exports.comic_volume_create_get = (req, res, next) => {
   res.render("volume_form", {
     title: "Create new volume",
