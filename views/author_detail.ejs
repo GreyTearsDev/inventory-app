@@ -3,10 +3,15 @@
   <p><strong>Name:</strong> <%= author.name%><p>
   <p><strong>Biography:</strong> <%= author.biography %></p>
 
-  <p> Work by <%= author.name %></p>
-  <ul>
-    <% comic_list.forEach((comic, index) => { %>
-      <li><a href="<%= comic.url %>"><%= comic.title %></a></li>
-    <% }) %>
-  </ul>
+  <% if (comic_list.length > 0) { %>
+    <p> Work by <%= author.name %></p>
+    <ul>
+      <% comic_list.forEach((comic, index) => { %>
+        <li><a href="<%= comic.url %>"><%= comic.title %></a></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p> There are no comics associated with this author yet.</p>
+  <% } %>
+  <p><a href="<%= author.url%>/update">Update author's info</a></p>
 </section>
