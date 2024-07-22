@@ -86,3 +86,23 @@ exports.author_create_post = [
     res.redirect(author.url);
   }),
 ];
+
+exports.author_update_get = asyncHandler(async (req, res, next) => {
+  const [author, comicsByAuthor] = await Promise.all([
+    Author.findById(req.params.id).exec(),
+    Comic.find({ author: req.params.id }, "title").sort({ title: 1 }).exec(),
+  ]);
+
+  if (!author) {
+    const err = new Error("Author not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("author_form", {
+    title: "Update author's info",
+    author: author,
+    comic_list: comicsByAuthor,
+    errors: [],
+  });
+});
