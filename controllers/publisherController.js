@@ -129,9 +129,10 @@ exports.publisher_update_post = [
 
     if (existingPublisher) {
       res.redirect(existingPublisher.url);
-    } else {
-      await Publisher.findByIdAndUpdate(req.params.id, publisher, {});
-      res.redirect(publisher.url);
+      return;
     }
+
+    await Publisher.findByIdAndUpdate(req.params.id, publisher, {});
+    res.redirect(publisher.url);
   }),
 ];
