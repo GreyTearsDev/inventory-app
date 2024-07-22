@@ -32,6 +32,7 @@ router.get("/comics", comic_controller.comic_list);
 router.get("/author/create", author_controller.author_create_get);
 router.post("/author/create", author_controller.author_create_post);
 router.get("/author/:id/update", author_controller.author_update_get);
+router.post("/author/:id/update", author_controller.author_update_post);
 router.get("/author/:id", author_controller.author_detail);
 router.get("/authors", author_controller.author_list);
 
