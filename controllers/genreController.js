@@ -46,7 +46,6 @@ exports.genre_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
     const genre = new Genre({
       name: req.body.name,
     });
@@ -58,19 +57,18 @@ exports.genre_create_post = [
         errors: errors.array(),
       });
       return;
-    } else {
-      // check if genre already exists
-      const genreExists = await Genre.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-
-      if (genreExists) {
-        res.redirect(genreExists.url);
-      } else {
-        await genre.save();
-        res.redirect(genre.url);
-      }
     }
+    // check if genre already exists
+    const genreExists = await Genre.findOne({ name: req.body.name })
+      .collation({ locale: "en", strength: 2 })
+      .exec();
+
+    if (genreExists) {
+      res.redirect(genreExists.url);
+      return;
+    }
+    await genre.save();
+    res.redirect(genre.url);
   }),
 ];
 
@@ -98,7 +96,6 @@ exports.genre_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-
     const genre = new Genre({
       name: req.body.name,
       _id: req.params.id,
@@ -111,18 +108,18 @@ exports.genre_update_post = [
         errors: errors.array(),
       });
       return;
-    } else {
-      // check if genre with the same name already exists
-      const genreExists = await Genre.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 3 })
-        .exec();
-
-      if (genreExists) {
-        res.redirect(genreExists.url);
-      } else {
-        await Genre.findByIdAndUpdate(req.params.id, genre);
-        res.redirect(genre.url);
-      }
     }
+    // check if genre with the same name already exists
+    const genreExists = await Genre.findOne({ name: req.body.name })
+      .collation({ locale: "en", strength: 3 })
+      .exec();
+
+    if (genreExists) {
+      res.redirect(genreExists.url);
+      return;
+    }
+
+    await Genre.findByIdAndUpdate(req.params.id, genre);
+    res.redirect(genre.url);
   }),
 ];
