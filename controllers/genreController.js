@@ -67,10 +67,25 @@ exports.genre_create_post = [
       if (genreExists) {
         res.redirect(genreExists.url);
       } else {
-        console.log("save it");
         await genre.save();
         res.redirect(genre.url);
       }
     }
   }),
 ];
+
+exports.genre_update_get = asyncHandler(async (req, res, next) => {
+  const genre = await Genre.findById(req.params.id).exec();
+
+  if (!genre) {
+    const err = new Error("Genre not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("genre_form", {
+    title: "Update genre info",
+    genre: genre,
+    errors: [],
+  });
+});
