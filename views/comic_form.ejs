@@ -34,6 +34,7 @@
       id="release_date"
       class="form-control"
       name="release_date"
+      value="<%= comic ? comic.release_date : ''%>"
       required
      />
   </div>
@@ -79,14 +80,14 @@
       <p>There aren't any genres in the system yet.</p>
       <p><a href="/genre/create">Add one now!</a></p>      
     <% } else { %>
-      <label for="genre">* Genres: </label>
+      <label for="genres">* Genres: </label>
         
       <% genre_list.forEach(genre => { %>
         <div class="grid">
           <input 
             class="checkbox-input" 
             type="checkbox" 
-            name="genre" 
+            name="genres" 
             id="<%= genre._id %>" 
             value="<%= genre._id %>" 
             <%= genre.checked ? 'checked' : '' %>
