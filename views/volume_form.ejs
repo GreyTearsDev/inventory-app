@@ -12,7 +12,7 @@
       name="volume_number" 
       min="0" 
       required
-      value="<%= volume_number ? volume_number : '0'%>"
+      value="<%= volume ? volume.volume_number : '0'%>"
     />
 
     <label for="volume_title">* Title</label>
@@ -22,7 +22,7 @@
       type="text" 
       name="volume_title" 
       maxLength="100"
-      value="<%= volume_title ? volume_title : ''%>"
+      value="<%= volume ? volume.title : ''%>"
       placeholder="e.g.: Naruto, Bakuman, etc." 
       required
     />
@@ -41,9 +41,11 @@
       id="volume_description" 
       class="form-control" 
       name="volume_description" 
+      cols="24"
+      rows="6"
       maxLength="200"
       required
-    ><%= volume_description ? volume_description : ''%></textarea>
+    ><%= volume ? volume.description : ''%></textarea>
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
   <%- include("./partials/form_error_messages_display")%>
