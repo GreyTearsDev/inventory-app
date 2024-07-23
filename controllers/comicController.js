@@ -290,12 +290,16 @@ exports.comic_update_post = [
 
 // == COMIC_VOLUME RELATED FUNCTIONALITY ==//
 exports.comic_volume_create_get = (req, res, next) => {
+  const volume = new Volume({
+    volume_number: undefined,
+    title: undefined,
+    description: undefined,
+    release_date: undefined,
+  });
+
   res.render("volume_form", {
     title: "Create new volume",
-    volume_number: undefined,
-    volume_title: undefined,
-    volume_description: undefined,
-    volume_release_date: undefined,
+    volume: volume,
     errors: [],
   });
 };
@@ -331,19 +335,16 @@ exports.comic_volume_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const volume = new Volume({
-      volume_number: req.body.volume_number,
-      title: req.body.volume_title,
-      description: req.body.volume_description,
-      release_date: req.body.volume_release_date,
+      volume_number: req.body.volume_number || undefined,
+      title: req.body.volume_title || undefined,
+      description: req.body.volume_description || undefined,
+      release_date: req.body.volume_release_date || undefined,
     });
 
     if (!errors.isEmpty()) {
       res.render("volume_form", {
         title: "Create a new volume",
-        volume_number: req.body.volume_number || undefined,
-        volume_title: req.body.volume_title || undefined,
-        volume_description: req.body.volume_description || undefined,
-        volume_release_date: req.body.volume_release_date || undefined,
+        volume: volume,
         errors: errors.array(),
       });
       return;
@@ -362,10 +363,7 @@ exports.comic_volume_create_post = [
 
       res.render("volume_form", {
         title: "Create a new volume",
-        volume_number: req.body.volume_number || undefined,
-        volume_title: req.body.volume_title || undefined,
-        volume_description: req.body.volume_description || undefined,
-        volume_release_date: req.body.volume_release_date || undefined,
+        volume: volume,
         errors: [error],
       });
       return;
