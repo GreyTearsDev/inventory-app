@@ -39,3 +39,25 @@ exports.volume_delete_get = asyncHandler(async (req, res, next) => {
     volume: volume,
   });
 });
+
+exports.volume_delete_post = asyncHandler(async (req, res, next) => {
+  const volume = await Volume.findById(req.body.volumeid).exec();
+  const associatedComic = await Comic.findOne({ volumes: volume._id }).exec();
+
+  console.log(req.body.volumeid);
+  console.log(associatedComic, volume);
+  if (!volume) {
+    const err = new Error("Volume not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  if (!associatedComic) {
+    const err = new Error("This volume is not associated to any comic");
+    err.status = 404;
+    return next(err);
+  }
+
+  await Volume.findByIdAndDelete(req.body.volumeid);
+  res.redirect(associatedComic.url);
+});
