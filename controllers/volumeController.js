@@ -24,3 +24,18 @@ exports.volume_detail = asyncHandler(async (req, res, next) => {
     comic: associatedComic,
   });
 });
+
+exports.volume_delete_get = asyncHandler(async (req, res, next) => {
+  const volume = await Volume.findById(req.params.id).exec();
+
+  if (!volume) {
+    const err = new Error("Volume not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("volume_delete", {
+    title: "Delete",
+    volume: volume,
+  });
+});
