@@ -12,6 +12,7 @@ const volume_controller = require("../controllers/volumeController");
 router.get("/", comic_controller.index);
 
 // == VOLUME controller == //
+router.get("/volume/:id/delete", volume_controller.volume_delete_get);
 router.get("/volume/:id", volume_controller.volume_detail);
 
 // == COMIC controller == //
