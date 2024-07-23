@@ -1,1 +1,15 @@
+<h1><%= title%>: <%= volume.title%>, volume <%= volume.volume_number%></h1>
 
+<p>Do you really want to delete this volume?</p>
+<form method="POST">
+  <div class="form-group"> 
+    <input 
+      id="volumeid" 
+      class="form-control" 
+      type="hidden" 
+      name="volumeid" 
+      value="<%= volume._id%>" 
+    />
+  </div>
+  <button class="btn btn-primary" type="submit">Delete</button>
+</form>
