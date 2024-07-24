@@ -374,3 +374,34 @@ exports.comic_volume_create_post = [
     res.redirect(comic.url);
   }),
 ];
+
+exports.comic_delete_get = asyncHandler(async (req, res, next) => {
+  const comic = await Comic.findById(req.params.id).exec();
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  console.log(comic);
+
+  res.render("comic_delete", {
+    title: "Delete comic",
+    comic: comic,
+  });
+});
+
+exports.comic_delete_post = asyncHandler(async (req, res, next) => {
+  const comicId = req.body.comicid;
+  const comic = await Comic.findById(comicId).exec();
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  await Comic.findByIdAndDelete(comicId);
+  res.redirect("/catalog/comics");
+});
