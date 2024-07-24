@@ -126,7 +126,6 @@ exports.genre_update_post = [
 
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
-
   const [genre, comicsOfGenre] = await Promise.all([
     Genre.findById(genreId).exec(),
     Comic.find({ genres: { $in: genreId } }).exec(),
@@ -143,4 +142,18 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
     genre: genre,
     comic_list: comicsOfGenre,
   });
+});
+
+exports.genre_delete_post = asyncHandler(async (req, res, next) => {
+  const genreId = req.body.genreid;
+  const genre = await Genre.findById(genreId).exec();
+
+  if (!genre) {
+    const err = new Error("Genre not found");
+    err.stauts = 404;
+    return next(err);
+  }
+
+  await Genre.findByIdAndDelete(genreId);
+  res.redirect("/catalog/genres");
 });
