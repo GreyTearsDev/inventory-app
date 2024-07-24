@@ -180,3 +180,17 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
     comic_list: comicsByAuthor,
   });
 });
+
+exports.author_delete_post = asyncHandler(async (req, res, next) => {
+  const authorId = req.body.authorid;
+  const author = await Author.findById(authorId).exec();
+
+  if (!author) {
+    const err = new Error("Author not found");
+    err.stauts = 404;
+    return next(err);
+  }
+
+  await Author.findByIdAndDelete(authorId);
+  res.redirect("/catalog/authors");
+});
