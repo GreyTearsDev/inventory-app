@@ -136,3 +136,23 @@ exports.publisher_update_post = [
     res.redirect(publisher.url);
   }),
 ];
+
+exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
+  const publisherId = req.params.id;
+  const [publisher, comicsBypublisher] = await Promise.all([
+    Publisher.findById(publisherId).exec(),
+    Comic.find({ publisher: publisherId }).exec(),
+  ]);
+
+  if (!publisher) {
+    const err = new Error("publisher not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("publisher_delete", {
+    title: "Delete publisher",
+    publisher: publisher,
+    comic_list: comicsBypublisher,
+  });
+});
