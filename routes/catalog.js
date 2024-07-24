@@ -58,6 +58,10 @@ router.get("/genres", genre_controller.genre_list);
 router.get("/publisher/create", publisher_controller.publisher_create_get);
 router.post("/publisher/create", publisher_controller.publisher_create_post);
 router.get("/publisher/:id/delete", publisher_controller.publisher_delete_get);
+router.post(
+  "/publisher/:id/delete",
+  publisher_controller.publisher_delete_post,
+);
 router.get("/publisher/:id/update", publisher_controller.publisher_update_get);
 router.post(
   "/publisher/:id/update",
