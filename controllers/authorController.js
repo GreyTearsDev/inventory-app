@@ -160,3 +160,37 @@ exports.author_update_post = [
     res.redirect(author.url);
   }),
 ];
+
+exports.author_delete_get = asyncHandler(async (req, res, next) => {
+  const authorId = req.params.id;
+  const [author, comicsByAuthor] = await Promise.all([
+    Author.findById(authorId).exec(),
+    Comic.find({ author: authorId }).exec(),
+  ]);
+
+  if (!author) {
+    const err = new Error("Author not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("author_delete", {
+    title: "Delete author",
+    author: author,
+    comic_list: comicsByAuthor,
+  });
+});
+
+exports.author_delete_post = asyncHandler(async (req, res, next) => {
+  const authorId = req.body.authorid;
+  const author = await Author.findById(authorId).exec();
+
+  if (!author) {
+    const err = new Error("Author not found");
+    err.stauts = 404;
+    return next(err);
+  }
+
+  await Author.findByIdAndDelete(authorId);
+  res.redirect("/catalog/authors");
+});
