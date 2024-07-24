@@ -1,0 +1,15 @@
+<h1><%= title%>: <%= comic.title%></h1>
+
+<p>Do you really want to delete this comic?</p>
+<form method="POST">
+  <div class="form-group"> 
+    <input 
+      id="comicid" 
+      class="form-control" 
+      type="hidden" 
+      name="comicid" 
+      value="<%= comic._id%>" 
+    />
+  </div>
+  <button class="btn btn-primary" type="submit">Delete</button>
+</form>
