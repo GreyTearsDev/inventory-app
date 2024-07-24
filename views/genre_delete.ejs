@@ -1,9 +1,8 @@
 <h1><%= title%>: <%= genre.name%></h1>
 
 <% if (comic_list.length) { %>
-  <p><strong>Delete the following comics before attempting to delete this genre.</strong></p>
+  <p><strong>Delete the following comics before attempting to delete this genre:</strong></p>
   <div style='margin-left:20px;margin-top:20px'>
-    <h4>Comics of this genre:</h4>
     <dl>
       <% comic_list.forEach(comic => { %>
         <dt><a href="<%= comic.url %>"><%= comic.title%></a></dt>
