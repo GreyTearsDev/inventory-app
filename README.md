@@ -1,4 +1,4 @@
-Try it [Here](inventory-app-production-0c27.up.railway.app)
+Try it [Here](https://inventory-app-production-0c27.up.railway.app/catalog)
 
 <p align="center">
   <a href="https://skillicons.dev">
