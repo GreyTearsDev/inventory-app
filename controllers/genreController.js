@@ -1,4 +1,3 @@
-const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
@@ -128,8 +127,8 @@ exports.genre_update_post = [
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
-    Genre.findById(genreId).exec(),
-    Comic.find({ genres: { $in: genreId } }).exec(),
+    db.getGenreDetails(genreId),
+    db.getComicsOfGenre(genreId),
   ]);
 
   if (!genre) {
@@ -147,7 +146,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
 
 exports.genre_delete_post = asyncHandler(async (req, res, next) => {
   const genreId = req.body.genreid;
-  const genre = await Genre.findById(genreId).exec();
+  const genre = await db.getGenreDetails(genreId);
 
   if (!genre) {
     const err = new Error("Genre not found");
@@ -155,6 +154,6 @@ exports.genre_delete_post = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  await Genre.findByIdAndDelete(genreId);
+  await db.deleteGenre(genreId);
   res.redirect("/catalog/genres");
 });

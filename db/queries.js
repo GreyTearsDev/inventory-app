@@ -83,6 +83,17 @@ exports.updateGenre = async (genreId, newName) => {
   }
 };
 
+exports.deleteGenre = async (genreId) => {
+  console.log("hi");
+  const text = `DELETE FROM genres
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [genreId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about comics of a certain genre
 exports.getComicsOfGenre = async (genreId) => {
   const text = `SELECT 
