@@ -2,10 +2,11 @@ const Genre = require("../models/genre");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const db = require("../db/queries");
 
 // List all currently available genres
 exports.genre_list = asyncHandler(async (req, res, next) => {
-  const allGenres = await Genre.find().sort({ name: 1 }).exec();
+  const allGenres = await db.selectAllGenres();
 
   res.render("genre_list", { title: "Genres", genre_list: allGenres });
 });
