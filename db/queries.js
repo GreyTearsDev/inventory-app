@@ -62,10 +62,30 @@ exports.getGenreDetails = async (genreId) => {
   }
 };
 
-exports.getGenreByName = async (name) => {
+exports.getPublisherDetails = async (publisherId) => {
+  const text = "SELECT * FROM publishers WHERE id = $1";
+  try {
+    const { rows } = await pool.query(text, [publisherId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getGenreByName = async (genreName) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;
   try {
-    const { rows } = await pool.query(text, [name]);
+    const { rows } = await pool.query(text, [genreName]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getPublisherByName = async (publisherName) => {
+  const text = `SELECT * FROM publishers WHERE name ILIKE $1`;
+  try {
+    const { rows } = await pool.query(text, [publisherName]);
     return rows[0];
   } catch (e) {
     console.log(e);
@@ -115,6 +135,18 @@ exports.getComicsOfGenre = async (genreId) => {
   }
 };
 
+exports.getComicsFromPublisher = async (publisherId) => {
+  const text = `SELECT * FROM comics
+                WHERE comics.publisher_id = $1;`;
+
+  try {
+    const { rows } = await pool.query(text, [publisherId]);
+    return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // INSERT INTO queries to add new entries to tables
 exports.saveGenre = async ({ name }) => {
   const text = `
@@ -122,6 +154,18 @@ exports.saveGenre = async ({ name }) => {
   `;
   try {
     await pool.query(text, [name]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.savePublisher = async ({ name, headquarters }) => {
+  console.log(name, headquarters);
+  const text = `
+    INSERT INTO publishers(name, headquarters) VALUES($1, $2);
+  `;
+  try {
+    await pool.query(text, [name, headquarters]);
   } catch (e) {
     console.log(e);
   }

@@ -1,5 +1,3 @@
-const Publisher = require("../models/publisher");
-const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
@@ -15,9 +13,10 @@ exports.publisher_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.publisher_detail = asyncHandler(async (req, res, next) => {
+  const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    Publisher.findById(req.params.id).exec(),
-    Comic.find({ publisher: req.params.id }, "title").sort({ title: 1 }).exec(),
+    db.getPublisherDetails(publisherId),
+    db.getComicsFromPublisher(publisherId),
   ]);
 
   if (!publisher) {
@@ -50,10 +49,12 @@ exports.publisher_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const publisher = new Publisher({
-      name: req.body.name,
-      headquarters: req.body.headquarters,
-    });
+    const publisherName = req.body.name;
+    const publisherHeadquarters = req.body.headquarters;
+    const publisher = {
+      name: publisherName,
+      headquarters: publisherHeadquarters,
+    };
 
     if (!errors.isEmpty) {
       res.render("publisher_form", {
@@ -64,19 +65,15 @@ exports.publisher_create_post = [
       return;
     }
     // check if publisher already exists
-    const existingPublisher = await Publisher.findOne({
-      name: req.body.name,
-      headquarters: req.body.headquarters,
-    })
-      .collation({ locale: "en", strength: 2 })
-      .exec();
+    const existingPublisher = await db.getPublisherByName(publisherName);
 
     if (existingPublisher) {
       res.redirect(existingPublisher.url);
       return;
     }
-    await publisher.save();
-    res.redirect(publisher.url);
+    await db.savePublisher(publisher);
+    const createdPublisher = await db.getPublisherByName(publisherName);
+    res.redirect(createdPublisher.url);
   }),
 ];
 
