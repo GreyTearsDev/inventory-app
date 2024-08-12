@@ -6,7 +6,7 @@ const db = require("../db/queries");
 
 // List all currently available genres
 exports.genre_list = asyncHandler(async (req, res, next) => {
-  const allGenres = await db.selectAllGenres();
+  const allGenres = await db.getAllGenres();
 
   res.render("genre_list", { title: "Genres", genre_list: allGenres });
 });
@@ -14,8 +14,8 @@ exports.genre_list = asyncHandler(async (req, res, next) => {
 exports.genre_detail = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
-    db.selectGenreDetails(genreId),
-    db.selectComicsOfGenre(genreId),
+    db.getGenreDetails(genreId),
+    db.getComicsOfGenre(genreId),
   ]);
 
   if (!genre) {

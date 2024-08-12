@@ -1,7 +1,7 @@
 const pool = require("./index");
 
 // SELECT query for getting ALL entries in a table
-exports.selectAllGenres = async () => {
+exports.getAllGenres = async () => {
   try {
     const { rows } = await pool.query(`SELECT * FROM genres ORDER BY name`);
     return rows;
@@ -10,7 +10,7 @@ exports.selectAllGenres = async () => {
   }
 };
 
-exports.selectAllPublishers = async () => {
+exports.getAllPublishers = async () => {
   try {
     const { rows } = await pool.query(`SELECT * FROM publishers ORDER BY name`);
     return rows;
@@ -19,7 +19,7 @@ exports.selectAllPublishers = async () => {
   }
 };
 
-exports.selectAllAuthors = async () => {
+exports.getAllAuthors = async () => {
   try {
     const { rows } = await pool.query(
       `SELECT * FROM authors ORDER BY first_name`,
@@ -30,7 +30,7 @@ exports.selectAllAuthors = async () => {
   }
 };
 
-exports.selectAllComics = async () => {
+exports.getAllComics = async () => {
   try {
     const { rows } = await pool.query(`SELECT * FROM comics ORDER BY title`);
     return rows;
@@ -39,7 +39,7 @@ exports.selectAllComics = async () => {
   }
 };
 
-exports.selectAllVolumes = async () => {
+exports.getAllVolumes = async () => {
   try {
     const { rows } = await pool.query(
       `SELECT * FROM volumes ORDER BY volume_number`,
@@ -51,7 +51,7 @@ exports.selectAllVolumes = async () => {
 };
 
 // SELECT query for getting data about a specific entry in a table
-exports.selectGenreDetails = async (genreId) => {
+exports.getGenreDetails = async (genreId) => {
   const text = "SELECT * FROM genres WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [genreId]);
@@ -62,7 +62,7 @@ exports.selectGenreDetails = async (genreId) => {
 };
 
 // SELECT query for getting data about comics of a certain genre
-exports.selectComicsOfGenre = async (genreId) => {
+exports.getComicsOfGenre = async (genreId) => {
   const text = `SELECT 
                   comics.id, 
                   comics.title,
