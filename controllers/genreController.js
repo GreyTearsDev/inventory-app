@@ -47,8 +47,9 @@ exports.genre_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+    const genreName = req.body.name;
     const genre = new Genre({
-      name: req.body.name,
+      name: genreName,
     });
 
     if (!errors.isEmpty()) {
@@ -59,17 +60,17 @@ exports.genre_create_post = [
       });
       return;
     }
-    // check if genre already exists
-    const genreExists = await Genre.findOne({ name: req.body.name })
-      .collation({ locale: "en", strength: 2 })
-      .exec();
+    const genresWithSameName = await db.findGenreByName(genreName);
+    const genreExists = genresWithSameName.length > 0 || false;
 
     if (genreExists) {
-      res.redirect(genreExists.url);
+      res.redirect(genresWithSameName[0].url);
       return;
     }
-    await genre.save();
-    res.redirect(genre.url);
+
+    await db.saveGenre(genre);
+    const createdGenre = await db.findGenreByName(genreName);
+    res.redirect(createdGenre[0].url);
   }),
 ];
 
