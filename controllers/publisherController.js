@@ -132,7 +132,6 @@ exports.publisher_update_post = [
       res.redirect(existingPublisher.url);
       return;
     }
-    console.log("does not exist");
 
     await db.updatePublisher(publisherId, publisher);
     const updatedPublisher = await db.getPublisherByName(newName);

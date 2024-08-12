@@ -14,7 +14,7 @@
       value="<%= publisher ? publisher.name : '' %>" 
       />
 
-    <label for="headquarters">Headquarters: </label>
+    <label for="headquarters">* Headquarters: </label>
     <input id="headquarters" 
       class="form-control" 
       type="text" 
@@ -22,6 +22,7 @@
       placeholder="e.g.: Italy, France, etc." 
       name="headquarters" 
       value="<%= publisher ? publisher.headquarters: '' %>" 
+      required
       />
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
