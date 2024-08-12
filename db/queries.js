@@ -56,7 +56,7 @@ exports.getGenreDetails = async (genreId) => {
   const text = "SELECT * FROM genres WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [genreId]);
-    return rows;
+    return rows[0];
   } catch (e) {
     console.log(e);
   }
@@ -66,7 +66,7 @@ exports.findGenreByName = async (name) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;
   try {
     const { rows } = await pool.query(text, [name]);
-    return rows;
+    return rows[0];
   } catch (e) {
     console.log(e);
   }

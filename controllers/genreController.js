@@ -60,22 +60,22 @@ exports.genre_create_post = [
       });
       return;
     }
-    const genresWithSameName = await db.findGenreByName(genreName);
-    const genreExists = genresWithSameName.length > 0 || false;
+    const genreWithSameName = await db.findGenreByName(genreName);
+    const genreExists = genreWithSameName.length > 0 || false;
 
     if (genreExists) {
-      res.redirect(genresWithSameName[0].url);
+      res.redirect(genreWithSameName.url);
       return;
     }
 
     await db.saveGenre(genre);
     const createdGenre = await db.findGenreByName(genreName);
-    res.redirect(createdGenre[0].url);
+    res.redirect(createdGenre.url);
   }),
 ];
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
-  const genre = await Genre.findById(req.params.id).exec();
+  const genre = await db.getGenreDetails(req.params.id);
 
   if (!genre) {
     const err = new Error("Genre not found");
