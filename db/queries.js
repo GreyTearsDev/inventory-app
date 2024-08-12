@@ -65,6 +65,7 @@ exports.getGenreDetails = async (genreId) => {
 exports.getPublisherDetails = async (publisherId) => {
   const text = "SELECT * FROM publishers WHERE id = $1";
   try {
+    console.log("trying", publisherId);
     const { rows } = await pool.query(text, [publisherId]);
     return rows[0];
   } catch (e) {
@@ -92,12 +93,23 @@ exports.getPublisherByName = async (publisherName) => {
   }
 };
 
-exports.updateGenre = async (genreId, newName) => {
+exports.updateGenre = async (genreId, { name }) => {
   const text = `UPDATE genres
                 SET name = $2
                 WHERE id = $1`;
   try {
-    await pool.query(text, [genreId, newName]);
+    await pool.query(text, [genreId, name]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.updatePublisher = async (publisherId, { name, headquarters }) => {
+  const text = `UPDATE publishers
+                SET name = $2, headquarters = $3
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [publisherId, name, headquarters]);
   } catch (e) {
     console.log(e);
   }

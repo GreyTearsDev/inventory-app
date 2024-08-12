@@ -78,7 +78,8 @@ exports.publisher_create_post = [
 ];
 
 exports.publisher_update_get = asyncHandler(async (req, res, next) => {
-  const publisher = await Publisher.findById(req.params.id).exec();
+  const publisherId = req.params.id;
+  const publisher = await db.getPublisherDetails(publisherId);
 
   if (!publisher) {
     const err = new Error("Publisher not found");
@@ -102,11 +103,14 @@ exports.publisher_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const publisher = new Publisher({
-      name: req.body.name,
-      headquarters: req.body.headquarters,
-      _id: req.params.id,
-    });
+    const publisherId = req.params.id;
+    const newName = req.body.name;
+    const newHeadquarters = req.body.headquerters;
+
+    const publisher = {
+      name: newName,
+      headquarters: newHeadquarters,
+    };
 
     if (!errors.isEmpty) {
       res.render("publisher_form", {
@@ -118,20 +122,21 @@ exports.publisher_update_post = [
     }
 
     // check if publisher already exists
-    const existingPublisher = await Publisher.findOne({
-      name: req.body.name,
-      headquarters: req.body.headquarters,
-    })
-      .collation({ locale: "en", strength: 3 })
-      .exec();
+    const existingPublisher = await db.getPublisherDetails(publisherId);
 
-    if (existingPublisher) {
+    if (
+      existingPublisher &&
+      existingPublisher.name == newName &&
+      existingPublisher.headquarters == newHeadquarters
+    ) {
       res.redirect(existingPublisher.url);
       return;
     }
+    console.log("does not exist");
 
-    await Publisher.findByIdAndUpdate(req.params.id, publisher, {});
-    res.redirect(publisher.url);
+    await db.updatePublisher(publisherId, publisher);
+    const updatedPublisher = await db.getPublisherByName(newName);
+    res.redirect(updatedPublisher.url);
   }),
 ];
 
