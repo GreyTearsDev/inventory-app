@@ -118,7 +118,7 @@ exports.genre_update_post = [
       return;
     }
 
-    await db.updateGenre(genreId, newGenreName);
+    await db.updateGenre(genreId, genre);
     const updatedGenre = await db.getGenreByName(newGenreName);
     res.redirect(updatedGenre.url);
   }),
