@@ -7,7 +7,7 @@
     <% publisher_list.forEach(publisher => { %>
       <article class="publisher">
         <h3 class="publisher__name"><a href="<%=publisher.url %>"><%= publisher.name%></a></h3>
-        <p>📍 <%= publisher.headquarters%></p>
+        <p><%= publisher.headquarters%></p>
       </article>
     <% }) %>
   </section>

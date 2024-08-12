@@ -2,10 +2,11 @@ const Publisher = require("../models/publisher");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const db = require("../db/queries");
 
 // List all currently available publishers
 exports.publisher_list = asyncHandler(async (req, res, next) => {
-  const allPublishers = await Publisher.find().sort({ name: 1 }).exec();
+  const allPublishers = await db.getAllPublishers();
 
   res.render("publisher_list", {
     title: "Publishers",
