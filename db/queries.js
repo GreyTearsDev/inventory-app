@@ -116,11 +116,20 @@ exports.updatePublisher = async (publisherId, { name, headquarters }) => {
 };
 
 exports.deleteGenre = async (genreId) => {
-  console.log("hi");
   const text = `DELETE FROM genres
                 WHERE id = $1`;
   try {
     await pool.query(text, [genreId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.deletePublisher = async (publisherId) => {
+  const text = `DELETE FROM publishers
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [publisherId]);
   } catch (e) {
     console.log(e);
   }

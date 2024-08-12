@@ -142,9 +142,9 @@ exports.publisher_update_post = [
 
 exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
-  const [publisher, comicsBypublisher] = await Promise.all([
-    Publisher.findById(publisherId).exec(),
-    Comic.find({ publisher: publisherId }).exec(),
+  const [publisher, comicsFromPublisher] = await Promise.all([
+    db.getPublisherDetails(publisherId),
+    db.getComicsFromPublisher(publisherId),
   ]);
 
   if (!publisher) {
@@ -156,21 +156,20 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   res.render("publisher_delete", {
     title: "Delete publisher",
     publisher: publisher,
-    comic_list: comicsBypublisher,
+    comic_list: comicsFromPublisher,
   });
 });
 
 exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
   const publisherId = req.body.publisherid;
-  const publisher = await Publisher.findById(publisherId).exec();
+  const publisher = await db.getPublisherDetails(publisherId);
 
   if (!publisher) {
     const err = new Error("publisher not found");
     err.stauts = 404;
     return next(err);
   }
-  console.log(publisherId);
 
-  await Publisher.findByIdAndDelete(publisherId);
+  await db.deletePublisher(publisherId);
   res.redirect("/catalog/publishers");
 });
