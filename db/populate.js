@@ -15,7 +15,7 @@ const publishersTab = `
 CREATE TABLE IF NOT EXISTS publishers (
     id SERIAL PRIMARY KEY, 
     name VARCHAR(40) NOT NULL, 
-    headquarters VARCHAR(40),
+    headquarters VARCHAR(40) NOT NULL,
     url TEXT GENERATED ALWAYS AS ('/catalog/publisher/' || id) STORED
 );`;
 
