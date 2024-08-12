@@ -1,4 +1,3 @@
-const Genre = require("../models/genre");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
@@ -48,9 +47,9 @@ exports.genre_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const genreName = req.body.name;
-    const genre = new Genre({
+    const genre = {
       name: genreName,
-    });
+    };
 
     if (!errors.isEmpty()) {
       res.render("genre_form", {
@@ -60,22 +59,22 @@ exports.genre_create_post = [
       });
       return;
     }
-    const genreWithSameName = await db.findGenreByName(genreName);
-    const genreExists = genreWithSameName.length > 0 || false;
+    const existingGenre = await db.getGenreByName(genreName);
 
-    if (genreExists) {
-      res.redirect(genreWithSameName.url);
+    if (existingGenre) {
+      res.redirect(existingGenre.url);
       return;
     }
 
     await db.saveGenre(genre);
-    const createdGenre = await db.findGenreByName(genreName);
+    const createdGenre = await db.getGenreByName(genreName);
     res.redirect(createdGenre.url);
   }),
 ];
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
-  const genre = await db.getGenreDetails(req.params.id);
+  const genreId = req.params.id;
+  const genre = await db.getGenreDetails(genreId);
 
   if (!genre) {
     const err = new Error("Genre not found");
@@ -98,10 +97,11 @@ exports.genre_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const genre = new Genre({
-      name: req.body.name,
-      _id: req.params.id,
-    });
+    const genreId = req.params.id;
+    const newGenreName = req.body.name;
+    const genre = {
+      name: newGenreName,
+    };
 
     if (!errors.isEmpty()) {
       res.render("genre_form", {
@@ -112,17 +112,16 @@ exports.genre_update_post = [
       return;
     }
     // check if genre with the same name already exists
-    const genreExists = await Genre.findOne({ name: req.body.name })
-      .collation({ locale: "en", strength: 3 })
-      .exec();
+    const existingGenre = await db.getGenreDetails(genreId);
 
-    if (genreExists) {
-      res.redirect(genreExists.url);
+    if (existingGenre && existingGenre.name == newGenreName) {
+      res.redirect(existingGenre.url);
       return;
     }
 
-    await Genre.findByIdAndUpdate(req.params.id, genre);
-    res.redirect(genre.url);
+    await db.updateGenre(genreId, newGenreName);
+    const updatedGenre = await db.getGenreByName(newGenreName);
+    res.redirect(updatedGenre.url);
   }),
 ];
 
