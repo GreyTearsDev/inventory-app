@@ -51,10 +51,21 @@ exports.getAllVolumes = async () => {
 };
 
 // SELECT query for getting data about a specific entry in a table
+// gets gerne detais via genre id
 exports.getGenreDetails = async (genreId) => {
   const text = "SELECT * FROM genres WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [genreId]);
+    return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.findGenreByName = async (name) => {
+  const text = `SELECT * FROM genres WHERE name ILIKE $1`;
+  try {
+    const { rows } = await pool.query(text, [name]);
     return rows;
   } catch (e) {
     console.log(e);
@@ -73,10 +84,22 @@ exports.getComicsOfGenre = async (genreId) => {
                   comics.url
                 FROM comics LEFT JOIN comics_genres AS cg 
                             ON comics.id = cg.comic_id 
-                            AND cg.genre_id = $1`;
+                   WHERE cg.genre_id = $1`;
   try {
     const { rows } = await pool.query(text, [genreId]);
     return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// INSERT INTO queries to add new entries to tables
+exports.saveGenre = async ({ name }) => {
+  const text = `
+    INSERT INTO genres(name) VALUES($1);
+  `;
+  try {
+    await pool.query(text, [name]);
   } catch (e) {
     console.log(e);
   }
