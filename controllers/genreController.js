@@ -14,8 +14,8 @@ exports.genre_list = asyncHandler(async (req, res, next) => {
 exports.genre_detail = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
-    Genre.findById(genreId).exec(),
-    Comic.find({ genres: genreId }, "title").exec(),
+    db.selectGenreDetails(genreId),
+    db.selectComicsOfGenre(genreId),
   ]);
 
   if (!genre) {
