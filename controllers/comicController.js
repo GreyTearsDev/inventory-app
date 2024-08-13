@@ -44,7 +44,7 @@ exports.comic_list = asyncHandler(async (req, res, next) => {
 exports.comic_detail = asyncHandler(async (req, res, next) => {
   const comicId = req.params.id;
   const [comic, author, publisher, genres, volumes] = await Promise.all([
-    db.getComicDetails(comicId),
+    db.getComic(comicId),
     db.getComicAuthor(comicId),
     db.getComicPublisher(comicId),
     db.getComicGenres(comicId),

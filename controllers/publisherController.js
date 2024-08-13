@@ -15,7 +15,7 @@ exports.publisher_list = asyncHandler(async (req, res, next) => {
 exports.publisher_detail = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getPublisherDetails(publisherId),
+    db.getPublisher(publisherId),
     db.getComicsFromPublisher(publisherId),
   ]);
 
@@ -77,7 +77,7 @@ exports.publisher_create_post = [
 
 exports.publisher_update_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
-  const publisher = await db.getPublisherDetails(publisherId);
+  const publisher = await db.getPublisher(publisherId);
 
   if (!publisher) {
     const err = new Error("Publisher not found");
@@ -118,7 +118,7 @@ exports.publisher_update_post = [
     }
 
     // check if publisher already exists
-    const existingPublisher = await db.getPublisherDetails(publisherId);
+    const existingPublisher = await db.getPublisher(publisherId);
 
     if (
       existingPublisher &&
@@ -138,7 +138,7 @@ exports.publisher_update_post = [
 exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getPublisherDetails(publisherId),
+    db.getPublisher(publisherId),
     db.getComicsFromPublisher(publisherId),
   ]);
 
@@ -157,7 +157,7 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
 
 exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
   const publisherId = req.body.publisherid;
-  const publisher = await db.getPublisherDetails(publisherId);
+  const publisher = await db.getPublisher(publisherId);
 
   if (!publisher) {
     const err = new Error("publisher not found");

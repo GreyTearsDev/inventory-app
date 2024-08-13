@@ -12,7 +12,7 @@ exports.author_list = asyncHandler(async (req, res, next) => {
 exports.author_detail = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthorDetails(authorId),
+    db.getAuthor(authorId),
     db.getAuthorComics(authorId),
   ]);
 
@@ -87,7 +87,7 @@ exports.author_create_post = [
 exports.author_update_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthorDetails(authorId),
+    db.getAuthor(authorId),
     db.getAuthorComics(authorId),
   ]);
 
@@ -138,7 +138,7 @@ exports.author_update_post = [
     }
 
     // check if author with the same name already exists
-    const existingAuthor = await db.getAuthorDetails(authorId);
+    const existingAuthor = await db.getAuthor(authorId);
 
     if (
       existingAuthor &&
@@ -161,7 +161,7 @@ exports.author_update_post = [
 exports.author_delete_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthorDetails(authorId),
+    db.getAuthor(authorId),
     db.getAuthorComics(authorId),
   ]);
 
@@ -180,7 +180,7 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
 
 exports.author_delete_post = asyncHandler(async (req, res, next) => {
   const authorId = req.body.authorid;
-  const author = await db.getAuthorDetails(authorId);
+  const author = await db.getAuthor(authorId);
 
   if (!author) {
     const err = new Error("Author not found");

@@ -12,7 +12,7 @@ exports.genre_list = asyncHandler(async (req, res, next) => {
 exports.genre_detail = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
-    db.getGenreDetails(genreId),
+    db.getGenre(genreId),
     db.getComicsOfGenre(genreId),
   ]);
 
@@ -72,7 +72,7 @@ exports.genre_create_post = [
 
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
-  const genre = await db.getGenreDetails(genreId);
+  const genre = await db.getGenre(genreId);
 
   if (!genre) {
     const err = new Error("Genre not found");
@@ -109,7 +109,7 @@ exports.genre_update_post = [
       return;
     }
     // check if genre with the same name already exists
-    const existingGenre = await db.getGenreDetails(genreId);
+    const existingGenre = await db.getGenre(genreId);
 
     if (existingGenre && existingGenre.name == genre.name) {
       res.redirect(existingGenre.url);
@@ -125,7 +125,7 @@ exports.genre_update_post = [
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
-    db.getGenreDetails(genreId),
+    db.getGenre(genreId),
     db.getComicsOfGenre(genreId),
   ]);
 
@@ -144,7 +144,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
 
 exports.genre_delete_post = asyncHandler(async (req, res, next) => {
   const genreId = req.body.genreid;
-  const genre = await db.getGenreDetails(genreId);
+  const genre = await db.getGenre(genreId);
 
   if (!genre) {
     const err = new Error("Genre not found");

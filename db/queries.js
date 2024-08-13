@@ -52,7 +52,7 @@ exports.getAllVolumes = async () => {
 
 // SELECT query for getting data about a specific entry in a table
 // gets gerne detais via genre id
-exports.getGenreDetails = async (genreId) => {
+exports.getGenre = async (genreId) => {
   const text = "SELECT * FROM genres WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [genreId]);
@@ -62,7 +62,7 @@ exports.getGenreDetails = async (genreId) => {
   }
 };
 
-exports.getPublisherDetails = async (publisherId) => {
+exports.getPublisher = async (publisherId) => {
   const text = "SELECT * FROM publishers WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [publisherId]);
@@ -72,7 +72,7 @@ exports.getPublisherDetails = async (publisherId) => {
   }
 };
 
-exports.getAuthorDetails = async (authorId) => {
+exports.getAuthor = async (authorId) => {
   const text = "SELECT * FROM authors WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [authorId]);
@@ -178,7 +178,7 @@ exports.deleteAuthor = async (authorId) => {
   }
 };
 
-exports.getComicDetails = async (comicId) => {
+exports.getComic = async (comicId) => {
   const text = "SELECT * FROM comics WHERE id = $1";
   try {
     const { rows } = await pool.query(text, [comicId]);
