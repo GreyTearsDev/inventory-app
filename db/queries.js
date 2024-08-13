@@ -168,6 +168,16 @@ exports.deletePublisher = async (publisherId) => {
   }
 };
 
+exports.deleteAuthor = async (authorId) => {
+  const text = `DELETE FROM authors
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [authorId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about comics of a certain genre
 exports.getComicsOfGenre = async (genreId) => {
   const text = `SELECT 

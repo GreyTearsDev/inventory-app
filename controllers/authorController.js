@@ -163,8 +163,8 @@ exports.author_update_post = [
 exports.author_delete_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    Author.findById(authorId).exec(),
-    Comic.find({ author: authorId }).exec(),
+    db.getAuthorDetails(authorId),
+    db.getComicsOfAuthor(authorId),
   ]);
 
   if (!author) {
@@ -182,7 +182,7 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
 
 exports.author_delete_post = asyncHandler(async (req, res, next) => {
   const authorId = req.body.authorid;
-  const author = await Author.findById(authorId).exec();
+  const author = await db.getAuthorDetails(authorId);
 
   if (!author) {
     const err = new Error("Author not found");
@@ -190,6 +190,6 @@ exports.author_delete_post = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  await Author.findByIdAndDelete(authorId);
+  await db.deleteAuthor(authorId);
   res.redirect("/catalog/authors");
 });
