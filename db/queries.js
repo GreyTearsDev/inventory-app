@@ -65,8 +65,17 @@ exports.getGenreDetails = async (genreId) => {
 exports.getPublisherDetails = async (publisherId) => {
   const text = "SELECT * FROM publishers WHERE id = $1";
   try {
-    console.log("trying", publisherId);
     const { rows } = await pool.query(text, [publisherId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getAuthorDetails = async (authorId) => {
+  const text = "SELECT * FROM authors WHERE id = $1";
+  try {
+    const { rows } = await pool.query(text, [authorId]);
     return rows[0];
   } catch (e) {
     console.log(e);
@@ -150,6 +159,16 @@ exports.getComicsOfGenre = async (genreId) => {
                    WHERE cg.genre_id = $1`;
   try {
     const { rows } = await pool.query(text, [genreId]);
+    return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getComicsOfAuthor = async (authorId) => {
+  const text = `SELECT * FROM comics WHERE author_id = $1`;
+  try {
+    const { rows } = await pool.query(text, [authorId]);
     return rows;
   } catch (e) {
     console.log(e);

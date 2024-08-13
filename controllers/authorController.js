@@ -12,9 +12,10 @@ exports.author_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.author_detail = asyncHandler(async (req, res, next) => {
+  const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    Author.findById(req.params.id).sort({ first_name: 1 }).exec(),
-    Comic.find({ author: req.params.id }, "title").sort({ title: 1 }).exec(),
+    db.getAuthorDetails(authorId),
+    db.getComicsOfAuthor(authorId),
   ]);
 
   if (!author) {
@@ -24,7 +25,7 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
   }
 
   res.render("author_detail", {
-    title: "Author Profile",
+    title: author.name,
     author: author,
     comic_list: comicsByAuthor,
   });
