@@ -51,10 +51,12 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
+  const comicReleaseDate = date.format(comic.release_date);
+
   res.render("comic_detail", {
     title: comic.title,
     comic: comic,
-    comic_release_date: date.format(comic.release_date),
+    comic_release_date: comicReleaseDate,
     author: author,
     genres: genres,
     volumes: volumes,
