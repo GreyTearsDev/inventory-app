@@ -1,5 +1,57 @@
 const pool = require("./index");
 
+// SELECT COUNT(*) for getting the number of all entries in a table
+
+exports.getGenreCount = async () => {
+  const text = `SELECT COUNT(*) FROM gernes`;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getPublisherCount = async () => {
+  const text = `SELECT COUNT(*) FROM publishers `;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getAuthorCount = async () => {
+  const text = `SELECT COUNT(*) FROM authors`;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getComicCount = async () => {
+  const text = `SELECT COUNT(*) FROM comics`;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getVolumeCount = async () => {
+  const text = `SELECT COUNT(*) FROM volumes`;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting ALL entries in a table
 exports.getAllGenres = async () => {
   try {
