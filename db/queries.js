@@ -3,7 +3,7 @@ const pool = require("./index");
 // SELECT COUNT(*) for getting the number of all entries in a table
 
 exports.getGenreCount = async () => {
-  const text = `SELECT COUNT(*) FROM gernes`;
+  const text = `SELECT COUNT(*) FROM genres`;
   try {
     const { rows } = await pool.query(text);
     return rows[0].count;
