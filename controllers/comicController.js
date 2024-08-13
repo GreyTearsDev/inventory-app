@@ -1,23 +1,18 @@
-const Comic = require("../models/comic");
-const Author = require("../models/author");
-const Publisher = require("../models/publisher");
-const Genre = require("../models/genre");
-const Volume = require("../models/volume");
 const { body, validationResult } = require("express-validator");
-const { ObjectId } = require("mongoose").Types;
 const db = require("../db/queries");
 const date = require("../util/date_formatting");
+const array = require("../util/arrays");
 
 const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
   // Get details about Comics, Authors, Publishers, and Genres
   const [comics, volumes, authors, publishers, genres] = await Promise.all([
-    db.getAllComics("comics"),
-    db.getAllVolumes("volumes"),
-    db.getAllAuthors("authors"),
-    db.getAllPublishers("publishers"),
-    db.getAllGenres("genres"),
+    db.getAllComics(),
+    db.getAllVolumes(),
+    db.getAllAuthors(),
+    db.getAllPublishers(),
+    db.getAllGenres(),
   ]);
 
   res.render("index", {
@@ -69,9 +64,9 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
 
 exports.comic_create_get = asyncHandler(async (req, res, next) => {
   const [authors, publishers, genres] = await Promise.all([
-    db.getAllAuthors("authors"),
-    db.getAllPublishers("publishers"),
-    db.getAllGenres("genres"),
+    db.getAllAuthors(),
+    db.getAllPublishers(),
+    db.getAllGenres(),
   ]);
 
   res.render("comic_form", {
@@ -136,9 +131,9 @@ exports.comic_create_post = [
 
     if (!errors.isEmpty()) {
       const [authors, publishers, genres] = await Promise.all([
-        db.getAllAuthors("authors"),
-        db.getAllPublishers("publishers"),
-        db.getAllGenres("genres"),
+        db.getAllAuthors(),
+        db.getAllPublishers(),
+        db.getAllGenres(),
       ]);
 
       for (const gen of genres) {
@@ -157,21 +152,24 @@ exports.comic_create_post = [
         selected_publisher_id: req.body.publisher || undefined,
         errors: errors.array(),
       });
+
       return;
-    } else {
-      await db.saveComic(comic);
-      const savedComic = await db.getComicByTitleAndAuthor(comic);
-      res.redirect(savedComic.url);
     }
+
+    await db.saveComic(comic);
+    const savedComic = await db.getComicByTitleAndAuthor(comic);
+    res.redirect(savedComic.url);
   }),
 ];
 
 exports.comic_update_get = asyncHandler(async (req, res, next) => {
-  const [comic, authors, genres, publishers] = await Promise.all([
-    Comic.findById(req.params.id).exec(),
-    Author.find().sort({ first_name: 1 }).exec(),
-    Genre.find().sort({ name: 1 }).exec(),
-    Publisher.find().sort({ name: 1 }).exec(),
+  const comicId = req.params.id;
+  const [comic, comicGenres, authors, publishers, genres] = await Promise.all([
+    db.getComic(comicId),
+    db.getComicGenres(comicId),
+    db.getAllAuthors(),
+    db.getAllPublishers(),
+    db.getAllGenres(),
   ]);
 
   if (!comic) {
@@ -180,20 +178,27 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  for (const gen of genres) {
-    if (comic.genres.includes(gen._id.toString())) {
-      gen.checked = "true";
-    }
+  const comicGenreIds = comicGenres.map((genre) => genre.id);
+
+  for (const id of comicGenreIds) {
+    genres.forEach((genre) => {
+      if (genre.id == id) {
+        genre.checked = "true";
+      }
+    });
   }
+
+  const comicReleaseDate = date.format_dash(date.format(comic.release_date));
 
   res.render("comic_form", {
     title: "Update the comic's info",
     comic: comic,
     author_list: authors,
     genre_list: genres,
+    release_date: comicReleaseDate,
     publisher_list: publishers,
-    selected_author_id: comic.author._id,
-    selected_publisher_id: comic.publisher._id,
+    selected_author_id: comic.author_id,
+    selected_publisher_id: comic.publisher_id,
     errors: [],
   });
 });
@@ -237,58 +242,84 @@ exports.comic_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const comic = new Comic({
-      title: req.body.title,
-      summary: req.body.summary,
-      author: req.body.author,
-      publisher: req.body.publisher,
-      genres: req.body.genres.map((id) => new ObjectId(id)),
-      release_date: req.body.release_date,
-      _id: req.params.id,
-    });
-
-    if (!errors.isEmpty()) {
-      const [comic, authors, genres, publishers] = await Promise.all([
-        Comic.findById(req.params.id).exec(),
-        Author.find().sort({ first_name: 1 }).exec(),
-        Genre.find().sort({ name: 1 }).exec(),
-        Publisher.find().sort({ name: 1 }).exec(),
-      ]);
-
-      for (const gen of genres) {
-        if (req.body.genres.includes(gen._id.toString())) {
-          gen.checked = "true";
-        }
-      }
-
-      res.render("comic_form", {
-        title: "Update the comic's info",
-        comic: comic,
-        author_list: authors,
-        genre_list: genres,
-        publisher_list: publishers,
-        selected_author_id: comic.author._id,
-        selected_publisher_id: comic.publisher._id,
-        errors: errors.array(),
-      });
-      return;
-    }
-
-    const existingComic = await Comic.findOne({
+    const comicId = req.params.id;
+    const comic = {
       title: req.body.title,
       summary: req.body.summary,
       author: req.body.author,
       publisher: req.body.publisher,
       genres: req.body.genres,
-    });
+      release_date: req.body.release_date,
+    };
 
-    if (existingComic) {
+    if (!errors.isEmpty()) {
+      const [authors, comicGenres, publishers, genres] = await Promise.all([
+        db.getAllAuthors(),
+        db.getComicGenres(comicId),
+        db.getAllPublishers(),
+        db.getAllGenres(),
+      ]);
+
+      const comicGenreIds = comicGenres.map((genre) => genre.id);
+
+      for (const id of comicGenreIds) {
+        genres.forEach((genre) => {
+          if (genre.id == id) {
+            genre.checked = "true";
+          }
+        });
+      }
+
+      const comicReleaseDate = date.format_dash(
+        date.format(comic.release_date),
+      );
+
+      res.render("comic_form", {
+        title: "Add a new comic",
+        comic: undefined,
+        author_list: authors,
+        genre_list: genres,
+        publisher_list: publishers,
+        release_date: comicReleaseDate,
+        selected_author_id: req.body.author || undefined,
+        selected_publisher_id: req.body.publisher || undefined,
+        errors: errors.array(),
+      });
+
+      return;
+    }
+
+    const [existingComic, comicGenres] = await Promise.all([
+      db.getComic(comicId),
+      db.getComicGenres(comicId),
+    ]);
+
+    const comicGenresIds = comicGenres.map((g) => g.id);
+    const updatedGenresIds = comic.genres.map((g) => parseInt(g));
+
+    const arraysHaveSameValues = array.arraysHaveSameValues(
+      comicGenresIds,
+      updatedGenresIds,
+    );
+    const releaseDatesAreEqual =
+      date.format(existingComic.release_date) ==
+      date.format(comic.release_date);
+
+    if (
+      existingComic &&
+      existingComic.title == comic.title &&
+      existingComic.author_id == comic.author &&
+      existingComic.summary == comic.summary &&
+      releaseDatesAreEqual &&
+      arraysHaveSameValues
+    ) {
       res.redirect(existingComic.url);
       return;
     }
 
-    await Comic.findByIdAndUpdate(req.params.id, comic);
-    res.redirect(comic.url);
+    await db.updateComic(comicId, comic);
+    const updatedComic = await db.getComicByTitleAndAuthor(comic);
+    res.redirect(updatedComic.url);
   }),
 ];
 
