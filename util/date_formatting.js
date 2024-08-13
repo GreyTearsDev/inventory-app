@@ -1,7 +1,18 @@
 const { DateTime } = require("luxon");
 
-exports.format = (date) => {
-  return date
-    ? DateTime.fromJSDate(date).toLocaleString(DateTime.DATE_MED)
-    : "";
+const format = (date) => {
+  return date ? DateTime.fromJSDate(date).toFormat("dd-MM-yyyy") : "";
+};
+
+const format_dash = (date) => {
+  if (!date) return "";
+  console.log("inside", date);
+
+  const [day, month, year] = date.split("-");
+  return `${year}-${month}-${day}`;
+};
+
+module.exports = {
+  format,
+  format_dash,
 };
