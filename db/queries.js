@@ -138,50 +138,27 @@ exports.updatePublisher = async (publisherId, { name, headquarters }) => {
 
 exports.updateAuthor = async (authorId, { first_name, last_name }) => {
   const text = `UPDATE authors
-          try {
-        
-                  WHERE id = $1`;
-    try { catch(e) {
-      console.log(e)
-    }
-  }
+                SET first_name = $2, last_name = $3
+                WHERE id = $1`;
+  try {
     await pool.query(text, [authorId, first_name, last_name]);
   } catch (e) {
     console.log(e);
   }
 };
 
-
-
-  try {
-    exports.updateComic = async (
-  } catch(e) {
-    console.lo catch(eg {
-      console.log(e)
-    }(e)
-  }
-}
+exports.updateComic = async (
   comicId,
   { title, summary, author, publisher, genres, release_date },
 ) => {
-  try {
-    
-    const text = `UPDATE comics SET title = $2, summary = $3, author_id = $4,
-  } catch(e) {
-    console.log(e)
-  }
-                     release_date = $6,
+  const text = `UPDATE comics 
+                SET title = $2, 
+                    summary = $3, 
+                    author_id = $4,
+                    publisher_id = $5,
+                    release_date = $6
                 WHERE id = $1`;
-                try {
-                try {
-                  
-                } catch(e) {
-                  console.log(e)
-                }
   try {
-                  
-       console.log(e)           
-                }
     await pool.query(text, [
       comicId,
       title,
@@ -327,7 +304,7 @@ exports.getComicAuthor = async (comicId) => {
 
 // SELECT query for getting data about genres of a certain comic
 exports.getComicGenres = async (comicId) => {
-  const text = `SELECT name FROM genres
+  const text = `SELECT id, name FROM genres
                 LEFT JOIN comics_genres AS cg 
                       ON genres.id = cg.genre_id
                 WHERE cg.comic_id = $1;`;
@@ -433,8 +410,8 @@ async function updateComicGenres(comicId, genres) {
   try {
     await deleteComicGenres(comicId);
     await insertComicGenres(comicId, genres);
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -443,11 +420,11 @@ async function deleteComicGenres(comicId) {
     DELETE FROM comics_genres 
     WHERE comic_id = $1;
   `;
-  
+
   try {
     await pool.query(deleteGenresText, [comicId]);
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
   }
 }
 async function insertComicGenres(comicId, genres) {
@@ -457,9 +434,9 @@ async function insertComicGenres(comicId, genres) {
 
   for (const genreId of genres) {
     try {
-    await pool.query(insertGenresText, [comicId, genreId]);
-    } catch(e) {
-      console.log(e)
+      await pool.query(insertGenresText, [comicId, genreId]);
+    } catch (e) {
+      console.log(e);
     }
   }
 }
