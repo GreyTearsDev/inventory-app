@@ -8,14 +8,6 @@
       <article class="comic">
         <h3 class="comic__title"><a href="<%=comic.url %>"><%= comic.title %></a></h3>
         <p class="comic__summary"><%= comic.summary %></p>
-        <div class="comic__genres">
-          <ul>
-            <% comic.genres.forEach(genre => { %>
-              <li><%= genre.name %></li>
-            <% }) %>
-
-          </ul>
-        </div>
       </article>
 
      <% }) %>

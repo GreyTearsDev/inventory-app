@@ -32,11 +32,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // List all currently available comics
 exports.comic_list = asyncHandler(async (req, res, next) => {
-  const allComics = await Comic.find({}, "title summary")
-    .sort({ title: 1 })
-    .populate("author")
-    .populate("genres")
-    .exec();
+  const allComics = await db.getAllComics();
 
   res.render("comic_list", {
     title: "Comics",
