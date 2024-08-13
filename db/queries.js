@@ -203,6 +203,16 @@ exports.deleteAuthor = async (authorId) => {
   }
 };
 
+exports.deleteComic = async (comicId) => {
+  const text = `DELETE FROM comics
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [comicId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.getComic = async (comicId) => {
   const text = "SELECT * FROM comics WHERE id = $1";
   try {

@@ -323,6 +323,36 @@ exports.comic_update_post = [
   }),
 ];
 
+exports.comic_delete_get = asyncHandler(async (req, res, next) => {
+  const comicId = req.params.id;
+  const comic = await db.getComic(comicId);
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("comic_delete", {
+    title: "Delete comic",
+    comic: comic,
+  });
+});
+
+exports.comic_delete_post = asyncHandler(async (req, res, next) => {
+  const comicId = req.params.id;
+  const comic = await db.getComic(comicId);
+
+  if (!comic) {
+    const err = new Error("Comic not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  await db.deleteComic(comicId);
+  res.redirect("/catalog/comics");
+});
+
 // == COMIC_VOLUME RELATED FUNCTIONALITY ==//
 exports.comic_volume_create_get = (req, res, next) => {
   const volume = new Volume({
@@ -409,32 +439,3 @@ exports.comic_volume_create_post = [
     res.redirect(comic.url);
   }),
 ];
-
-exports.comic_delete_get = asyncHandler(async (req, res, next) => {
-  const comic = await Comic.findById(req.params.id).exec();
-
-  if (!comic) {
-    const err = new Error("Comic not found");
-    err.status = 404;
-    return next(err);
-  }
-
-  res.render("comic_delete", {
-    title: "Delete comic",
-    comic: comic,
-  });
-});
-
-exports.comic_delete_post = asyncHandler(async (req, res, next) => {
-  const comicId = req.body.comicid;
-  const comic = await Comic.findById(comicId).exec();
-
-  if (!comic) {
-    const err = new Error("Comic not found");
-    err.status = 404;
-    return next(err);
-  }
-
-  await Comic.findByIdAndDelete(comicId);
-  res.redirect("/catalog/comics");
-});
