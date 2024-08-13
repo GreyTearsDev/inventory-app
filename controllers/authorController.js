@@ -13,7 +13,7 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
     db.getAuthorDetails(authorId),
-    db.getComicsOfAuthor(authorId),
+    db.getAuthorComics(authorId),
   ]);
 
   if (!author) {
@@ -88,7 +88,7 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
     db.getAuthorDetails(authorId),
-    db.getComicsOfAuthor(authorId),
+    db.getAuthorComics(authorId),
   ]);
 
   if (!author) {
@@ -126,7 +126,7 @@ exports.author_update_post = [
     };
 
     if (!errors.isEmpty()) {
-      const comicsByAuthor = await db.getComicsOfAuthor(authorId);
+      const comicsByAuthor = await db.getAuthorComics(authorId);
 
       res.render("author_form", {
         title: "Update author's info",
@@ -162,7 +162,7 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
     db.getAuthorDetails(authorId),
-    db.getComicsOfAuthor(authorId),
+    db.getAuthorComics(authorId),
   ]);
 
   if (!author) {
