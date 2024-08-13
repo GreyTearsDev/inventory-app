@@ -23,7 +23,7 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
   }
 
   res.render("genre_detail", {
-    title: `Genre details (${genre.name})`,
+    title: genre.name,
     genre: genre,
     comic_list: comicsOfGenre,
   });
