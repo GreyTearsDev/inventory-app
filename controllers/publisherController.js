@@ -49,11 +49,9 @@ exports.publisher_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const publisherName = req.body.name;
-    const publisherHeadquarters = req.body.headquarters;
     const publisher = {
-      name: publisherName,
-      headquarters: publisherHeadquarters,
+      name: req.body.name,
+      headquarters: req.body.headquarters,
     };
 
     if (!errors.isEmpty) {
@@ -65,14 +63,14 @@ exports.publisher_create_post = [
       return;
     }
     // check if publisher already exists
-    const existingPublisher = await db.getPublisherByName(publisherName);
+    const existingPublisher = await db.getPublisherByName(publisher.name);
 
     if (existingPublisher) {
       res.redirect(existingPublisher.url);
       return;
     }
     await db.savePublisher(publisher);
-    const createdPublisher = await db.getPublisherByName(publisherName);
+    const createdPublisher = await db.getPublisherByName(publisher.name);
     res.redirect(createdPublisher.url);
   }),
 ];
@@ -104,12 +102,10 @@ exports.publisher_update_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const publisherId = req.params.id;
-    const newName = req.body.name;
-    const newHeadquarters = req.body.headquerters;
 
     const publisher = {
-      name: newName,
-      headquarters: newHeadquarters,
+      name: req.body.name,
+      headquarters: req.body.headquarters,
     };
 
     if (!errors.isEmpty) {
@@ -126,15 +122,15 @@ exports.publisher_update_post = [
 
     if (
       existingPublisher &&
-      existingPublisher.name == newName &&
-      existingPublisher.headquarters == newHeadquarters
+      existingPublisher.name == publisher.name &&
+      existingPublisher.headquarters == publisher.headquarters
     ) {
       res.redirect(existingPublisher.url);
       return;
     }
 
     await db.updatePublisher(publisherId, publisher);
-    const updatedPublisher = await db.getPublisherByName(newName);
+    const updatedPublisher = await db.getPublisherByName(publisher.name);
     res.redirect(updatedPublisher.url);
   }),
 ];
