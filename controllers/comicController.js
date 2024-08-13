@@ -14,20 +14,20 @@ exports.index = asyncHandler(async (req, res, next) => {
   // Get details about Comics, Authors, Publishers, and Genres
   const [comicCount, volumeCount, authorCount, publisherCount, genreCount] =
     await Promise.all([
-      db.getComicCount("comics"),
-      db.getVolumeCount("volumes"),
-      db.getAuthorCount("authors"),
-      db.getPublisherCount("publishers"),
-      db.getGenreCount("genres"),
+      db.getAllComics("comics"),
+      db.getAllVolumes("volumes"),
+      db.getAllAuthors("authors"),
+      db.getAllPublishers("publishers"),
+      db.getAllGenres("genres"),
     ]);
 
   res.render("index", {
     title: "ComiKing - Home",
-    comic_count: comicCount,
-    volume_count: volumeCount,
-    author_count: authorCount,
-    publisher_count: publisherCount,
-    genre_count: genreCount,
+    comic_count: comicCount.length,
+    volume_count: volumeCount.length,
+    author_count: authorCount.length,
+    publisher_count: publisherCount.length,
+    genre_count: genreCount.length,
   });
 });
 
