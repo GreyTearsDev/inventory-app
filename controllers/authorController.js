@@ -2,10 +2,11 @@ const Author = require("../models/author");
 const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const db = require("../db/queries");
 
 // Display list of all authors
 exports.author_list = asyncHandler(async (req, res, next) => {
-  const allAuthors = await Author.find().sort({ first_name: 1 }).exec();
+  const allAuthors = await db.getAllAuthors();
 
   res.render("author_list", { title: "Authors", author_list: allAuthors });
 });
