@@ -32,16 +32,6 @@ exports.getAuthorCount = async () => {
   }
 };
 
-exports.getComicCount = async () => {
-  const text = `SELECT COUNT(*) FROM comics`;
-  try {
-    const { rows } = await pool.query(text);
-    return rows[0].count;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 exports.getVolumeCount = async () => {
   const text = `SELECT COUNT(*) FROM volumes`;
   try {
@@ -230,6 +220,16 @@ exports.deleteAuthor = async (authorId) => {
   }
 };
 
+exports.getComicDetails = async (comicId) => {
+  const text = "SELECT * FROM comics WHERE id = $1";
+  try {
+    const { rows } = await pool.query(text, [comicId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about comics of a certain genre
 exports.getComicsOfGenre = async (genreId) => {
   const text = `SELECT 
@@ -251,7 +251,8 @@ exports.getComicsOfGenre = async (genreId) => {
   }
 };
 
-exports.getComicsOfAuthor = async (authorId) => {
+// SELECT query for getting data about comics of a certain author
+exports.getAuthorComics = async (authorId) => {
   const text = `SELECT * FROM comics WHERE author_id = $1`;
   try {
     const { rows } = await pool.query(text, [authorId]);
@@ -261,12 +262,83 @@ exports.getComicsOfAuthor = async (authorId) => {
   }
 };
 
+// SELECT query for getting data about comics from a certain publisher
 exports.getComicsFromPublisher = async (publisherId) => {
   const text = `SELECT * FROM comics
                 WHERE comics.publisher_id = $1;`;
 
   try {
     const { rows } = await pool.query(text, [publisherId]);
+    return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getComicPublisher = async (comicId) => {
+  const text = `SELECT 
+                  publishers.name, 
+                  publishers.headquarters 
+                FROM publishers 
+                LEFT JOIN comics
+                  ON comics.publisher_id = publishers.id
+                WHERE comics.id = $1`;
+  try {
+    const { rows } = await pool.query(text, [comicId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getComicAuthor = async (comicId) => {
+  const text = `SELECT 
+                      authors.name
+                FROM authors
+                LEFT JOIN comics
+                  ON comics.author_id = authors.id
+                WHERE comics.id = $1`;
+
+  try {
+    const { rows } = await pool.query(text, [comicId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.getComicCount = async () => {
+  const text = `SELECT COUNT(*) FROM comics`;
+  try {
+    const { rows } = await pool.query(text);
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// SELECT query for getting data about genres of a certain comic
+exports.getComicGenres = async (comicId) => {
+  const text = `SELECT name FROM genres
+                LEFT JOIN comics_genres AS cg 
+                      ON genres.id = cg.genre_id
+                WHERE cg.comic_id = $1;`;
+
+  try {
+    const { rows } = await pool.query(text, [comicId]);
+    return rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// SELECT query for getting data about volumes from a certain comic
+exports.getComicVolumes = async (comicId) => {
+  const text = `SELECT * FROM volumes
+                WHERE volumes.comic_id = $1;`;
+
+  try {
+    const { rows } = await pool.query(text, [comicId]);
     return rows;
   } catch (e) {
     console.log(e);
