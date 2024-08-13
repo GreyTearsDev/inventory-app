@@ -1,20 +1,20 @@
 <section class="container">
-  <h1><strong>Title: </strong><%= comic.title %></h1>
-  <p><strong>Author: </strong><a href="<%= comic.author.url %>"><%= comic.author.name %></a></p>
-  <p><strong>Publisher: </strong><a href="<%= comic.publisher.url %>"><%= comic.publisher.name %></a></p>
-  <p><strong>Release date:</strong> <%= comic.date_formatted %><p>
+  <h1><strong></strong><%= comic.title %></h1>
+  <p><strong>Author: </strong><a href="<%= author.url %>"><%= author.name %></a></p>
+  <p><strong>Publisher: </strong><a href="<%= publisher.url %>"><%= publisher.name %></a></p>
+  <p><strong>Release date:</strong> <%= comic_release_date %><p>
 
   <div>
-    <% comic.genres.forEach((genre) => { %>
+    <% genres.forEach((genre) => { %>
       <div><a href="<%= genre.url %>"><%= genre.name %></a></div>
     <% }) %>
   </div>
 
   <p><strong>Summary</strong>: <%= comic.summary %></p>
 
-  <% if (comic.volumes.length > 0) { %>
+  <% if (volumes.length > 0) { %>
     <div>
-      <% comic.volumes.forEach((volume, index) => { %>
+      <% volumes.forEach((volume, index) => { %>
         <p>
           <a href="<%= volume.url %>">
             Volume <%= volume.volume_number%> - <%= volume.title%>

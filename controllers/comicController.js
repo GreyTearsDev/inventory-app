@@ -6,6 +6,7 @@ const Volume = require("../models/volume");
 const { body, validationResult } = require("express-validator");
 const { ObjectId } = require("mongoose").Types;
 const db = require("../db/queries");
+const date = require("../util/date_formatting");
 
 const asyncHandler = require("express-async-handler");
 
@@ -41,12 +42,14 @@ exports.comic_list = asyncHandler(async (req, res, next) => {
 });
 
 exports.comic_detail = asyncHandler(async (req, res, next) => {
-  const comic = await Comic.findById(req.params.id)
-    .populate("publisher")
-    .populate("author")
-    .populate("genres")
-    .populate("volumes")
-    .exec();
+  const comicId = req.params.id;
+  const [comic, author, publisher, genres, volumes] = await Promise.all([
+    db.getComicDetails(comicId),
+    db.getComicAuthor(comicId),
+    db.getComicPublisher(comicId),
+    db.getComicGenres(comicId),
+    db.getComicVolumes(comicId),
+  ]);
 
   if (!comic) {
     const err = new Error("Comic not found");
@@ -57,6 +60,11 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
   res.render("comic_detail", {
     title: comic.title,
     comic: comic,
+    comic_release_date: date.format(comic.release_date),
+    author: author,
+    genres: genres,
+    volumes: volumes,
+    publisher: publisher,
   });
 });
 
