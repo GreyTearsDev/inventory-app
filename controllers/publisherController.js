@@ -16,7 +16,7 @@ exports.publisher_detail = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
     db.getPublisher(publisherId),
-    db.getComicsFromPublisher(publisherId),
+    db.getPublisherComics(publisherId),
   ]);
 
   if (!publisher) {
@@ -139,7 +139,7 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
     db.getPublisher(publisherId),
-    db.getComicsFromPublisher(publisherId),
+    db.getPublisherComics(publisherId),
   ]);
 
   if (!publisher) {

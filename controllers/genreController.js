@@ -13,7 +13,7 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
     db.getGenre(genreId),
-    db.getComicsOfGenre(genreId),
+    db.getGenreComics(genreId),
   ]);
 
   if (!genre) {
@@ -126,7 +126,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   const [genre, comicsOfGenre] = await Promise.all([
     db.getGenre(genreId),
-    db.getComicsOfGenre(genreId),
+    db.getGenreComics(genreId),
   ]);
 
   if (!genre) {
