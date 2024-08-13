@@ -50,19 +50,13 @@ exports.author_create_post = [
     .isLength({ min: 1 })
     .withMessage("You must enter a Last Name")
     .escape(),
-  body("biography")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("You must enter a Biography")
-    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const author = new Author({
+    const author = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      biography: req.body.biography,
-    });
+    };
 
     if (!errors.isEmpty()) {
       res.render("author_form", {
@@ -73,19 +67,23 @@ exports.author_create_post = [
       return;
     }
 
-    const existingAuthor = await Author.findOne({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      biography: req.body.biography,
-    });
+    const existingAuthor = await db.getAuthorByName(
+      author.first_name,
+      author.last_name,
+    );
 
     if (existingAuthor) {
+      console.log("author already exists");
       res.redirect(existingAuthor.url);
       return;
     }
 
-    await author.save();
-    res.redirect(author.url);
+    await db.saveAuthor(author);
+    const createdAuthor = await db.getAuthorByName(
+      author.first_name,
+      author.last_name,
+    );
+    res.redirect(createdAuthor.url);
   }),
 ];
 

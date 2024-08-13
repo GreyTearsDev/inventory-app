@@ -102,6 +102,18 @@ exports.getPublisherByName = async (publisherName) => {
   }
 };
 
+exports.getAuthorByName = async (f_name, l_name) => {
+  const text = `SELECT * FROM authors 
+                WHERE first_name = $1
+                  AND last_name = $2`;
+  try {
+    const { rows } = await pool.query(text, [f_name, l_name]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.updateGenre = async (genreId, { name }) => {
   const text = `UPDATE genres
                 SET name = $2
@@ -200,12 +212,22 @@ exports.saveGenre = async ({ name }) => {
 };
 
 exports.savePublisher = async ({ name, headquarters }) => {
-  console.log(name, headquarters);
   const text = `
     INSERT INTO publishers(name, headquarters) VALUES($1, $2);
   `;
   try {
     await pool.query(text, [name, headquarters]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.saveAuthor = async ({ first_name, last_name }) => {
+  const text = `
+    INSERT INTO authors(first_name, last_name) VALUES($1, $2);
+  `;
+  try {
+    await pool.query(text, [first_name, last_name]);
   } catch (e) {
     console.log(e);
   }

@@ -27,16 +27,6 @@
       value="<%= author ? author.last_name : '' %>" 
     />
 
-    <label for="biography">Biography: </label>
-    <textarea 
-      id="biography" 
-      class="form-control" 
-      maxLength="400"
-      spellcheck="true" 
-      autocorrect="on" 
-      rows="10" 
-      cols="30" 
-      name="biography" ><%= author ? author.biography : '' %></textarea>
   </div>
   <button class="btn btn-primary" type="submit">Submit</button>
 <%- include("./partials/form_error_messages_display")%>
