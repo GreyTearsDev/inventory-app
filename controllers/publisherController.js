@@ -26,7 +26,7 @@ exports.publisher_detail = asyncHandler(async (req, res, next) => {
   }
 
   res.render("publisher_detail", {
-    title: `Publisher details (${publisher.name})`,
+    title: publisher.name,
     publisher: publisher,
     comic_list: comicsFromPublisher,
   });
