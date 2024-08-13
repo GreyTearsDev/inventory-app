@@ -45,9 +45,8 @@ exports.genre_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const genreName = req.body.name;
     const genre = {
-      name: genreName,
+      name: req.body.name,
     };
 
     if (!errors.isEmpty()) {
@@ -58,7 +57,7 @@ exports.genre_create_post = [
       });
       return;
     }
-    const existingGenre = await db.getGenreByName(genreName);
+    const existingGenre = await db.getGenreByName(genre.name);
 
     if (existingGenre) {
       res.redirect(existingGenre.url);
@@ -66,7 +65,7 @@ exports.genre_create_post = [
     }
 
     await db.saveGenre(genre);
-    const createdGenre = await db.getGenreByName(genreName);
+    const createdGenre = await db.getGenreByName(genre.name);
     res.redirect(createdGenre.url);
   }),
 ];
