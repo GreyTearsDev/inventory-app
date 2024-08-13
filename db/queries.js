@@ -136,6 +136,18 @@ exports.updatePublisher = async (publisherId, { name, headquarters }) => {
   }
 };
 
+exports.updateAuthor = async (authorId, { first_name, last_name }) => {
+  console.log("about to update");
+  const text = `UPDATE authors
+                SET first_name = $2, last_name = $3
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [authorId, first_name, last_name]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 exports.deleteGenre = async (genreId) => {
   const text = `DELETE FROM genres
                 WHERE id = $1`;

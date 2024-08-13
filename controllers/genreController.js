@@ -96,9 +96,8 @@ exports.genre_update_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const genreId = req.params.id;
-    const newGenreName = req.body.name;
     const genre = {
-      name: newGenreName,
+      name: req.body.name,
     };
 
     if (!errors.isEmpty()) {
@@ -112,13 +111,13 @@ exports.genre_update_post = [
     // check if genre with the same name already exists
     const existingGenre = await db.getGenreDetails(genreId);
 
-    if (existingGenre && existingGenre.name == newGenreName) {
+    if (existingGenre && existingGenre.name == genre.name) {
       res.redirect(existingGenre.url);
       return;
     }
 
     await db.updateGenre(genreId, genre);
-    const updatedGenre = await db.getGenreByName(newGenreName);
+    const updatedGenre = await db.getGenreByName(genre.name);
     res.redirect(updatedGenre.url);
   }),
 ];

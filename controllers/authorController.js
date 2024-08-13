@@ -73,7 +73,6 @@ exports.author_create_post = [
     );
 
     if (existingAuthor) {
-      console.log("author already exists");
       res.redirect(existingAuthor.url);
       return;
     }
@@ -88,9 +87,10 @@ exports.author_create_post = [
 ];
 
 exports.author_update_get = asyncHandler(async (req, res, next) => {
+  const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    Author.findById(req.params.id).exec(),
-    Comic.find({ author: req.params.id }, "title").sort({ title: 1 }).exec(),
+    db.getAuthorDetails(authorId),
+    db.getComicsOfAuthor(authorId),
   ]);
 
   if (!author) {
@@ -118,23 +118,17 @@ exports.author_update_post = [
     .isLength({ min: 1 })
     .withMessage("You must enter a Last Name")
     .escape(),
-  body("biography")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("You must enter a Biography")
-    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const author = new Author({
+    const authorId = req.params.id;
+    const author = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
-      biography: req.body.biography,
-      _id: req.params.id,
-    });
+    };
 
     if (!errors.isEmpty()) {
-      const comicsByAuthor = await Author.findById(req.params.id).exec();
+      const comicsByAuthor = await db.getComicsOfAuthor(authorId);
 
       res.render("author_form", {
         title: "Update author's info",
@@ -145,19 +139,24 @@ exports.author_update_post = [
       return;
     }
 
-    const existingAuthor = await Author.findOne({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      biography: req.body.biography,
-    }).collation({ locale: "en", strength: 3 });
+    // check if author with the same name already exists
+    const existingAuthor = await db.getAuthorDetails(authorId);
 
-    if (existingAuthor) {
+    if (
+      existingAuthor &&
+      existingAuthor.first_name == author.first_name &&
+      existingAuthor.last_name == author.last_name
+    ) {
       res.redirect(existingAuthor.url);
       return;
     }
 
-    await Author.findByIdAndUpdate(req.params.id, author);
-    res.redirect(author.url);
+    await db.updateAuthor(authorId, author);
+    const updatedAuthor = await db.getAuthorByName(
+      author.first_name,
+      author.last_name,
+    );
+    res.redirect(updatedAuthor.url);
   }),
 ];
 
