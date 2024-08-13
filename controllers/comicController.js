@@ -5,6 +5,7 @@ const Genre = require("../models/genre");
 const Volume = require("../models/volume");
 const { body, validationResult } = require("express-validator");
 const { ObjectId } = require("mongoose").Types;
+const db = require("../db/queries");
 
 const asyncHandler = require("express-async-handler");
 
@@ -12,11 +13,11 @@ exports.index = asyncHandler(async (req, res, next) => {
   // Get details about Comics, Authors, Publishers, and Genres
   const [comicCount, volumeCount, authorCount, publisherCount, genreCount] =
     await Promise.all([
-      Comic.countDocuments({}).exec(),
-      Volume.countDocuments({}).exec(),
-      Author.countDocuments({}).exec(),
-      Publisher.countDocuments({}).exec(),
-      Genre.countDocuments({}).exec(),
+      db.getComicCount("comics"),
+      db.getVolumeCount("volumes"),
+      db.getAuthorCount("authors"),
+      db.getPublisherCount("publishers"),
+      db.getGenreCount("genres"),
     ]);
 
   res.render("index", {
