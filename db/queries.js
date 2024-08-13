@@ -188,8 +188,20 @@ exports.getComic = async (comicId) => {
   }
 };
 
+exports.getComicByTitleAndAuthor = async ({ title, author }) => {
+  const text = `SELECT * FROM comics 
+                WHERE title = $1
+                  AND author_id = $2`;
+  try {
+    const { rows } = await pool.query(text, [title, author]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about comics of a certain genre
-exports.getComicsOfGenre = async (genreId) => {
+exports.getGenreComics = async (genreId) => {
   const text = `SELECT 
                   comics.id, 
                   comics.title,
@@ -221,7 +233,7 @@ exports.getAuthorComics = async (authorId) => {
 };
 
 // SELECT query for getting data about comics from a certain publisher
-exports.getComicsFromPublisher = async (publisherId) => {
+exports.getPublisherComics = async (publisherId) => {
   const text = `SELECT * FROM comics
                 WHERE comics.publisher_id = $1;`;
 
@@ -322,6 +334,55 @@ exports.saveAuthor = async ({ first_name, last_name }) => {
   `;
   try {
     await pool.query(text, [first_name, last_name]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.saveComic = async ({
+  title,
+  summary,
+  author,
+  publisher,
+  genres,
+  release_date,
+}) => {
+  const insertText = `
+    INSERT INTO comics(title, summary, release_date, author_id, publisher_id) VALUES($1, $2, $3, $4, $5);
+  `;
+
+  const selectComicIdText = `
+    SELECT id FROM comics 
+    WHERE comics.author_id = $1 
+      AND comics.publisher_id = $2
+      AND comics.title = $3
+      AND comics.summary = $4;
+  `;
+
+  const insertGenresText = `
+    INSERT INTO comics_genres(comic_id, genre_id) 
+    VALUES ($1, $2);
+  `;
+  try {
+    await pool.query(insertText, [
+      title,
+      summary,
+      release_date,
+      author,
+      publisher,
+    ]);
+    const result = await pool.query(selectComicIdText, [
+      author,
+      publisher,
+      title,
+      summary,
+    ]);
+
+    const comicId = result.rows[0].id;
+
+    for (const genreId of genres) {
+      await pool.query(insertGenresText, [comicId, genreId]);
+    }
   } catch (e) {
     console.log(e);
   }

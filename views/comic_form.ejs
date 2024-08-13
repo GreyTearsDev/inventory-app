@@ -49,8 +49,8 @@
         <option value="">Choose an author</option>
 
         <% author_list.forEach(author => { %>
-          <option value="<%= author._id %>" <%= 
-            selected_author_id && author._id.toString() === selected_author_id.toString() 
+          <option value="<%= author.id %>" <%= 
+            selected_author_id && author.id.toString() === selected_author_id.toString() 
             ? 'selected' 
             : '' 
           %> >
@@ -67,7 +67,7 @@
       <option value="">Choose a publisher</option>
 
       <% publisher_list.forEach(publisher => { %>
-        <option value="<%= publisher._id %>" <%= selected_publisher_id && publisher._id.toString() === selected_publisher_id.toString() ? 'selected' : '' %> >
+        <option value="<%= publisher.id %>" <%= selected_publisher_id && publisher.id.toString() === selected_publisher_id.toString() ? 'selected' : '' %> >
           <%= publisher.name %> - <%= publisher.headquarters %>
         </option>
       <% }) %>
@@ -88,11 +88,11 @@
             class="checkbox-input" 
             type="checkbox" 
             name="genres" 
-            id="<%= genre._id %>" 
-            value="<%= genre._id %>" 
+            id="<%= genre.id %>" 
+            value="<%= genre.id %>" 
             <%= genre.checked ? 'checked' : '' %>
           />
-          <label for="<%= genre._id %>">&nbsp;<%= genre.name %> </label>
+          <label for="<%= genre.id %>">&nbsp;<%= genre.name %> </label>
         </div>
       <% }) %>
     <% } %>

@@ -12,22 +12,21 @@ const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
   // Get details about Comics, Authors, Publishers, and Genres
-  const [comicCount, volumeCount, authorCount, publisherCount, genreCount] =
-    await Promise.all([
-      db.getAllComics("comics"),
-      db.getAllVolumes("volumes"),
-      db.getAllAuthors("authors"),
-      db.getAllPublishers("publishers"),
-      db.getAllGenres("genres"),
-    ]);
+  const [comics, volumes, authors, publishers, genres] = await Promise.all([
+    db.getAllComics("comics"),
+    db.getAllVolumes("volumes"),
+    db.getAllAuthors("authors"),
+    db.getAllPublishers("publishers"),
+    db.getAllGenres("genres"),
+  ]);
 
   res.render("index", {
     title: "ComiKing - Home",
-    comic_count: comicCount.length,
-    volume_count: volumeCount.length,
-    author_count: authorCount.length,
-    publisher_count: publisherCount.length,
-    genre_count: genreCount.length,
+    comic_count: comics.length,
+    volume_count: volumes.length,
+    author_count: authors.length,
+    publisher_count: publishers.length,
+    genre_count: genres.length,
   });
 });
 
@@ -69,10 +68,10 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.comic_create_get = asyncHandler(async (req, res, next) => {
-  const [authors, genres, publishers] = await Promise.all([
-    Author.find().sort({ first_name: 1 }).exec(),
-    Genre.find().sort({ name: 1 }).exec(),
-    Publisher.find().sort({ name: 1 }).exec(),
+  const [authors, publishers, genres] = await Promise.all([
+    db.getAllAuthors("authors"),
+    db.getAllPublishers("publishers"),
+    db.getAllGenres("genres"),
   ]);
 
   res.render("comic_form", {
@@ -126,24 +125,24 @@ exports.comic_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const comic = new Comic({
+    const comic = {
       title: req.body.title,
       summary: req.body.summary,
       author: req.body.author,
       publisher: req.body.publisher,
-      genres: req.body.genres.map((id) => new ObjectId(id)),
+      genres: req.body.genres,
       release_date: req.body.release_date,
-    });
+    };
 
     if (!errors.isEmpty()) {
-      const [authors, genres, publishers] = await Promise.all([
-        Author.find().sort({ first_name: 1 }).exec(),
-        Genre.find().sort({ name: 1 }).exec(),
-        Publisher.find().sort({ name: 1 }).exec(),
+      const [authors, publishers, genres] = await Promise.all([
+        db.getAllAuthors("authors"),
+        db.getAllPublishers("publishers"),
+        db.getAllGenres("genres"),
       ]);
 
       for (const gen of genres) {
-        if (req.body.genre.includes(gen._id.toString())) {
+        if (req.body.genre.includes(gen.id)) {
           gen.checked = "true";
         }
       }
@@ -160,8 +159,9 @@ exports.comic_create_post = [
       });
       return;
     } else {
-      await comic.save();
-      res.redirect(comic.url);
+      await db.saveComic(comic);
+      const savedComic = await db.getComicByTitleAndAuthor(comic);
+      res.redirect(savedComic.url);
     }
   }),
 ];
@@ -281,7 +281,6 @@ exports.comic_update_post = [
       publisher: req.body.publisher,
       genres: req.body.genres,
     });
-    console.log(existingComic);
 
     if (existingComic) {
       res.redirect(existingComic.url);
@@ -388,8 +387,6 @@ exports.comic_delete_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-
-  console.log(comic);
 
   res.render("comic_delete", {
     title: "Delete comic",
