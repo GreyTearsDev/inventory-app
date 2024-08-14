@@ -90,6 +90,17 @@ exports.getAuthor = async (authorId) => {
   }
 };
 
+// SELECT query for getting an volume by volume ID
+exports.getVolume = async (volumeId) => {
+  const text = "SELECT * FROM volumes WHERE id = $1";
+  try {
+    const { rows } = await pool.query(text, [volumeId]);
+    return rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting a genre by genre name (case-insensitive)
 exports.getGenreByName = async (genreName) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;
@@ -125,7 +136,7 @@ exports.getAuthorByName = async (f_name, l_name) => {
   }
 };
 
-// SELECT query for updating a genre by genre ID
+// UPDATE query for updating a genre by genre ID
 exports.updateGenre = async (genreId, { name }) => {
   const text = `UPDATE genres
                 SET name = $2
@@ -137,7 +148,31 @@ exports.updateGenre = async (genreId, { name }) => {
   }
 };
 
-// SELECT query for updating a publisher by publisher ID
+// UPDATE query for updating a volume by comic ID
+exports.updateVolume = async (
+  volumeId,
+  { volume_number, title, description, release_date },
+) => {
+  const text = `UPDATE volumes
+                SET volume_number = $2,
+                    title = $3,
+                    description = $4,
+                    release_date = $5
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [
+      volumeId,
+      volume_number,
+      title,
+      description,
+      release_date,
+    ]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// UPDATE query for updating a publisher by publisher ID
 exports.updatePublisher = async (publisherId, { name, headquarters }) => {
   const text = `UPDATE publishers
                 SET name = $2, headquarters = $3
@@ -149,7 +184,7 @@ exports.updatePublisher = async (publisherId, { name, headquarters }) => {
   }
 };
 
-// SELECT query for updating an author by author ID
+// UPDATE query for updating an author by author ID
 exports.updateAuthor = async (authorId, { first_name, last_name }) => {
   const text = `UPDATE authors
                 SET first_name = $2, last_name = $3
@@ -161,7 +196,7 @@ exports.updateAuthor = async (authorId, { first_name, last_name }) => {
   }
 };
 
-// SELECT query for updating a comic by comic ID
+// UPDATE query for updating a comic by comic ID
 exports.updateComic = async (
   comicId,
   { title, summary, author, publisher, genres, release_date },
@@ -188,7 +223,7 @@ exports.updateComic = async (
   }
 };
 
-// SELECT query for deleting a genre by genre ID
+// DELETE query for deleting a genre by genre ID
 exports.deleteGenre = async (genreId) => {
   const text = `DELETE FROM genres
                 WHERE id = $1`;
@@ -199,7 +234,7 @@ exports.deleteGenre = async (genreId) => {
   }
 };
 
-// SELECT query for deleting a publisher by publisher ID
+// DELETE query for deleting a publisher by publisher ID
 exports.deletePublisher = async (publisherId) => {
   const text = `DELETE FROM publishers
                 WHERE id = $1`;
@@ -210,7 +245,7 @@ exports.deletePublisher = async (publisherId) => {
   }
 };
 
-// SELECT query for deleting an author by author ID
+// DELETE query for deleting an author by author ID
 exports.deleteAuthor = async (authorId) => {
   const text = `DELETE FROM authors
                 WHERE id = $1`;
@@ -221,7 +256,7 @@ exports.deleteAuthor = async (authorId) => {
   }
 };
 
-// SELECT query for deleting a comic by comic ID
+// DELETE query for deleting a comic by comic ID
 exports.deleteComic = async (comicId) => {
   const text = `DELETE FROM comics
                 WHERE id = $1`;
@@ -268,7 +303,8 @@ exports.getGenreComics = async (genreId) => {
                   comics.url
                 FROM comics LEFT JOIN comics_genres AS cg 
                             ON comics.id = cg.comic_id 
-                   WHERE cg.genre_id = $1`;
+                   WHERE cg.genre_id = $1
+                   ORDER BY comics.title`;
   try {
     const { rows } = await pool.query(text, [genreId]);
     return rows;
@@ -279,7 +315,9 @@ exports.getGenreComics = async (genreId) => {
 
 // SELECT query for getting data about comics of a certain author
 exports.getAuthorComics = async (authorId) => {
-  const text = `SELECT * FROM comics WHERE author_id = $1`;
+  const text = `SELECT * FROM comics
+                WHERE author_id = $1
+                ORDER BY comics.title`;
   try {
     const { rows } = await pool.query(text, [authorId]);
     return rows;
@@ -291,7 +329,8 @@ exports.getAuthorComics = async (authorId) => {
 // SELECT query for getting data about comics from a certain publisher
 exports.getPublisherComics = async (publisherId) => {
   const text = `SELECT * FROM comics
-                WHERE comics.publisher_id = $1;`;
+                WHERE comics.publisher_id = $1
+                ORDER BY comics.title;`;
 
   try {
     const { rows } = await pool.query(text, [publisherId]);
@@ -343,7 +382,8 @@ exports.getComicGenres = async (comicId) => {
   const text = `SELECT id, name FROM genres
                 LEFT JOIN comics_genres AS cg 
                       ON genres.id = cg.genre_id
-                WHERE cg.comic_id = $1;`;
+                WHERE cg.comic_id = $1
+                ORDER BY name;`;
 
   try {
     const { rows } = await pool.query(text, [comicId]);
@@ -356,7 +396,8 @@ exports.getComicGenres = async (comicId) => {
 // SELECT query for getting data about volumes from a certain comic
 exports.getComicVolumes = async (comicId) => {
   const text = `SELECT * FROM volumes
-                WHERE volumes.comic_id = $1;`;
+                WHERE volumes.comic_id = $1
+                ORDER BY volume_number;`;
 
   try {
     const { rows } = await pool.query(text, [comicId]);

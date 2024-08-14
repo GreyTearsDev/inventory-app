@@ -1,11 +1,14 @@
-const Volume = require("../models/volume");
-const Comic = require("../models/comic");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const db = require("../db/queries");
+const date = require("../util/date_formatting");
 
 exports.volume_detail = asyncHandler(async (req, res, next) => {
-  const volume = await Volume.findById(req.params.id).exec();
-  const associatedComic = await Comic.findOne({ volumes: volume._id }).exec();
+  const volumeId = req.params.id;
+  const volume = await db.getVolume(volumeId);
+  const volumeReleaseDate = date.formJSDateToStringDMY(volume.release_date);
+
+  const associatedComic = await db.getComic(volume.comic_id);
 
   if (!volume) {
     const err = new Error("Volume not found");
@@ -22,6 +25,7 @@ exports.volume_detail = asyncHandler(async (req, res, next) => {
   res.render("volume_detail", {
     title: "Volume details",
     volume: volume,
+    volume_release_date: volumeReleaseDate,
     comic: associatedComic,
   });
 });
@@ -62,11 +66,16 @@ exports.volume_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.volume_update_get = asyncHandler(async (req, res, next) => {
-  const volume = await Volume.findById(req.params.id).exec();
+  const volumeId = req.params.id;
+  const volume = await db.getVolume(volumeId);
+  const currentVolumeNumber = volume.volume_number;
+  const volumeReleaseDate = date.fromJSDateToStringYMD(volume.release_date);
 
   res.render("volume_form", {
     title: "Update volume",
     volume: volume,
+    last_volume_number: currentVolumeNumber === 1 ? 0 : currentVolumeNumber - 1,
+    volume_release_date: volumeReleaseDate,
     errors: [],
   });
 });
@@ -101,24 +110,57 @@ exports.volume_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const volume = new Volume({
+    const volumeId = req.params.id;
+    const volumeToUpdate = await db.getVolume(volumeId);
+
+    const volumeList = await db.getAllVolumes(volumeToUpdate.comic_id); // all existing volumes
+    const currentVolumeNumber = volumeToUpdate.volume_number;
+    const currentVolumeReleaseDate = date.fromJSDateToStringYMD(
+      volumeToUpdate.release_date,
+    );
+
+    const newVolumeInfo = {
       volume_number: req.body.volume_number || undefined,
       title: req.body.volume_title || undefined,
       description: req.body.volume_description || undefined,
       release_date: req.body.volume_release_date || undefined,
-      _id: req.params.id,
-    });
+    };
 
     if (!errors.isEmpty()) {
       res.render("volume_form", {
         title: "Update volume",
-        volume: volume,
-        errors: errors.array(),
+        volume: newVolumeInfo,
+        last_volume_number:
+          currentVolumeNumber === 1 ? 0 : currentVolumeNumber - 1,
+        volume_release_date: currentVolumeReleaseDate,
+        errors: [],
       });
       return;
     }
 
-    await Volume.findByIdAndUpdate(req.params.id, volume);
-    res.redirect(volume.url);
+    // Check if a volume with the same number already exists
+    const existingVolume = volumeList.find((volume) => volume.id == volumeId);
+
+    // Check if new release date is the same as the old one already stored
+    const releaseDatesAreEqual =
+      date.fromJSDateToStringYMD(volumeToUpdate.release_date) ===
+      date.fromJSDateToStringYMD(new Date(newVolumeInfo.release_date));
+
+    // Check if the rest of new info is exactly the same as the info already stored
+    const infoIsTheSame =
+      volumeToUpdate.volume_number == newVolumeInfo.volume_number &&
+      volumeToUpdate.title == newVolumeInfo.title &&
+      volumeToUpdate.description == newVolumeInfo.description &&
+      releaseDatesAreEqual;
+
+    if (existingVolume && infoIsTheSame) {
+      res.redirect(existingVolume.url);
+      return;
+    }
+
+    // Update the volume and redirect to the comic's detail page
+    await db.updateVolume(volumeToUpdate.id, newVolumeInfo);
+    const comic = await db.getComic(volumeToUpdate.comic_id);
+    res.redirect(comic.url);
   }),
 ];
