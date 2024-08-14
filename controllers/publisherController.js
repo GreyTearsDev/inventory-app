@@ -4,23 +4,24 @@ const db = require("../db/queries");
 
 // List all currently available publishers
 exports.publisher_list = asyncHandler(async (req, res, next) => {
-  const allPublishers = await db.getAllPublishers();
-
+  const allPublishers = await db.getAllPublishers(); // Fetch all publishers from the database
   res.render("publisher_list", {
     title: "Publishers",
     publisher_list: allPublishers,
-  });
+  }); // Render the publisher list view
 });
 
+// Display details for a specific publisher
 exports.publisher_detail = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getPublisher(publisherId),
-    db.getPublisherComics(publisherId),
+    db.getPublisher(publisherId), // Fetch publisher details
+    db.getPublisherComics(publisherId), // Fetch comics from the publisher
   ]);
 
   if (!publisher) {
-    const err = new Error("Comic not found");
+    // Handle case where publisher is not found
+    const err = new Error("Publisher not found");
     err.status = 404;
     return next(err);
   }
@@ -32,6 +33,7 @@ exports.publisher_detail = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Display form for creating a new publisher
 exports.publisher_create_get = (req, res, next) => {
   res.render("publisher_form", {
     title: "Create new publisher",
@@ -40,6 +42,7 @@ exports.publisher_create_get = (req, res, next) => {
   });
 };
 
+// Handle form submission for creating a new publisher
 exports.publisher_create_post = [
   body("name", "Publisher's name field must be filled")
     .trim()
@@ -48,13 +51,14 @@ exports.publisher_create_post = [
   body("headquarters").trim().escape(),
 
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Validate request body
     const publisher = {
       name: req.body.name,
       headquarters: req.body.headquarters,
     };
 
-    if (!errors.isEmpty) {
+    if (!errors.isEmpty()) {
+      // Handle validation errors
       res.render("publisher_form", {
         title: "Create new publisher",
         publisher: undefined,
@@ -62,24 +66,29 @@ exports.publisher_create_post = [
       });
       return;
     }
-    // check if publisher already exists
+
+    // Check if the publisher already exists
     const existingPublisher = await db.getPublisherByName(publisher.name);
 
     if (existingPublisher) {
+      // Redirect if publisher already exists
       res.redirect(existingPublisher.url);
       return;
     }
-    await db.savePublisher(publisher);
+
+    await db.savePublisher(publisher); // Save new publisher to the database
     const createdPublisher = await db.getPublisherByName(publisher.name);
     res.redirect(createdPublisher.url);
   }),
 ];
 
+// Display form for updating an existing publisher's information
 exports.publisher_update_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const publisher = await db.getPublisher(publisherId);
 
   if (!publisher) {
+    // Handle case where publisher is not found
     const err = new Error("Publisher not found");
     err.status = 404;
     return next(err);
@@ -92,6 +101,7 @@ exports.publisher_update_get = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Handle form submission for updating an existing publisher
 exports.publisher_update_post = [
   body("name", "Publisher's name field must be filled")
     .trim()
@@ -100,7 +110,7 @@ exports.publisher_update_post = [
   body("headquarters").trim().escape(),
 
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Validate request body
     const publisherId = req.params.id;
 
     const publisher = {
@@ -108,7 +118,8 @@ exports.publisher_update_post = [
       headquarters: req.body.headquarters,
     };
 
-    if (!errors.isEmpty) {
+    if (!errors.isEmpty()) {
+      // Handle validation errors
       res.render("publisher_form", {
         title: "Update publisher info",
         publisher: publisher,
@@ -117,33 +128,35 @@ exports.publisher_update_post = [
       return;
     }
 
-    // check if publisher already exists
+    // Check if the publisher with the same name and headquarters already exists
     const existingPublisher = await db.getPublisher(publisherId);
 
     if (
       existingPublisher &&
-      existingPublisher.name == publisher.name &&
-      existingPublisher.headquarters == publisher.headquarters
+      existingPublisher.name === publisher.name &&
+      existingPublisher.headquarters === publisher.headquarters
     ) {
       res.redirect(existingPublisher.url);
       return;
     }
 
-    await db.updatePublisher(publisherId, publisher);
+    await db.updatePublisher(publisherId, publisher); // Update publisher in the database
     const updatedPublisher = await db.getPublisherByName(publisher.name);
     res.redirect(updatedPublisher.url);
   }),
 ];
 
+// Display form for confirming publisher deletion
 exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getPublisher(publisherId),
-    db.getPublisherComics(publisherId),
+    db.getPublisher(publisherId), // Fetch publisher details
+    db.getPublisherComics(publisherId), // Fetch comics from the publisher
   ]);
 
   if (!publisher) {
-    const err = new Error("publisher not found");
+    // Handle case where publisher is not found
+    const err = new Error("Publisher not found");
     err.status = 404;
     return next(err);
   }
@@ -155,16 +168,18 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Handle form submission for deleting a publisher
 exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
   const publisherId = req.body.publisherid;
   const publisher = await db.getPublisher(publisherId);
 
   if (!publisher) {
-    const err = new Error("publisher not found");
-    err.stauts = 404;
+    // Handle case where publisher is not found
+    const err = new Error("Publisher not found");
+    err.status = 404;
     return next(err);
   }
 
-  await db.deletePublisher(publisherId);
-  res.redirect("/catalog/publishers");
+  await db.deletePublisher(publisherId); // Delete publisher from the database
+  res.redirect("/catalog/publishers"); // Redirect to publishers list
 });
