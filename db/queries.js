@@ -285,7 +285,8 @@ exports.getPublisherComics = async (publisherId) => {
 exports.getComicPublisher = async (comicId) => {
   const text = `SELECT 
                   publishers.name, 
-                  publishers.headquarters 
+                  publishers.headquarters, 
+                  publishers.url
                 FROM publishers 
                 LEFT JOIN comics
                   ON comics.publisher_id = publishers.id
@@ -300,7 +301,9 @@ exports.getComicPublisher = async (comicId) => {
 
 exports.getComicAuthor = async (comicId) => {
   const text = `SELECT 
-                      authors.name
+                      authors.name,
+                      authors.id,
+                      authors.url
                 FROM authors
                 LEFT JOIN comics
                   ON comics.author_id = authors.id
