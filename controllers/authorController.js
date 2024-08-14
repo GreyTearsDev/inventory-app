@@ -9,14 +9,16 @@ exports.author_list = asyncHandler(async (req, res, next) => {
   res.render("author_list", { title: "Authors", author_list: allAuthors });
 });
 
+// Display details for a specific author
 exports.author_detail = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId),
-    db.getAuthorComics(authorId),
+    db.getAuthor(authorId), // Fetch author details
+    db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
   if (!author) {
+    // Handle case where author is not found
     const err = new Error("Author not found");
     err.status = 404;
     return next(err);
@@ -29,6 +31,7 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Display form for creating a new author
 exports.author_create_get = (req, res, next) => {
   res.render("author_form", {
     title: "Add a new author",
@@ -37,6 +40,7 @@ exports.author_create_get = (req, res, next) => {
   });
 };
 
+// Handle form submission for creating a new author
 exports.author_create_post = [
   body("first_name")
     .trim()
@@ -50,13 +54,14 @@ exports.author_create_post = [
     .escape(),
 
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Validate request body
     const author = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
     };
 
     if (!errors.isEmpty()) {
+      // Handle validation errors
       res.render("author_form", {
         title: "Add a new author",
         author: undefined,
@@ -71,11 +76,12 @@ exports.author_create_post = [
     );
 
     if (existingAuthor) {
+      // Redirect if author already exists
       res.redirect(existingAuthor.url);
       return;
     }
 
-    await db.saveAuthor(author);
+    await db.saveAuthor(author); // Save new author to the database
     const createdAuthor = await db.getAuthorByName(
       author.first_name,
       author.last_name,
@@ -84,14 +90,16 @@ exports.author_create_post = [
   }),
 ];
 
+// Display form for updating an existing author's information
 exports.author_update_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId),
-    db.getAuthorComics(authorId),
+    db.getAuthor(authorId), // Fetch author details
+    db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
   if (!author) {
+    // Handle case where author is not found
     const err = new Error("Author not found");
     err.status = 404;
     return next(err);
@@ -105,6 +113,7 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Handle form submission for updating an existing author
 exports.author_update_post = [
   body("first_name")
     .trim()
@@ -118,7 +127,7 @@ exports.author_update_post = [
     .escape(),
 
   asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req); // Validate request body
     const authorId = req.params.id;
     const author = {
       first_name: req.body.first_name,
@@ -126,6 +135,7 @@ exports.author_update_post = [
     };
 
     if (!errors.isEmpty()) {
+      // Handle validation errors
       const comicsByAuthor = await db.getAuthorComics(authorId);
 
       res.render("author_form", {
@@ -137,7 +147,7 @@ exports.author_update_post = [
       return;
     }
 
-    // check if author with the same name already exists
+    // Check if author with the same name already exists
     const existingAuthor = await db.getAuthor(authorId);
 
     if (
@@ -149,7 +159,7 @@ exports.author_update_post = [
       return;
     }
 
-    await db.updateAuthor(authorId, author);
+    await db.updateAuthor(authorId, author); // Update author in the database
     const updatedAuthor = await db.getAuthorByName(
       author.first_name,
       author.last_name,
@@ -158,14 +168,16 @@ exports.author_update_post = [
   }),
 ];
 
+// Display form for confirming author deletion
 exports.author_delete_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId),
-    db.getAuthorComics(authorId),
+    db.getAuthor(authorId), // Fetch author details
+    db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
   if (!author) {
+    // Handle case where author is not found
     const err = new Error("Author not found");
     err.status = 404;
     return next(err);
@@ -178,16 +190,18 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
   });
 });
 
+// Handle form submission for deleting an author
 exports.author_delete_post = asyncHandler(async (req, res, next) => {
   const authorId = req.body.authorid;
   const author = await db.getAuthor(authorId);
 
   if (!author) {
+    // Handle case where author is not found
     const err = new Error("Author not found");
-    err.stauts = 404;
+    err.status = 404;
     return next(err);
   }
 
-  await db.deleteAuthor(authorId);
-  res.redirect("/catalog/authors");
+  await db.deleteAuthor(authorId); // Delete author from the database
+  res.redirect("/catalog/authors"); // Redirect to authors list
 });
