@@ -10,9 +10,9 @@
       class="form-control" 
       type="number" 
       name="volume_number" 
-      min="0" 
+      min="1" 
       required
-      value="<%= volume ? volume.volume_number : '0'%>"
+      value="<%= last_volume_number ? last_volume_number + 1 : '1'%>"
     />
 
     <label for="volume_title">* Title</label>
@@ -34,6 +34,7 @@
       class="form-control"
       name="release_date"
       required
+      value="<%= volume_release_date%>"
      />
 
     <label for="volume_description">* Description</label>

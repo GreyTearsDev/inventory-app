@@ -357,20 +357,19 @@ exports.comic_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 // == COMIC_VOLUME RELATED FUNCTIONALITY ==//
-exports.comic_volume_create_get = (req, res, next) => {
-  const volume = new Volume({
-    volume_number: undefined,
-    title: undefined,
-    description: undefined,
-    release_date: undefined,
-  });
+exports.comic_volume_create_get = asyncHandler(async (req, res, next) => {
+  const comicId = req.params.id;
+  const volumeList = await db.getAllVolumes(comicId);
+  const lastVolume = volumeList[volumeList.length - 1] || undefined;
 
   res.render("volume_form", {
     title: "Create new volume",
-    volume: volume,
+    last_volume_number: lastVolume.volume_number,
+    volume_release_date: undefined,
+    volume: undefined,
     errors: [],
   });
-};
+});
 
 exports.comic_volume_create_post = [
   body("volume_number", "Volume number field must be filled")
@@ -402,43 +401,49 @@ exports.comic_volume_create_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    const volume = new Volume({
-      volume_number: req.body.volume_number || undefined,
+    const comicId = req.params.id;
+    const volumeList = await db.getAllVolumes(comicId);
+    const lastVolume = volumeList[volumeList.length - 1] || undefined;
+
+    const volume = {
       title: req.body.volume_title || undefined,
+      volume_number: req.body.volume_number || undefined,
       description: req.body.volume_description || undefined,
-      release_date: req.body.volume_release_date || undefined,
-    });
+      release_date: req.body.release_date || undefined,
+    };
 
     if (!errors.isEmpty()) {
       res.render("volume_form", {
         title: "Create a new volume",
         volume: volume,
+        last_volume_number: lastVolume.volume_number,
+        volume_release_date: volume.release_date,
         errors: errors.array(),
       });
       return;
     }
     // Check if a volume with the same number already exists
-    const comic = await Comic.findById(req.params.id, "volumes")
-      .populate("volumes")
-      .exec();
-
-    const existingVolume = comic.volumes.find(
+    const existingVolume = volumeList.find(
       (volume) => volume.volume_number == req.body.volume_number,
     );
 
     if (existingVolume) {
-      const error = { msg: "A volume with this number already exists" };
+      const error = {
+        msg: `A volume with this number (${existingVolume.volume_number}) already exists`,
+      };
 
       res.render("volume_form", {
         title: "Create a new volume",
         volume: volume,
+        last_volume_number: lastVolume.volume_number,
+        volume_release_date: volume.release_date,
         errors: [error],
       });
       return;
     }
 
-    await volume.save();
-    await Comic.updateOne({ _id: comic._id }, { $push: { volumes: volume } });
+    await db.saveVolume(comicId, volume);
+    const comic = await db.getComic(comicId);
     res.redirect(comic.url);
   }),
 ];

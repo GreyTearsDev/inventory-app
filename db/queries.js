@@ -39,11 +39,13 @@ exports.getAllComics = async () => {
   }
 };
 
-exports.getAllVolumes = async () => {
+exports.getAllVolumes = async (comicId) => {
+  const text = `SELECT * FROM volumes
+       WHERE comic_id = $1
+       ORDER BY volume_number`;
   try {
-    const { rows } = await pool.query(
-      `SELECT * FROM volumes ORDER BY volume_number`,
-    );
+    const { rows } = await pool.query(text, [comicId]);
+
     return rows;
   } catch (e) {
     console.log(e);
@@ -411,6 +413,27 @@ exports.saveComic = async ({
 
     const comicId = result.rows[0].id;
     await insertComicGenres(comicId, genres);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.saveVolume = async (
+  comicId,
+  { volume_number, title, description, release_date },
+) => {
+  const text = `
+    INSERT INTO volumes(comic_id, volume_number, title, description, release_date) 
+    VALUES($1, $2, $3, $4, $5);
+  `;
+  try {
+    await pool.query(text, [
+      comicId,
+      volume_number,
+      title,
+      description,
+      release_date,
+    ]);
   } catch (e) {
     console.log(e);
   }
