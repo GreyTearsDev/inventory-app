@@ -10,6 +10,7 @@ exports.getAllGenres = async () => {
   }
 };
 
+// SELECT query for getting all publishers ordered by name
 exports.getAllPublishers = async () => {
   try {
     const { rows } = await pool.query(`SELECT * FROM publishers ORDER BY name`);
@@ -19,6 +20,7 @@ exports.getAllPublishers = async () => {
   }
 };
 
+// SELECT query for getting all authors ordered by first name
 exports.getAllAuthors = async () => {
   try {
     const { rows } = await pool.query(
@@ -30,6 +32,7 @@ exports.getAllAuthors = async () => {
   }
 };
 
+// SELECT query for getting all comics ordered by title
 exports.getAllComics = async () => {
   try {
     const { rows } = await pool.query(`SELECT * FROM comics ORDER BY title`);
@@ -39,6 +42,7 @@ exports.getAllComics = async () => {
   }
 };
 
+// SELECT query for getting all volumes for a specific comic ordered by volume number
 exports.getAllVolumes = async (comicId) => {
   const text = `SELECT * FROM volumes
        WHERE comic_id = $1
@@ -64,6 +68,7 @@ exports.getGenre = async (genreId) => {
   }
 };
 
+// SELECT query for getting a publisher by publisher ID
 exports.getPublisher = async (publisherId) => {
   const text = "SELECT * FROM publishers WHERE id = $1";
   try {
@@ -74,6 +79,7 @@ exports.getPublisher = async (publisherId) => {
   }
 };
 
+// SELECT query for getting an author by author ID
 exports.getAuthor = async (authorId) => {
   const text = "SELECT * FROM authors WHERE id = $1";
   try {
@@ -84,6 +90,7 @@ exports.getAuthor = async (authorId) => {
   }
 };
 
+// SELECT query for getting a genre by genre name (case-insensitive)
 exports.getGenreByName = async (genreName) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;
   try {
@@ -94,6 +101,7 @@ exports.getGenreByName = async (genreName) => {
   }
 };
 
+// SELECT query for getting a publisher by publisher name (case-insensitive)
 exports.getPublisherByName = async (publisherName) => {
   const text = `SELECT * FROM publishers WHERE name ILIKE $1`;
   try {
@@ -104,6 +112,7 @@ exports.getPublisherByName = async (publisherName) => {
   }
 };
 
+// SELECT query for getting an author by first name and last name
 exports.getAuthorByName = async (f_name, l_name) => {
   const text = `SELECT * FROM authors 
                 WHERE first_name = $1
@@ -116,6 +125,7 @@ exports.getAuthorByName = async (f_name, l_name) => {
   }
 };
 
+// SELECT query for updating a genre by genre ID
 exports.updateGenre = async (genreId, { name }) => {
   const text = `UPDATE genres
                 SET name = $2
@@ -127,6 +137,7 @@ exports.updateGenre = async (genreId, { name }) => {
   }
 };
 
+// SELECT query for updating a publisher by publisher ID
 exports.updatePublisher = async (publisherId, { name, headquarters }) => {
   const text = `UPDATE publishers
                 SET name = $2, headquarters = $3
@@ -138,6 +149,7 @@ exports.updatePublisher = async (publisherId, { name, headquarters }) => {
   }
 };
 
+// SELECT query for updating an author by author ID
 exports.updateAuthor = async (authorId, { first_name, last_name }) => {
   const text = `UPDATE authors
                 SET first_name = $2, last_name = $3
@@ -149,6 +161,7 @@ exports.updateAuthor = async (authorId, { first_name, last_name }) => {
   }
 };
 
+// SELECT query for updating a comic by comic ID
 exports.updateComic = async (
   comicId,
   { title, summary, author, publisher, genres, release_date },
@@ -175,6 +188,7 @@ exports.updateComic = async (
   }
 };
 
+// SELECT query for deleting a genre by genre ID
 exports.deleteGenre = async (genreId) => {
   const text = `DELETE FROM genres
                 WHERE id = $1`;
@@ -185,6 +199,7 @@ exports.deleteGenre = async (genreId) => {
   }
 };
 
+// SELECT query for deleting a publisher by publisher ID
 exports.deletePublisher = async (publisherId) => {
   const text = `DELETE FROM publishers
                 WHERE id = $1`;
@@ -195,6 +210,7 @@ exports.deletePublisher = async (publisherId) => {
   }
 };
 
+// SELECT query for deleting an author by author ID
 exports.deleteAuthor = async (authorId) => {
   const text = `DELETE FROM authors
                 WHERE id = $1`;
@@ -205,6 +221,7 @@ exports.deleteAuthor = async (authorId) => {
   }
 };
 
+// SELECT query for deleting a comic by comic ID
 exports.deleteComic = async (comicId) => {
   const text = `DELETE FROM comics
                 WHERE id = $1`;
@@ -215,6 +232,7 @@ exports.deleteComic = async (comicId) => {
   }
 };
 
+// SELECT query for getting a comic by comic ID
 exports.getComic = async (comicId) => {
   const text = "SELECT * FROM comics WHERE id = $1";
   try {
@@ -225,6 +243,7 @@ exports.getComic = async (comicId) => {
   }
 };
 
+// SELECT query for getting a comic by title and author ID
 exports.getComicByTitleAndAuthor = async ({ title, author }) => {
   const text = `SELECT * FROM comics 
                 WHERE title = $1
@@ -282,6 +301,7 @@ exports.getPublisherComics = async (publisherId) => {
   }
 };
 
+// SELECT query for getting the publisher of a comic by comic ID
 exports.getComicPublisher = async (comicId) => {
   const text = `SELECT 
                   publishers.name, 
@@ -299,6 +319,7 @@ exports.getComicPublisher = async (comicId) => {
   }
 };
 
+// SELECT query for getting the author of a comic by comic ID
 exports.getComicAuthor = async (comicId) => {
   const text = `SELECT 
                       authors.name,
@@ -357,6 +378,7 @@ exports.saveGenre = async ({ name }) => {
   }
 };
 
+// INSERT INTO query for saving a new publisher
 exports.savePublisher = async ({ name, headquarters }) => {
   const text = `
     INSERT INTO publishers(name, headquarters) VALUES($1, $2);
@@ -368,6 +390,7 @@ exports.savePublisher = async ({ name, headquarters }) => {
   }
 };
 
+// INSERT INTO query for saving a new author
 exports.saveAuthor = async ({ first_name, last_name }) => {
   const text = `
     INSERT INTO authors(first_name, last_name) VALUES($1, $2);
@@ -379,6 +402,7 @@ exports.saveAuthor = async ({ first_name, last_name }) => {
   }
 };
 
+// INSERT INTO query for saving a new comic and its genres
 exports.saveComic = async ({
   title,
   summary,
@@ -421,6 +445,7 @@ exports.saveComic = async ({
   }
 };
 
+// INSERT INTO query for saving a new volume
 exports.saveVolume = async (
   comicId,
   { volume_number, title, description, release_date },
@@ -442,6 +467,7 @@ exports.saveVolume = async (
   }
 };
 
+// UPDATE query for updating genres of a comic
 async function updateComicGenres(comicId, genres) {
   try {
     await deleteComicGenres(comicId);
@@ -451,6 +477,7 @@ async function updateComicGenres(comicId, genres) {
   }
 }
 
+// DELETE query for removing genres from a comic
 async function deleteComicGenres(comicId) {
   const deleteGenresText = `
     DELETE FROM comics_genres 
@@ -463,6 +490,8 @@ async function deleteComicGenres(comicId) {
     console.log(e);
   }
 }
+
+// INSERT query for adding genres to a comic
 async function insertComicGenres(comicId, genres) {
   const insertGenresText = `
     INSERT INTO comics_genres(comic_id, genre_id)  VALUES ($1, $2);
