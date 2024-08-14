@@ -57,7 +57,7 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  const comicReleaseDate = date.format(comic.release_date);
+  const comicReleaseDate = date.formJSDateToStringDMY(comic.release_date);
 
   // Render the comic detail page with all fetched information
   res.render("comic_detail", {
@@ -212,7 +212,7 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const comicReleaseDate = date.format_dash(date.format(comic.release_date));
+  const comicReleaseDate = date.fromJSDateToStringYMD(comic.release_date);
 
   // Render the update form with current comic data
   res.render("comic_form", {
@@ -300,9 +300,7 @@ exports.comic_update_post = [
         });
       }
 
-      const comicReleaseDate = date.format_dash(
-        date.format(comic.release_date),
-      );
+      const comicReleaseDate = date.fromJSDateToStringYMD(comic.release_date);
 
       res.render("comic_form", {
         title: "Add a new comic",
@@ -334,8 +332,8 @@ exports.comic_update_post = [
       updatedGenresIds,
     );
     const releaseDatesAreEqual =
-      date.format(existingComic.release_date) ==
-      date.format(comic.release_date);
+      date.formJSDateToStringDMY(existingComic.release_date) ==
+      date.formJSDateToStringDMY(comic.release_date);
 
     // If no changes, redirect to existing comic's URL
     if (
