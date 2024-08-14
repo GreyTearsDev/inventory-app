@@ -8,31 +8,31 @@ const { DateTime } = require("luxon");
  *
  * @example
  * // Example usage
- * format(new Date(2024, 7, 14)); // returns "14-08-2024"
+ * formJSDateToStringDYM(new Date(2024, 7, 14)); // returns "14-08-2024"
  */
-const format = (date) => {
+const formJSDateToStringDMY = (date) => {
   return date ? DateTime.fromJSDate(date).toFormat("dd-MM-yyyy") : "";
 };
 
 /**
- * Converts a date string in "dd-MM-yyyy" format to a string in "yyyy-MM-dd" format.
+ * Formats a JavaScript Date object into a string with the format "yyyy-MM-dd".
  *
- * @param {string} date - The date string to convert, expected in "dd-MM-yyyy" format.
+ * @param {Date} date - The date to format.
  * @returns {string} - A string representing the date in "yyyy-MM-dd" format. If the input date string is null or undefined, returns an empty string.
  *
  * @example
  * // Example usage
- * format_dash("14-08-2024"); // returns "2024-08-14"
+ * fromDMYToYMD(new Date("14-08-2024")); // returns "2024-08-14"
  */
-const format_dash = (date) => {
+const fromJSDateToStringYMD = (date) => {
   if (!date) return "";
-  console.log("inside", date);
+  const stringDate = formJSDateToStringDMY(date);
 
-  const [day, month, year] = date.split("-");
+  const [day, month, year] = stringDate.split("-");
   return `${year}-${month}-${day}`;
 };
 
 module.exports = {
-  format,
-  format_dash,
+  formJSDateToStringDMY,
+  fromJSDateToStringYMD,
 };
