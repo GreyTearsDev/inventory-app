@@ -449,7 +449,7 @@ exports.comic_volume_create_post = [
       title: req.body.volume_title || undefined,
       volume_number: req.body.volume_number || undefined,
       description: req.body.volume_description || undefined,
-      release_date: req.body.release_date || undefined,
+      release_date: req.body.volume_release_date || undefined,
     };
 
     // If there are validation errors, re-render the form with errors
@@ -458,7 +458,7 @@ exports.comic_volume_create_post = [
         title: "Create a new volume",
         volume: volume,
         last_volume_number: lastVolume ? lastVolume.volume_number : 0, // Handle case where no volumes exist
-        volume_release_date: volume.release_date,
+        volume_release_date: volume.volume_release_date,
         errors: errors.array(),
       });
       return;
@@ -478,7 +478,7 @@ exports.comic_volume_create_post = [
         title: "Create a new volume",
         volume: volume,
         last_volume_number: lastVolume ? lastVolume.volume_number : 0, // Handle case where no volumes exist
-        volume_release_date: volume.release_date,
+        volume_release_date: volume.volume_release_date,
         errors: [error],
       });
       return;
