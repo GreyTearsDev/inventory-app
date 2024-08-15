@@ -1,11 +1,26 @@
-<h1><%= title %></h1>
-<p>Welcome to <em>ComiKing</em>, an AWESOME Express website developed by <a href="https://github.com/GreyTearsDev">GreyTearsDev</a>.</p>
-<hr>
-<p>Currenty, we have the following record counts</p>
-<ul>
-  <li><strong>Comics: </strong><%=comic_count%></li>
-  <li><strong>Volumes: </strong><%=volume_count%></li>
-  <li><strong>Authors: </strong><%=author_count%></li>
-  <li><strong>Genres: </strong><%= genre_count%></li>
-  <li><strong>Publishers: </strong> <%=publisher_count%></li>
-</ul>
+<div class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] grid-rows-auto gap-6">
+  <a href="/catalog/comics">
+    <div class="bg-gray-900 h-40 rounded-lg px-6 py-4 relative transition-transform transform hover:scale-105 hover:shadow-lg">
+      <p class="text-6xl text-amber-400"><%=comic_count%></p>
+      <p>COMICS</p>
+      <p class="text-xs text-amber-300 absolute bottom-4"><%=volume_count%> Volumes</p>
+    </div>
+  </a>
+
+  <a href="/catalog/authors">
+    <div class="bg-gray-900 h-40 rounded-lg px-6 py-4 transition-transform transform hover:scale-105 hover:shadow-lg">
+    <p class="text-6xl text-amber-400"><%=comic_count%></p>
+    <p>AUTHORS</p>
+  </div>
+</a>
+  <a href="/catalog/publishers">
+    <div class="bg-gray-900 h-40 rounded-lg px-6 py-4 transition-transform transform hover:scale-105 hover:shadow-lg">
+    <p class="text-6xl text-amber-400"><%=comic_count%></p>
+    <p>PUBISHERS</p>
+  </div>
+</a>
+  <a href="/catalog/genres">
+    <div class="bg-gray-900 h-40 rounded-lg px-6 py-4 transition-transform transform hover:scale-105 hover:shadow-lg">
+    <p class="text-6xl text-amber-400"><%=comic_count%></p>
+    <p>GENRES</p>
+  </div>
