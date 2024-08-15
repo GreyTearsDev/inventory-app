@@ -1,7 +1,6 @@
 <% if (genre_list.length > 0) { %>
 
   <section class="flex flex-col gap-2 mx-8">
-    <h1><%= title %></h1>
     <% genre_list.forEach(genre => { %>
         <a href="<%=genre.url %>">
           <article class="bg-gray-900 h-30 rounded-lg px-6 py-4  transition-transform transform hover:scale-105 hover:shadow-lg">

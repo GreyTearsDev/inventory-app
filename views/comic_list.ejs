@@ -1,7 +1,6 @@
   <% if (comic_list.length > 0) { %>
 
     <section class="flex flex-col gap-2 mx-8">
-      <h1><%= title %></h1>
       <% comic_list.forEach(comic => { %>
 
         <a href="<%=comic.url %>">
