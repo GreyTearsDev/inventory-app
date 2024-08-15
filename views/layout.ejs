@@ -8,7 +8,7 @@
   </head>
   <body class="bg-gray-50 
                grid 
-               grid-cols-[18rem_1fr] 
+               grid-cols-[minmax(150px,18rem)_1fr] 
                min-h-screen 
                grid-rows-[auto_1fr_auto]
                text-gray-700" >
@@ -32,7 +32,7 @@
     <aside class="pt-6 pl-10 flex flex-col gap-8">
       <%- include('./sidebar') %>
     </aside>
-    <main class="bg-blue-200">
+    <main class="py-6 px-10 text-gray-50">
       <%- body %>
     </main>
     <footer class="col-span-2 
