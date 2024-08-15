@@ -1,11 +1,13 @@
-<h1><%= title%></h1>
+<h1 class="text-4xl font-bold text-gray-900 mb-6"><%= title %></h1>
 
-<form method="POST">
+<form method="POST" class="bg-gray-900 p-8 rounded-lg shadow-md">
   <%- include("./partials/required_form_fields_warning") %>
-  <div class="form-group">
-    <label for="name">* Name: </label>
-    <input id="name" 
-      class="form-control" 
+  
+  <div class="form-group mb-6 text-gray-900">
+    <label for="name" class="block text-lg font-medium text-gray-50">* Name:</label>
+    <input 
+      id="name" 
+      class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50" 
       type="text" 
       maxLength="20"
       placeholder="Shounen, Mecha, etc." 
@@ -14,8 +16,8 @@
       value="<%= genre ? genre.name : '' %>" 
     />
   </div>
-  <button class="btn btn-primary" type="submit">Submit</button>
+  
+  <button class="bg-amber-400 text-white hover:bg-gray-50 hover:text-amber-400 font-bold py-2 px-4 rounded transition duration-150 ease-in-out" type="submit">Submit</button>
 
-<%- include("./partials/form_error_messages_display")%>
+  <%- include("./partials/form_error_messages_display") %>
 </form>
-
