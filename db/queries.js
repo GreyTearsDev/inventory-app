@@ -56,6 +56,18 @@ exports.getAllVolumes = async (comicId) => {
   }
 };
 
+// SELECT query for getting the total amount of volumes ind the database
+exports.getTotalVolumeCount = async () => {
+  const text = `SELECT COUNT(*) FROM volumes`;
+  try {
+    const { rows } = await pool.query(text);
+
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about a specific entry in a table
 // gets gerne detais via genre id
 exports.getGenre = async (genreId) => {

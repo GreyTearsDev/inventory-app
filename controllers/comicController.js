@@ -9,7 +9,7 @@ const asyncHandler = require("express-async-handler");
 exports.index = asyncHandler(async (req, res, next) => {
   const [comics, volumes, authors, publishers, genres] = await Promise.all([
     db.getAllComics(),
-    db.getAllVolumes(),
+    db.getTotalVolumeCount(), // returns the total amount of volumes in the database
     db.getAllAuthors(),
     db.getAllPublishers(),
     db.getAllGenres(),
@@ -17,9 +17,9 @@ exports.index = asyncHandler(async (req, res, next) => {
 
   // Render the home page with counts of each entity
   res.render("index", {
-    title: "ComiKing - Home",
+    title: "Home",
     comic_count: comics.length,
-    volume_count: volumes.length,
+    volume_count: volumes, // it is an integer, so no length property
     author_count: authors.length,
     publisher_count: publishers.length,
     genre_count: genres.length,
