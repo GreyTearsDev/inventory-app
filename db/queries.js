@@ -290,6 +290,18 @@ exports.deleteComic = async (comicId) => {
   }
 };
 
+// DELETE query for deleting all volumes by related to a specific comic ID
+exports.deleteAllComicVolumes = async (comicId) => {
+  console.log("delete all volumes from ", comicId);
+  const text = `DELETE FROM volumes
+                WHERE comic_id = $1`;
+  try {
+    await pool.query(text, [comicId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting a comic by comic ID
 exports.getComic = async (comicId) => {
   const text = "SELECT * FROM comics WHERE id = $1";
