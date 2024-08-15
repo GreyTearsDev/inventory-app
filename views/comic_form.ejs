@@ -1,59 +1,54 @@
-<h1><%= title%></h1>
+<h1 class="text-4xl font-bold text-gray-900 mb-6"><%= title %></h1>
 
-<form method="POST">
+<form method="POST" class="bg-gray-900 p-8 rounded-lg shadow-md">
   <%- include("./partials/required_form_fields_warning") %>
-  <div class="form-group">
-    <label for="title">* Title: </label>
+  
+  <div class="form-group mb-6 text-gray-900">
+    <label for="title" class="block text-lg font-medium text-gray-50">* Title:</label>
     <input 
       id="title" 
-      class="form-control" 
+      class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50 " 
       type="text" 
       maxLength="100"
       placeholder="e.g.: Naruto, Bakuman, etc." 
       name="title" 
       required 
       value="<%= comic ? comic.title : '' %>" 
-      />
+    />
 
-    <label for="summary">* Summary: </label>
+    <label for="summary" class="block text-lg font-medium text-gray-50 mt-4">* Summary:</label>
     <textarea 
       id="summary" 
-      class="form-control" 
+      class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50" 
       required 
       maxLength="200" 
       spellcheck="true" 
       autocorrect="on" 
-      rows=10 
-      cols=30 
+      rows="10" 
       name="summary" 
-      ><%= comic ? comic.summary: '' %></textarea>
+    ><%= comic ? comic.summary : '' %></textarea>
 
-    <label for="release_date">Release date:</label>
+    <label for="release_date" class="block text-lg font-medium text-gray-50 mt-4">Release date:</label>
     <input
       type="date"
       id="release_date"
-      class="form-control"
+      class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50"
       name="release_date"
-      value="<%= release_date ? release_date : ''%>"
+      value="<%= release_date ? release_date : '' %>"
       required
-     />
+    />
   </div>
   
-  <div class="form-group">
+  <div class="form-group mb-6">
     <% if (!author_list.length) { %>
-      <p>There aren't any authors in the system yet.</p>
-      <p><a href="/author/create">Add one now!</a></p>      
+      <p class="text-red-500">There aren't any authors in the system yet.</p>
+      <p><a href="/author/create" class="text-blue-500 hover:underline">Add one now!</a></p>      
     <% } else { %>
-      <label for="author">* Author: </label>
-      <select id="author" class="form-control" name="author">
+      <label for="author" class="block text-lg font-medium text-gray-50">* Author:</label>
+      <select id="author" class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50" name="author">
         <option value="">Choose an author</option>
-
         <% author_list.forEach(author => { %>
-          <option value="<%= author.id %>" <%= 
-            selected_author_id && author.id.toString() === selected_author_id.toString() 
-            ? 'selected' 
-            : '' 
-          %> >
+          <option value="<%= author.id %>" <%= selected_author_id && author.id.toString() === selected_author_id.toString() ? 'selected' : '' %> >
             <%= author.name %>
           </option>
         <% }) %>
@@ -61,11 +56,10 @@
     <% } %>
   </div>
 
-  <div class="form-group">
-    <label for="publisher">* Publisher: </label>
-    <select id="publisher" class="form-control" name="publisher">
+  <div class="form-group mb-6">
+    <label for="publisher" class="block text-lg font-medium text-gray-50">* Publisher:</label>
+    <select id="publisher" class="form-control mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-opacity-50" name="publisher">
       <option value="">Choose a publisher</option>
-
       <% publisher_list.forEach(publisher => { %>
         <option value="<%= publisher.id %>" <%= selected_publisher_id && publisher.id.toString() === selected_publisher_id.toString() ? 'selected' : '' %> >
           <%= publisher.name %> - <%= publisher.headquarters %>
@@ -74,33 +68,29 @@
     </select>
   </div>
 
-  
- <div class="form-group">
+  <div class="form-group mb-6">
     <% if (!genre_list.length) { %>
-      <p>There aren't any genres in the system yet.</p>
-      <p><a href="/genre/create">Add one now!</a></p>      
+      <p class="text-red-500">There aren't any genres in the system yet.</p>
+      <p><a href="/genre/create" class="text-blue-500 hover:underline">Add one now!</a></p>      
     <% } else { %>
-      <label for="genres">* Genres: </label>
-        
+      <label for="genres" class="block text-lg font-medium text-gray-50">* Genres:</label>
       <% genre_list.forEach(genre => { %>
-        <div class="grid">
+        <div class="flex items-center mb-2">
           <input 
-            class="checkbox-input" 
+            class="form-checkbox h-5 w-5 " 
             type="checkbox" 
             name="genres" 
             id="<%= genre.id %>" 
             value="<%= genre.id %>" 
             <%= genre.checked ? 'checked' : '' %>
           />
-          <label for="<%= genre.id %>">&nbsp;<%= genre.name %> </label>
+          <label for="<%= genre.id %>" class="ml-2 text-gray-50"><%= genre.name %></label>
         </div>
       <% }) %>
     <% } %>
   </div>
 
+  <button class="bg-amber-400 text-white hover:bg-gray-50 hover:text-amber-400 font-bold py-2 px-4 rounded transition duration-150 ease-in-out" type="submit">Submit</button>
 
-  <button class="btn btn-primary" type="submit">Submit</button>
-
-<%- include("./partials/form_error_messages_display")%>
+  <%- include("./partials/form_error_messages_display") %>
 </form>
-
