@@ -6,6 +6,7 @@
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "debug": "nodemon --inspect ./bin/www",
+    "populate-dev": "node ./db/populate.js postgresql://rafaelaborges:pardereis@localhost:5432/inventory_app",
     "build-css": "npx tailwindcss -i ./stylesheets/main.css -o ./public/main.css --watch"
   },
   "dependencies": {
