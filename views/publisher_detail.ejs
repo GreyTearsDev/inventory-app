@@ -1,16 +1,26 @@
-<article>
-  <h1><%= title %> - <%= publisher.headquarters%></h1>
+<section class="bg-gray-900 
+                rounded-lg 
+                shadow-lg 
+                px-8 
+                py-6 
+                mx-8 
+                my-6 
+                text-gray-50">
+  <h1 class="text-3xl 
+             font-bold 
+             text-amber-400 
+             mb-4"><%=title%> - <%= publisher.headquarters%></h1>
 
   <% if (comic_list.length > 0) { %>
-    <p>Works under <%=publisher.name%>'s catalog</p>
-    <ul>
+    <p class="text-lg text-gray-300 mb-2">Works under <%=publisher.name%>'s catalog</p>
       <% comic_list.forEach(comic => { %>
-        <li><a href="<%= comic.url%>"><%= comic.title%></a></li>
+        <a href="<%= comic.url%>"><p class="ml-4 text-amber-400 hover:text-gray-50"><%= comic.title%></p></a>
       <% }) %>
-    </ul>
   <% } else { %>
-    <p><%= publisher.name%> hasn't published any work yet!</p>
+    <p class="mb-2"><%= publisher.name%> hasn't published any work yet!</p>
   <% } %>
-  <p><a href="<%= publisher.url%>/update">Update</a></p>
-  <p><a href="<%= publisher.url%>/delete">Delete</a></p>
-</article>
+  <div class="flex gap-4 mt-4">
+    <p class="text-amber-400"><a href="<%= publisher.url %>/update">Update</a></p>
+    <p class="text-amber-400"><a href="<%= publisher.url %>/delete">Delete</a></p>
+  </div>
+</section>
