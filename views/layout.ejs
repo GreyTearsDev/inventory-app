@@ -19,6 +19,9 @@
                    drop-shadow-lg
                    flex 
                    justify-center 
+                   sticky
+                   top-0
+                   z-10
                    items-center">
 
         <div class="flex justify-center gap-2 items-center">
@@ -29,16 +32,19 @@
           </h1> 
         </div>
     </header>
-    <aside class="pt-6 pl-10 flex flex-col gap-8">
+    <aside class="pt-6 pl-10 flex flex-col gap-8 sticky top-20 h-[calc(100vh-8rem)] overflow-y-auto">
       <%- include('./sidebar') %>
     </aside>
     <main class="py-6 px-10 text-gray-50 border-l-2 border-gray-200">
       <%- body %>
     </main>
     <footer class="col-span-2 
+                   bg-gray-50
                    h-12 
                    flex 
                    justify-center 
+                   sticky
+                   bottom-0
                    items-center">
 
       <p class="font-light
