@@ -6,7 +6,7 @@ Try it [Here](https://inventory-app-production-0c27.up.railway.app/catalog)
   </a>
 </p>
 
-<img width="1680" alt="Captura de ecrã 2024-08-16, às 00 10 23" src="https://github.com/user-attachments/assets/67a9f6d9-8e33-4101-891d-d09ceeb613f1">
+<img width="1680" alt="Captura de ecrã 2024-08-16, às 00 10 19" src="https://github.com/user-attachments/assets/56741021-c284-48ea-b8c3-76bc707d9002">
 
 <img width="1680" alt="Captura de ecrã 2024-08-16, às 00 10 31" src="https://github.com/user-attachments/assets/f98ef322-971f-4891-a47c-599ed773a832">
 
