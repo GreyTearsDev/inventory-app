@@ -31,7 +31,8 @@ exports.volume_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.volume_delete_get = asyncHandler(async (req, res, next) => {
-  const volume = await Volume.findById(req.params.id).exec();
+  const volumeId = req.params.id;
+  const volume = await db.getVolume(volumeId);
 
   if (!volume) {
     const err = new Error("Volume not found");
@@ -46,8 +47,9 @@ exports.volume_delete_get = asyncHandler(async (req, res, next) => {
 });
 
 exports.volume_delete_post = asyncHandler(async (req, res, next) => {
-  const volume = await Volume.findById(req.body.volumeid).exec();
-  const associatedComic = await Comic.findOne({ volumes: volume._id }).exec();
+  const volumeId = req.params.id;
+  const volume = await db.getVolume(volumeId);
+  const associatedComic = await db.getComic(volume.comic_id);
 
   if (!volume) {
     const err = new Error("Volume not found");
@@ -61,7 +63,7 @@ exports.volume_delete_post = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  await Volume.findByIdAndDelete(req.body.volumeid);
+  await db.deleteVolume(volumeId);
   res.redirect(associatedComic.url);
 });
 

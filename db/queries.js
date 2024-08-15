@@ -234,6 +234,17 @@ exports.deleteGenre = async (genreId) => {
   }
 };
 
+// DELETE query for deleting a volume by volume ID
+exports.deleteVolume = async (volumeId) => {
+  const text = `DELETE FROM volumes
+                WHERE id = $1`;
+  try {
+    await pool.query(text, [volumeId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // DELETE query for deleting a publisher by publisher ID
 exports.deletePublisher = async (publisherId) => {
   const text = `DELETE FROM publishers
