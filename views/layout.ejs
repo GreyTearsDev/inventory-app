@@ -6,22 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/main.css">
   </head>
-  <body>
-    <header>
-      <div class="logo">
+  <body class="bg-gray-700 grid grid-cols-[18rem_1fr] min-h-screen grid-rows-[auto_1fr_auto]">
+    <header class="bg-green-500 col-span-2 h-20">
+      <div class="">
         <h1><a href="/">ComiKing</a></h1>
       </div>
-    <header>
-    <aside class="col-sm-2">
+    </header>
+    <aside class="bg-red-200 ">
       <%- include('./sidebar') %>
     </aside>
-    <main class="col-sm-10">
+    <main class="bg-blue-200">
       <%- body %>
     </main>
-    <footer>
+    <footer class="bg-yellow-300 col-span-2 h-12">
       <p>
         Copyright©Tirso Samalungo (<a href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
         </p>
-    <footer>
+    </footer>
   </body>
 </html>
