@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "debug": "nodemon --inspect ./bin/www"
+    "debug": "nodemon --inspect ./bin/www",
+    "build-css": "npx tailwindcss -i ./stylesheets/main.css -o ./public/main.css --watch"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
