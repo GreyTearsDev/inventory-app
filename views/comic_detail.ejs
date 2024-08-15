@@ -1,31 +1,68 @@
-<section class="container">
-  <h1><strong></strong><%= comic.title %></h1>
-  <p><strong>Author: </strong><a href="<%= author.url %>"><%= author.name %></a></p>
-  <p><strong>Publisher: </strong><a href="<%= publisher.url %>"><%= publisher.name %></a></p>
-  <p><strong>Release date:</strong> <%= comic_release_date %><p>
+<section class="bg-gray-900 
+                rounded-lg 
+                shadow-lg 
+                px-8 
+                py-6 
+                mx-8 
+                my-6 
+                text-gray-50">
+  <h1 class="text-3xl 
+             font-bold 
+             text-amber-400 
+             mb-4"><%= comic.title %></h1>
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Author: </span><a href="<%= author.url %>"><%= author.name %></a></p>
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Publisher: </span><a href="<%= publisher.url %>"><%= publisher.name %></a></p>
+  <p class="text-lg text-gray-300 mb-4"><span class="text-gray-50 font-semibold">Release date:</span> <%= comic_release_date %><p>
 
-  <div>
+    <div class="flex 
+                flex-wrap 
+                gap-2 
+                mb-4">
     <% genres.forEach((genre) => { %>
-      <div><a href="<%= genre.url %>"><%= genre.name %></a></div>
+      <a href="<%= genre.url %>">
+        <div class="bg-gray-950
+                    hover:text-gray-50
+                    text-amber-400 
+                    rounded-full 
+                    px-4 
+                    py-2">
+          <%= genre.name %>
+        </div>
+      </a>
     <% }) %>
   </div>
 
-  <p><strong>Summary</strong>: <%= comic.summary %></p>
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Summary</span>: <%= comic.summary %></p>
 
   <% if (volumes.length > 0) { %>
-    <div>
+    <section class="flex 
+                flex-col
+                gap-2 
+                mb-4">
       <% volumes.forEach((volume, index) => { %>
-        <p>
-          <a href="<%= volume.url %>">
-            Volume <%= volume.volume_number%> - <%= volume.title%>
-          </a>
-        </p>
+        <a href="<%= volume.url %>">
+          <div class="bg-gray-950
+                    hover:text-gray-50
+                    text-amber-400 
+                    rounded-full 
+                    max-w-fit
+                    px-4 
+                    py-2">
+          <p class="mb-2 text-amber-400 hover:text-gray-50">
+              Volume <%= volume.volume_number%> - <%= volume.title%>
+          </p>
+        </div>
+      </a>
       <% }) %>
-    </div>
-    <p><a href="<%= comic.url %>/volume/create">Add a new volume</a></p>
+    </section>
+
+    <p class="text-amber-400 font-bold mb-4"><a href="<%= comic.url %>/volume/create">Add a new volume</a></p>
   <% } else { %>
-    <p>There are no volumes yet! <a href="<%= comic.url %>/volume/create">Add the first volume</a></p>
+    <p class="mb-4">There are no volumes yet! <a class="text-amber-400" href="<%= comic.url %>/volume/create">Add the first volume</a></p>
   <% } %>
-  <p><a href="<%= comic.url %>/update">Update</a></p>
-  <p><a href="<%= comic.url %>/delete">Delete</a></p>
+
+  <div class="flex gap-4">
+    <p class="text-amber-400"><a href="<%= comic.url %>/update">Update</a></p>
+    <p class="text-amber-400"><a href="<%= comic.url %>/delete">Delete</a></p>
+  </div>
 </section>

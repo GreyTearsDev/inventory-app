@@ -1,8 +1,22 @@
-<h1><%= volume.title %></h1>
-<article>
-  <p><strong>Release Date</strong>: <%= volume_release_date%></p>
-  <p><strong>Description</strong>: <%= volume.description %></p>
-  <p><a href="<%= volume.url %>/delete">Delete</a></p>
-  <p><a href="<%= volume.url %>/update">Update</a></p>
-  <p><a href="<%= comic.url %>">Go back</a></p>
-</article>
+<section class="bg-gray-900 
+                rounded-lg 
+                shadow-lg 
+                px-8 
+                py-6 
+                mx-8 
+                my-6 
+                text-gray-50">
+  <h1 class="text-3xl 
+             font-bold 
+             text-amber-400 
+             mb-4"><%= volume.title%></h1>
+
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Release date:</span> <%= volume_release_date %><p>
+  <p class="text-lg text-gray-300 mb-4"><span class="text-gray-50 font-semibold">Description:</span> <%= volume.description %><p>
+
+  <div class="flex gap-4 mt-4">
+    <p class="text-amber-400"><a href="<%= volume.url %>/update">Update</a></p>
+    <p class="text-amber-400"><a href="<%= volume.url %>/delete">Delete</a></p>
+    <p class="text-amber-400"><a href="<%= volume.url %>">Go back</a></p>
+  </div>
+</section>

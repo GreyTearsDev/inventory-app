@@ -9,7 +9,7 @@ const asyncHandler = require("express-async-handler");
 exports.index = asyncHandler(async (req, res, next) => {
   const [comics, volumes, authors, publishers, genres] = await Promise.all([
     db.getAllComics(),
-    db.getAllVolumes(),
+    db.getTotalVolumeCount(), // returns the total amount of volumes in the database
     db.getAllAuthors(),
     db.getAllPublishers(),
     db.getAllGenres(),
@@ -17,9 +17,9 @@ exports.index = asyncHandler(async (req, res, next) => {
 
   // Render the home page with counts of each entity
   res.render("index", {
-    title: "ComiKing - Home",
+    title: "Home",
     comic_count: comics.length,
-    volume_count: volumes.length,
+    volume_count: volumes, // it is an integer, so no length property
     author_count: authors.length,
     publisher_count: publishers.length,
     genre_count: genres.length,
@@ -378,14 +378,14 @@ exports.comic_delete_get = asyncHandler(async (req, res, next) => {
 exports.comic_delete_post = asyncHandler(async (req, res, next) => {
   const comicId = req.params.id;
   const comic = await db.getComic(comicId);
-
   // Handle case where the comic is not found
   if (!comic) {
     const err = new Error("Comic not found");
     err.status = 404;
     return next(err);
   }
-
+  // Delete volumes related to the comic
+  await db.deleteAllComicVolumes(comicId);
   // Delete the comic and redirect to the list of comics
   await db.deleteComic(comicId);
   res.redirect("/catalog/comics");

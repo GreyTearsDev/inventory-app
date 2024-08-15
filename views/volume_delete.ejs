@@ -1,15 +1,41 @@
-<h1><%= title%>: <%= volume.title%>, volume <%= volume.volume_number%></h1>
+<section class="bg-gray-900 
+                rounded-lg 
+                shadow-lg 
+                px-8 
+                py-6 
+                mx-8 
+                my-6 
+                text-gray-50">
+  <h1 class="text-3xl 
+             font-bold 
+             text-amber-400 
+             mb-4"><%= volume.title%>, <%= volume.volume_number %></h1>
+  <p class="mb-4">Do you really want to delete this volume?</p>
 
-<p>Do you really want to delete this volume?</p>
-<form method="POST">
-  <div class="form-group"> 
-    <input 
-      id="volumeid" 
-      class="form-control" 
-      type="hidden" 
-      name="volumeid" 
-      value="<%= volume._id%>" 
-    />
-  </div>
-  <button class="btn btn-primary" type="submit">Delete</button>
-</form>
+  <form method="POST">
+  </form>
+  <form method="POST">
+    <div class="hidden" > 
+      <input 
+        id="volumeid" 
+        class="form-control" 
+        type="hidden" 
+        name="volumeid" 
+        value="<%= volume.id%>" 
+      />
+    </div>
+    <button class="bg-red-600 
+                    text-gray-50 
+                    hover:bg-red-700 
+                    font-bold 
+                    py-2 
+                    px-4 
+                    rounded 
+                    transition 
+                    duration-100 
+                    ease-in-out" 
+            type="submit">
+      Delete
+    </button>
+  </form>
+</section>

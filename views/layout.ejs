@@ -4,24 +4,56 @@
     <title><%= title %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/main.css">
   </head>
-  <body>
-    <header>
-      <div class="logo">
-        <h1><a href="/">ComiKing</a></h1>
-      </div>
-    <header>
-    <aside class="col-sm-2">
+  <body class="bg-gray-50 
+               grid 
+               grid-cols-[minmax(150px,18rem)_1fr] 
+               min-h-screen 
+               grid-rows-[auto_1fr_auto]
+               text-gray-700" >
+
+    <header class="bg-gray-50 
+                   col-span-2 
+                   h-20 
+                   drop-shadow-lg
+                   flex 
+                   justify-center 
+                   sticky
+                   top-0
+                   z-10
+                   items-center">
+
+        <div class="flex justify-center gap-2 items-center">
+          <h1 class="font-extrabold 
+                     text-2xl 
+                     tracking-wide">
+            <a href="/">ComiKing <span class="text-3xl pb-1">👑</span></a>
+          </h1> 
+        </div>
+    </header>
+    <aside class="pt-6 pl-10 flex flex-col gap-8 sticky top-20 h-[calc(100vh-8rem)] overflow-y-auto">
       <%- include('./sidebar') %>
     </aside>
-    <main class="col-sm-10">
+    <main class="py-6 px-10 text-gray-50 border-l-2 border-gray-200">
       <%- body %>
     </main>
-    <footer>
-      <p>
-        Copyright©Tirso Samalungo (<a href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
+    <footer class="col-span-2 
+                   border-t-2
+                   border-gray-200
+                   bg-gray-50
+                   h-12 
+                   flex 
+                   justify-center 
+                   sticky
+                   bottom-0
+                   items-center">
+
+      <p class="font-light
+                text-m 
+                tracking-widest"> Copyright©Tirso Samalungo (<a class="text-amber-500" 
+                href="https://github.com/GreyTearsDev">GreyTearsDev</a>)
         </p>
-    <footer>
+    </footer>
   </body>
 </html>

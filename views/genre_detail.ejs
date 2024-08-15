@@ -1,16 +1,26 @@
-<article>
-  <h1><%= title %></h1>
+<section class="bg-gray-900 
+                rounded-lg 
+                shadow-lg 
+                px-8 
+                py-6 
+                mx-8 
+                my-6 
+                text-gray-50">
+  <h1 class="text-3xl 
+             font-bold 
+             text-amber-400 
+             mb-4"><%= genre.name%></h1>
 
   <% if (comic_list.length > 0) { %>
-    <p>Works in this genre</p>
-    <ul>
+  <p class="text-lg text-gray-300 mb-2">Works in this genre</p>
       <% comic_list.forEach(comic => { %>
-        <li><a href="<%= comic.url%>"><%= comic.title%></a></li>
+        <a href="<%= comic.url%>"><p class="ml-4 text-amber-400 hover:text-gray-50"><%= comic.title%></p></a>
       <% }) %>
-    </ul>
   <% } else { %>
-    <p>There are no works of this genre yet!</p>
+    <p class="mb-4">There are no volumes yet!</p>
   <% } %>
-  <p><a href="<%= genre.url%>/update">Update</a></p>
-  <p><a href="<%= genre.url%>/delete">Delete</a></p>
-</article>
+  <div class="flex gap-4 mt-4">
+    <p class="text-amber-400"><a href="<%= genre.url %>/update">Update</a></p>
+    <p class="text-amber-400"><a href="<%= genre.url %>/delete">Delete</a></p>
+  </div>
+</section>

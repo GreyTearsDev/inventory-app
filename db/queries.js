@@ -56,6 +56,18 @@ exports.getAllVolumes = async (comicId) => {
   }
 };
 
+// SELECT query for getting the total amount of volumes ind the database
+exports.getTotalVolumeCount = async () => {
+  const text = `SELECT COUNT(*) FROM volumes`;
+  try {
+    const { rows } = await pool.query(text);
+
+    return rows[0].count;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting data about a specific entry in a table
 // gets gerne detais via genre id
 exports.getGenre = async (genreId) => {
@@ -271,6 +283,18 @@ exports.deleteAuthor = async (authorId) => {
 exports.deleteComic = async (comicId) => {
   const text = `DELETE FROM comics
                 WHERE id = $1`;
+  try {
+    await pool.query(text, [comicId]);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// DELETE query for deleting all volumes by related to a specific comic ID
+exports.deleteAllComicVolumes = async (comicId) => {
+  console.log("delete all volumes from ", comicId);
+  const text = `DELETE FROM volumes
+                WHERE comic_id = $1`;
   try {
     await pool.query(text, [comicId]);
   } catch (e) {
