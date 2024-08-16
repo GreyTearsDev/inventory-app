@@ -3,6 +3,7 @@ const pool = require("./index");
 // SELECT query for getting ALL entries in a table
 exports.getAllFromTable = async (tableName) => {
   let result;
+
   try {
     switch (tableName) {
       case "genres":
@@ -28,6 +29,53 @@ exports.getAllFromTable = async (tableName) => {
         );
     }
     return result.rows;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// SELECT query for getting data about a specific entry in a table
+exports.getSingleFromTable = async (tableName, entryId) => {
+  let result;
+
+  try {
+    switch (tableName) {
+      case "genres":
+        result = await pool.query(
+          `SELECT * FROM genres WHERE id = $1 ORDER BY name `,
+          [entryId],
+        );
+        break;
+      case "authors":
+        result = await pool.query(
+          `SELECT * FROM authors WHERE id = $1 ORDER BY first_name `,
+          [entryId],
+        );
+        break;
+      case "publishers":
+        result = await pool.query(
+          `SELECT * FROM publishers WHERE id = $1 ORDER BY name `,
+          [entryId],
+        );
+        break;
+      case "comics":
+        result = await pool.query(
+          `SELECT * FROM comics WHERE id = $1 ORDER BY title `,
+          [entryId],
+        );
+        break;
+      case "volumes":
+        result = await pool.query(
+          `SELECT * FROM volumes WHERE id = $1 ORDER BY volume_number `,
+          [entryId],
+        );
+        break;
+      default:
+        throw Error(
+          `Invalid table name! \nValid names: ["comics", "volumes", "authors", "genres", "publishers"]`,
+        );
+    }
+    return result.rows[0];
   } catch (e) {
     console.log(e);
   }
@@ -262,17 +310,6 @@ exports.deleteAllComicVolumes = async (comicId) => {
                 WHERE comic_id = $1`;
   try {
     await pool.query(text, [comicId]);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting a comic by comic ID
-exports.getComic = async (comicId) => {
-  const text = "SELECT * FROM comics WHERE id = $1";
-  try {
-    const { rows } = await pool.query(text, [comicId]);
-    return rows[0];
   } catch (e) {
     console.log(e);
   }

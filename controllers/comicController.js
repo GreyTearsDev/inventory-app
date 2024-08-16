@@ -43,7 +43,7 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
 
   // Fetch details about the comic, its author, publisher, genres, and volumes
   const [comic, author, publisher, genres, volumes] = await Promise.all([
-    db.getComic(comicId),
+    db.getSingleFromTable("comics", comicId),
     db.getComicAuthor(comicId),
     db.getComicPublisher(comicId),
     db.getComicGenres(comicId),
@@ -188,7 +188,7 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
 
   // Fetch comic details and related information for the update form
   const [comic, comicGenres, authors, publishers, genres] = await Promise.all([
-    db.getComic(comicId),
+    db.getSingleFromTable("comics", comicId),
     db.getComicGenres(comicId),
     db.getAllFromTable("authors"),
     db.getAllFromTable("publishers"),
@@ -319,7 +319,7 @@ exports.comic_update_post = [
 
     // Check if the updated comic is the same as the existing one
     const [existingComic, comicGenres] = await Promise.all([
-      db.getComic(comicId),
+      db.getSingleFromTable("comics", comicId),
       db.getComicGenres(comicId),
     ]);
 
@@ -358,7 +358,7 @@ exports.comic_update_post = [
 // Handler to render the confirmation page for deleting a comic
 exports.comic_delete_get = asyncHandler(async (req, res, next) => {
   const comicId = req.params.id;
-  const comic = await db.getComic(comicId);
+  const comic = await db.getSingleFromTable("comics", comicId);
 
   // Handle case where the comic is not found
   if (!comic) {
@@ -377,7 +377,7 @@ exports.comic_delete_get = asyncHandler(async (req, res, next) => {
 // Handler to process the deletion of a comic
 exports.comic_delete_post = asyncHandler(async (req, res, next) => {
   const comicId = req.params.id;
-  const comic = await db.getComic(comicId);
+  const comic = await db.getSingleFromTable("comics", comicId);
   // Handle case where the comic is not found
   if (!comic) {
     const err = new Error("Comic not found");
@@ -486,7 +486,7 @@ exports.comic_volume_create_post = [
 
     // Save the new volume and redirect to the comic's detail page
     await db.saveVolume(comicId, volume);
-    const comic = await db.getComic(comicId);
+    const comic = await db.getSingleFromTable("comics", comicId);
     res.redirect(comic.url);
   }),
 ];
