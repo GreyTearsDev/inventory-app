@@ -8,11 +8,11 @@ const asyncHandler = require("express-async-handler");
 // Handler to render the home page with statistics about comics, authors, publishers, and genres
 exports.index = asyncHandler(async (req, res, next) => {
   const [comics, volumes, authors, publishers, genres] = await Promise.all([
-    db.getAllComics(),
+    db.getAllFromTable("comics"),
     db.getTotalVolumeCount(), // returns the total amount of volumes in the database
-    db.getAllAuthors(),
-    db.getAllPublishers(),
-    db.getAllGenres(),
+    db.getAllFromTable("authors"),
+    db.getAllFromTable("publishers"),
+    db.getAllFromTable("genres"),
   ]);
 
   // Render the home page with counts of each entity
@@ -28,7 +28,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Handler to render a list of all available comics
 exports.comic_list = asyncHandler(async (req, res, next) => {
-  const allComics = await db.getAllComics();
+  const allComics = await db.getAllFromTable("comics");
 
   // Render the comic list page with all comics
   res.render("comic_list", {
@@ -75,9 +75,9 @@ exports.comic_detail = asyncHandler(async (req, res, next) => {
 exports.comic_create_get = asyncHandler(async (req, res, next) => {
   // Fetch lists of authors, publishers, and genres for the form options
   const [authors, publishers, genres] = await Promise.all([
-    db.getAllAuthors(),
-    db.getAllPublishers(),
-    db.getAllGenres(),
+    db.getAllFromTable("authors"),
+    db.getAllFromTable("publishers"),
+    db.getAllFromTable("genres"),
   ]);
 
   // Render the comic creation form
@@ -149,9 +149,9 @@ exports.comic_create_post = [
     // If there are validation errors, re-render the form with errors
     if (!errors.isEmpty()) {
       const [authors, publishers, genres] = await Promise.all([
-        db.getAllAuthors(),
-        db.getAllPublishers(),
-        db.getAllGenres(),
+        db.getAllFromTable("authors"),
+        db.getAllFromTable("publishers"),
+        db.getAllFromTable("genres"),
       ]);
 
       // Mark genres as checked based on user input
@@ -190,9 +190,9 @@ exports.comic_update_get = asyncHandler(async (req, res, next) => {
   const [comic, comicGenres, authors, publishers, genres] = await Promise.all([
     db.getComic(comicId),
     db.getComicGenres(comicId),
-    db.getAllAuthors(),
-    db.getAllPublishers(),
-    db.getAllGenres(),
+    db.getAllFromTable("authors"),
+    db.getAllFromTable("publishers"),
+    db.getAllFromTable("genres"),
   ]);
 
   // Handle case where the comic is not found
@@ -284,10 +284,10 @@ exports.comic_update_post = [
     // If there are validation errors, re-render the form with errors
     if (!errors.isEmpty()) {
       const [authors, comicGenres, publishers, genres] = await Promise.all([
-        db.getAllAuthors(),
+        db.getAllFromTable("authors"),
         db.getComicGenres(comicId),
-        db.getAllPublishers(),
-        db.getAllGenres(),
+        db.getAllFromTable("publishers"),
+        db.getAllFromTable("genres"),
       ]);
 
       // Mark existing genres as checked
@@ -398,7 +398,7 @@ exports.comic_volume_create_get = asyncHandler(async (req, res, next) => {
   const comicId = req.params.id;
 
   // Fetch all volumes for the comic and determine the last volume number
-  const volumeList = await db.getAllVolumes(comicId);
+  const volumeList = await db.getAllFromTable("volumes");
   const lastVolume = volumeList[volumeList.length - 1] || undefined;
 
   // Render the volume creation form
@@ -442,7 +442,7 @@ exports.comic_volume_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const comicId = req.params.id;
-    const volumeList = await db.getAllVolumes(comicId);
+    const volumeList = await db.getAllFromTable("volumes");
     const lastVolume = volumeList[volumeList.length - 1] || undefined;
 
     const volume = {
