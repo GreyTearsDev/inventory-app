@@ -36,7 +36,20 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("404", { title: "404 ERROR" });
+  console.log(err.status);
+  switch (err) {
+    case 404:
+      res.render("404", {
+        title: "404 ERROR",
+        cause: "Oops! The page you're looking for doesn't exist.",
+      });
+      break;
+    default:
+      res.render("404", {
+        title: "SOMETHING WENT WRONG :(",
+        cause: "Unknown reason",
+      });
+  }
 });
 
 module.exports = app;
