@@ -12,7 +12,9 @@
              mb-4"><%= comic.title %></h1>
   <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Author: </span><a href="<%= author.url %>"><%= author.name %></a></p>
   <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Publisher: </span><a href="<%= publisher.url %>"><%= publisher.name %></a></p>
-  <p class="text-lg text-gray-300 mb-4"><span class="text-gray-50 font-semibold">Release date:</span> <%= comic_release_date %><p>
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Volumes</span>: <%= volumes.length%></p>
+  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Release date:</span> <%= comic_release_date %><p>
+  <p class="text-lg text-gray-300 mb-4"><span class="text-gray-50 font-semibold">Summary</span>: <%= comic.summary %></p>
 
     <div class="flex 
                 flex-wrap 
@@ -32,7 +34,6 @@
     <% }) %>
   </div>
 
-  <p class="text-lg text-gray-300 mb-2"><span class="text-gray-50 font-semibold">Summary</span>: <%= comic.summary %></p>
 
   <% if (volumes.length > 0) { %>
     <section class="flex 
