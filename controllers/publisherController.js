@@ -4,7 +4,7 @@ const db = require("../db/queries");
 
 // List all currently available publishers
 exports.publisher_list = asyncHandler(async (req, res, next) => {
-  const allPublishers = await db.getAllPublishers(); // Fetch all publishers from the database
+  const allPublishers = await db.getAllFromTable("publishers"); // Fetch all publishers from the database
   res.render("publisher_list", {
     title: "Publishers",
     publisher_list: allPublishers,

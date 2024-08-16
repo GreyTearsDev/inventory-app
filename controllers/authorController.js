@@ -4,7 +4,7 @@ const db = require("../db/queries");
 
 // Display list of all authors
 exports.author_list = asyncHandler(async (req, res, next) => {
-  const allAuthors = await db.getAllAuthors();
+  const allAuthors = await db.getAllFromTable("authors");
 
   res.render("author_list", { title: "Authors", author_list: allAuthors });
 });

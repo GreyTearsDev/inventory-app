@@ -6,7 +6,7 @@ const db = require("../db/queries");
 // Controller for listing all available genres
 exports.genre_list = asyncHandler(async (req, res, next) => {
   // Fetch all genres from the database
-  const allGenres = await db.getAllGenres();
+  const allGenres = await db.getAllFromTable("genres");
   // Render the genre list page with the retrieved genres
   res.render("genre_list", { title: "Genres", genre_list: allGenres });
 });
