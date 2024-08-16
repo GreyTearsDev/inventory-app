@@ -1,32 +1,32 @@
 const pool = require("./index");
+const tablesNames = require("./table_name_constants");
+const ALL_VALID_TABLES = Object.values(tablesNames).join(", ");
 
 // SELECT query for getting ALL entries in a table
-exports.getAllFromTable = async (tableName) => {
+exports.getAllFromTable = async (tabName) => {
   let result;
 
   try {
-    switch (tableName) {
-      case "genres":
+    switch (tabName) {
+      case tablesNames.GENRES:
         result = await pool.query(`SELECT * FROM genres ORDER BY name`);
         break;
-      case "authors":
+      case tablesNames.AUTHORS:
         result = await pool.query(`SELECT * FROM authors ORDER BY first_name`);
         break;
-      case "publishers":
+      case tablesNames.PUBLISHERS:
         result = await pool.query(`SELECT * FROM publishers ORDER BY name`);
         break;
-      case "comics":
+      case tablesNames.COMICS:
         result = await pool.query(`SELECT * FROM comics ORDER BY title`);
         break;
-      case "volumes":
+      case tablesNames.VOLUMES:
         result = await pool.query(
           `SELECT * FROM volumes ORDER BY volume_number`,
         );
         break;
       default:
-        throw Error(
-          `Invalid table name! \nValid names: ["comics", "volumes", "authors", "genres", "publishers"]`,
-        );
+        throw Error(`Invalid table name! \nValid names: ${ALL_VALID_TABLES}`);
     }
     return result.rows;
   } catch (e) {
@@ -35,45 +35,43 @@ exports.getAllFromTable = async (tableName) => {
 };
 
 // SELECT query for getting data about a specific entry in a table
-exports.getSingleFromTable = async (tableName, entryId) => {
+exports.getSingleFromTable = async (tabName, entryId) => {
   let result;
 
   try {
-    switch (tableName) {
-      case "genres":
+    switch (tabName) {
+      case tablesNames.GENRES:
         result = await pool.query(
           `SELECT * FROM genres WHERE id = $1 ORDER BY name `,
           [entryId],
         );
         break;
-      case "authors":
+      case tablesNames.AUTHORS:
         result = await pool.query(
           `SELECT * FROM authors WHERE id = $1 ORDER BY first_name `,
           [entryId],
         );
         break;
-      case "publishers":
+      case tablesNames.PUBLISHERS:
         result = await pool.query(
           `SELECT * FROM publishers WHERE id = $1 ORDER BY name `,
           [entryId],
         );
         break;
-      case "comics":
+      case tablesNames.COMICS:
         result = await pool.query(
           `SELECT * FROM comics WHERE id = $1 ORDER BY title `,
           [entryId],
         );
         break;
-      case "volumes":
+      case tablesNames.VOLUMES:
         result = await pool.query(
           `SELECT * FROM volumes WHERE id = $1 ORDER BY volume_number `,
           [entryId],
         );
         break;
       default:
-        throw Error(
-          `Invalid table name! \nValid names: ["comics", "volumes", "authors", "genres", "publishers"]`,
-        );
+        throw Error(`Invalid table name! \nValid names: ${ALL_VALID_TABLES}`);
     }
     return result.rows[0];
   } catch (e) {
