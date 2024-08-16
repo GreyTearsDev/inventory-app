@@ -16,7 +16,7 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   // Fetch the genre and its associated comics concurrently
   const [genre, comicsOfGenre] = await Promise.all([
-    db.getGenre(genreId),
+    db.getSingleFromTable("genres", genreId),
     db.getGenreComics(genreId),
   ]);
 
@@ -86,7 +86,7 @@ exports.genre_create_post = [
 // Controller for displaying the genre update form
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
-  const genre = await db.getGenre(genreId);
+  const genre = await db.getSingleFromTable("genres", genreId);
 
   // If the genre is not found, return a 404 error
   if (!genre) {
@@ -129,7 +129,7 @@ exports.genre_update_post = [
     }
 
     // Check if a genre with the same name already exists
-    const existingGenre = await db.getGenre(genreId);
+    const existingGenre = await db.getSingleFromTable("genres", genreId);
     if (existingGenre && existingGenre.name == genre.name) {
       // Redirect to the existing genre's detail page if it already exists
       res.redirect(existingGenre.url);
@@ -148,7 +148,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
   // Fetch the genre and its associated comics concurrently
   const [genre, comicsOfGenre] = await Promise.all([
-    db.getGenre(genreId),
+    db.getSingleFromTable("genres", genreId),
     db.getGenreComics(genreId),
   ]);
 
@@ -170,7 +170,7 @@ exports.genre_delete_get = asyncHandler(async (req, res, next) => {
 // Controller for handling the genre deletion form submission
 exports.genre_delete_post = asyncHandler(async (req, res, next) => {
   const genreId = req.body.genreid;
-  const genre = await db.getGenre(genreId);
+  const genre = await db.getSingleFromTable("genres", genreId);
 
   // If the genre is not found, return a 404 error
   if (!genre) {

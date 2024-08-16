@@ -80,52 +80,6 @@ exports.getSingleFromTable = async (tableName, entryId) => {
     console.log(e);
   }
 };
-
-// SELECT query for getting data about a specific entry in a table
-// gets gerne detais via genre id
-exports.getGenre = async (genreId) => {
-  const text = "SELECT * FROM genres WHERE id = $1";
-  try {
-    const { rows } = await pool.query(text, [genreId]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting a publisher by publisher ID
-exports.getPublisher = async (publisherId) => {
-  const text = "SELECT * FROM publishers WHERE id = $1";
-  try {
-    const { rows } = await pool.query(text, [publisherId]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting an author by author ID
-exports.getAuthor = async (authorId) => {
-  const text = "SELECT * FROM authors WHERE id = $1";
-  try {
-    const { rows } = await pool.query(text, [authorId]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting an volume by volume ID
-exports.getVolume = async (volumeId) => {
-  const text = "SELECT * FROM volumes WHERE id = $1";
-  try {
-    const { rows } = await pool.query(text, [volumeId]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 // SELECT query for getting a genre by genre name (case-insensitive)
 exports.getGenreByName = async (genreName) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;

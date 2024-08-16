@@ -13,7 +13,7 @@ exports.author_list = asyncHandler(async (req, res, next) => {
 exports.author_detail = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId), // Fetch author details
+    db.getSingleFromTable("authors", authorId), // Fetch author details
     db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
@@ -94,7 +94,7 @@ exports.author_create_post = [
 exports.author_update_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId), // Fetch author details
+    db.getSingleFromTable("author", authorId), // Fetch author details
     db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
@@ -148,7 +148,7 @@ exports.author_update_post = [
     }
 
     // Check if author with the same name already exists
-    const existingAuthor = await db.getAuthor(authorId);
+    const existingAuthor = await db.getSingleFromTable("authors", authorId);
 
     if (
       existingAuthor &&
@@ -172,7 +172,7 @@ exports.author_update_post = [
 exports.author_delete_get = asyncHandler(async (req, res, next) => {
   const authorId = req.params.id;
   const [author, comicsByAuthor] = await Promise.all([
-    db.getAuthor(authorId), // Fetch author details
+    db.getSingleFromTable("authors", authorId), // Fetch author details
     db.getAuthorComics(authorId), // Fetch comics by the author
   ]);
 
@@ -193,7 +193,7 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
 // Handle form submission for deleting an author
 exports.author_delete_post = asyncHandler(async (req, res, next) => {
   const authorId = req.body.authorid;
-  const author = await db.getAuthor(authorId);
+  const author = await db.getSingleFromTable("authors", authorId);
 
   if (!author) {
     // Handle case where author is not found
