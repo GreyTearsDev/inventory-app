@@ -135,7 +135,6 @@ exports.volume_update_post = [
     const volumeId = req.params.id;
     const volumeToUpdate = await db.getVolume(volumeId); // Retrieve the volume to be updated
 
-    const volumeList = await db.getAllVolumes(volumeToUpdate.comic_id); // Retrieve all volumes for the associated comic
     const currentVolumeNumber = volumeToUpdate.volume_number;
     const currentVolumeReleaseDate = date.fromJSDateToStringYMD(
       volumeToUpdate.release_date,
@@ -162,7 +161,11 @@ exports.volume_update_post = [
     }
 
     // Check if a volume with the same number already exists
-    const existingVolume = volumeList.find((volume) => volume.id == volumeId);
+    const volumeList = await db.getAllFromTable("volumes"); // Retrieve all volumes
+
+    const existingVolume = volumeList
+      .filter((volume) => (volume.comic_id = volumeToUpdate.id)) // filter only the volumes related to the same comic as the volume to update
+      .find((volume) => volume.id == volumeId); // filter the volume that has the same id
 
     // Check if the new release date is the same as the old one already stored
     const releaseDatesAreEqual =
