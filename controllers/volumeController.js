@@ -2,15 +2,16 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const date = require("../util/date_formatting");
+const tableNames = require("../db/table_name_constants");
 
 // Handler for displaying volume details
 exports.volume_detail = asyncHandler(async (req, res, next) => {
   const volumeId = req.params.id;
-  const volume = await db.getSingleFromTable("volumes", volumeId); // Retrieve the volume from the database
+  const volume = await db.getSingleFromTable(tableNames.VOLUMES, volumeId); // Retrieve the volume from the database
   const volumeReleaseDate = date.formJSDateToStringDMY(volume.release_date); // Format the release date
 
   const associatedComic = await db.getSingleFromTable(
-    "comics",
+    tableNames.COMICS,
     volume.comic_id,
   ); // Retrieve the associated comic
 
@@ -40,7 +41,7 @@ exports.volume_detail = asyncHandler(async (req, res, next) => {
 // Handler for displaying the volume delete confirmation page
 exports.volume_delete_get = asyncHandler(async (req, res, next) => {
   const volumeId = req.params.id;
-  const volume = await db.getSingleFromTable("volumes", volumeId); // Retrieve the volume from the database
+  const volume = await db.getSingleFromTable(tableNames.VOLUMES, volumeId); // Retrieve the volume from the database
 
   // If the volume is not found, return a 404 error
   if (!volume) {
@@ -59,9 +60,9 @@ exports.volume_delete_get = asyncHandler(async (req, res, next) => {
 // Handler for processing the volume deletion
 exports.volume_delete_post = asyncHandler(async (req, res, next) => {
   const volumeId = req.params.id;
-  const volume = await db.getSingleFromTable("volumes", volumeId); // Retrieve the volume from the database
+  const volume = await db.getSingleFromTable(tableNames.VOLUMES, volumeId); // Retrieve the volume from the database
   const associatedComic = await db.getSingleFromTable(
-    "comics",
+    tableNames.COMICS,
     volume.comic_id,
   ); // Retrieve the associated comic
 
@@ -89,7 +90,7 @@ exports.volume_delete_post = asyncHandler(async (req, res, next) => {
 // Handler for displaying the volume update form
 exports.volume_update_get = asyncHandler(async (req, res, next) => {
   const volumeId = req.params.id;
-  const volume = await db.getSingleFromTable("volumes", volumeId); // Retrieve the volume from the database
+  const volume = await db.getSingleFromTable(tableNames.VOLUMES, volumeId); // Retrieve the volume from the database
   const currentVolumeNumber = volume.volume_number;
   const volumeReleaseDate = date.fromJSDateToStringYMD(volume.release_date); // Format the release date
 
@@ -139,7 +140,10 @@ exports.volume_update_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     const volumeId = req.params.id;
-    const volumeToUpdate = await db.getSingleFromTable("volumes", volumeId); // Retrieve the volume to be updated
+    const volumeToUpdate = await db.getSingleFromTable(
+      tableNames.VOLUMES,
+      volumeId,
+    ); // Retrieve the volume to be updated
 
     const currentVolumeNumber = volumeToUpdate.volume_number;
     const currentVolumeReleaseDate = date.fromJSDateToStringYMD(
@@ -167,7 +171,7 @@ exports.volume_update_post = [
     }
 
     // Check if a volume with the same number already exists
-    const volumeList = await db.getAllFromTable("volumes"); // Retrieve all volumes
+    const volumeList = await db.getAllFromTable(tableNames.VOLUMES); // Retrieve all volumes
 
     const existingVolume = volumeList
       .filter((volume) => (volume.comic_id = volumeToUpdate.id)) // filter only the volumes related to the same comic as the volume to update
@@ -194,7 +198,7 @@ exports.volume_update_post = [
     // Update the volume in the database and redirect to the comic's detail page
     await db.updateVolume(volumeToUpdate.id, newVolumeInfo);
     const comic = await db.getSingleFromTable(
-      "comics",
+      tableNames.COMICS,
       volumeToUpdate.comic_id,
     );
     res.redirect(comic.url);

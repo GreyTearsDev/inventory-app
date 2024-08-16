@@ -1,10 +1,11 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
+const tableNames = require("../db/table_name_constants");
 
 // List all currently available publishers
 exports.publisher_list = asyncHandler(async (req, res, next) => {
-  const allPublishers = await db.getAllFromTable("publishers"); // Fetch all publishers from the database
+  const allPublishers = await db.getAllFromTable(tableNames.PUBLISHERS); // Fetch all publishers from the database
   res.render("publisher_list", {
     title: "Publishers",
     publisher_list: allPublishers,
@@ -15,7 +16,7 @@ exports.publisher_list = asyncHandler(async (req, res, next) => {
 exports.publisher_detail = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getSingleFromTable("publishers", publisherId), // Fetch publisher details
+    db.getSingleFromTable(tableNames.PUBLISHERS, publisherId), // Fetch publisher details
     db.getPublisherComics(publisherId), // Fetch comics from the publisher
   ]);
 
@@ -85,7 +86,10 @@ exports.publisher_create_post = [
 // Display form for updating an existing publisher's information
 exports.publisher_update_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
-  const publisher = await db.getSingleFromTable("publishers", publisherId);
+  const publisher = await db.getSingleFromTable(
+    tableNames.PUBLISHERS,
+    publisherId,
+  );
 
   if (!publisher) {
     // Handle case where publisher is not found
@@ -130,7 +134,7 @@ exports.publisher_update_post = [
 
     // Check if the publisher with the same name and headquarters already exists
     const existingPublisher = await db.getSingleFromTable(
-      "publishers",
+      tableNames.PUBLISHERS,
       publisherId,
     );
 
@@ -153,7 +157,7 @@ exports.publisher_update_post = [
 exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
   const publisherId = req.params.id;
   const [publisher, comicsFromPublisher] = await Promise.all([
-    db.getSingleFromTable("publishers", publisherId), // Fetch publisher details
+    db.getSingleFromTable(tableNames.PUBLISHERS, publisherId), // Fetch publisher details
     db.getPublisherComics(publisherId), // Fetch comics from the publisher
   ]);
 
@@ -174,7 +178,10 @@ exports.publisher_delete_get = asyncHandler(async (req, res, next) => {
 // Handle form submission for deleting a publisher
 exports.publisher_delete_post = asyncHandler(async (req, res, next) => {
   const publisherId = req.body.publisherid;
-  const publisher = await db.getSingleFromTable("publishers", publisherId);
+  const publisher = await db.getSingleFromTable(
+    tableNames.PUBLISHERS,
+    publisherId,
+  );
 
   if (!publisher) {
     // Handle case where publisher is not found
