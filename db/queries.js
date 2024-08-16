@@ -1,56 +1,33 @@
 const pool = require("./index");
 
 // SELECT query for getting ALL entries in a table
-exports.getAllGenres = async () => {
+exports.getAllFromTable = async (tableName) => {
+  let result;
   try {
-    const { rows } = await pool.query(`SELECT * FROM genres ORDER BY name`);
-    return rows;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting all publishers ordered by name
-exports.getAllPublishers = async () => {
-  try {
-    const { rows } = await pool.query(`SELECT * FROM publishers ORDER BY name`);
-    return rows;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting all authors ordered by first name
-exports.getAllAuthors = async () => {
-  try {
-    const { rows } = await pool.query(
-      `SELECT * FROM authors ORDER BY first_name`,
-    );
-    return rows;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting all comics ordered by title
-exports.getAllComics = async () => {
-  try {
-    const { rows } = await pool.query(`SELECT * FROM comics ORDER BY title`);
-    return rows;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting all volumes for a specific comic ordered by volume number
-exports.getAllVolumes = async (comicId) => {
-  const text = `SELECT * FROM volumes
-       WHERE comic_id = $1
-       ORDER BY volume_number`;
-  try {
-    const { rows } = await pool.query(text, [comicId]);
-
-    return rows;
+    switch (tableName) {
+      case "genres":
+        result = await pool.query(`SELECT * FROM genres ORDER BY name`);
+        break;
+      case "authors":
+        result = await pool.query(`SELECT * FROM authors ORDER BY first_name`);
+        break;
+      case "publishers":
+        result = await pool.query(`SELECT * FROM publishers ORDER BY name`);
+        break;
+      case "comics":
+        result = await pool.query(`SELECT * FROM comics ORDER BY title`);
+        break;
+      case "volumes":
+        result = await pool.query(
+          `SELECT * FROM volumes ORDER BY volume_number`,
+        );
+        break;
+      default:
+        throw Error(
+          `Invalid table name! \nValid names: ["comics", "volumes", "authors", "genres", "publishers"]`,
+        );
+    }
+    return result.rows;
   } catch (e) {
     console.log(e);
   }
