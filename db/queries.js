@@ -406,7 +406,7 @@ exports.getComicAuthor = async (comicId) => {
 
 // SELECT query for getting data about genres of a certain comic
 exports.getComicGenres = async (comicId) => {
-  const text = `SELECT id, name FROM genres
+  const text = `SELECT id, name, url FROM genres
                 LEFT JOIN comics_genres AS cg 
                       ON genres.id = cg.genre_id
                 WHERE cg.comic_id = $1
