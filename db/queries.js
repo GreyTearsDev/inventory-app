@@ -116,41 +116,6 @@ exports.getSingleFromTableByName = async (tabName, entryName) => {
   }
 };
 
-// SELECT query for getting a genre by genre name (case-insensitive)
-exports.getGenreByName = async (genreName) => {
-  const text = `SELECT * FROM genres WHERE name ILIKE $1`;
-  try {
-    const { rows } = await pool.query(text, [genreName]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting a publisher by publisher name (case-insensitive)
-exports.getPublisherByName = async (publisherName) => {
-  const text = `SELECT * FROM publishers WHERE name ILIKE $1`;
-  try {
-    const { rows } = await pool.query(text, [publisherName]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-// SELECT query for getting an author by first name and last name
-exports.getAuthorByName = async (f_name, l_name) => {
-  const text = `SELECT * FROM authors 
-                WHERE first_name = $1
-                  AND last_name = $2`;
-  try {
-    const { rows } = await pool.query(text, [f_name, l_name]);
-    return rows[0];
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 // UPDATE query for updating a genre by genre ID
 exports.updateGenre = async (genreId, { name }) => {
   const text = `UPDATE genres
