@@ -69,7 +69,10 @@ exports.publisher_create_post = [
     }
 
     // Check if the publisher already exists
-    const existingPublisher = await db.getPublisherByName(publisher.name);
+    const existingPublisher = await db.getSingleFromTableByName(
+      tableNames.PUBLISHERS,
+      publisher.name,
+    );
 
     if (existingPublisher) {
       // Redirect if publisher already exists
@@ -78,7 +81,10 @@ exports.publisher_create_post = [
     }
 
     await db.savePublisher(publisher); // Save new publisher to the database
-    const createdPublisher = await db.getPublisherByName(publisher.name);
+    const createdPublisher = await db.getSingleFromTableByName(
+      tableNames.PUBLISHERS,
+      publisher.name,
+    );
     res.redirect(createdPublisher.url);
   }),
 ];
@@ -148,7 +154,10 @@ exports.publisher_update_post = [
     }
 
     await db.updatePublisher(publisherId, publisher); // Update publisher in the database
-    const updatedPublisher = await db.getPublisherByName(publisher.name);
+    const updatedPublisher = await db.getSingleFromTableByName(
+      tableNames.PUBLISHERS,
+      publisher.name,
+    );
     res.redirect(updatedPublisher.url);
   }),
 ];

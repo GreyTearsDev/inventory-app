@@ -71,9 +71,9 @@ exports.author_create_post = [
       return;
     }
 
-    const existingAuthor = await db.getAuthorByName(
-      author.first_name,
-      author.last_name,
+    const existingAuthor = await db.getSingleFromTableByName(
+      tableNames.AUTHORS,
+      `${author.first_name} ${author.last_name}`,
     );
 
     if (existingAuthor) {
@@ -83,9 +83,9 @@ exports.author_create_post = [
     }
 
     await db.saveAuthor(author); // Save new author to the database
-    const createdAuthor = await db.getAuthorByName(
-      author.first_name,
-      author.last_name,
+    const createdAuthor = await db.getSingleFromTableByName(
+      tableNames.AUTHORS,
+      `${author.first_name} ${author.last_name}`,
     );
     res.redirect(createdAuthor.url);
   }),
@@ -164,9 +164,9 @@ exports.author_update_post = [
     }
 
     await db.updateAuthor(authorId, author); // Update author in the database
-    const updatedAuthor = await db.getAuthorByName(
-      author.first_name,
-      author.last_name,
+    const updatedAuthor = await db.getSingleFromTableByName(
+      tableNames.AUTHORS,
+      `${author.first_name} ${author.last_name}`,
     );
     res.redirect(updatedAuthor.url);
   }),
