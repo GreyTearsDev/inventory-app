@@ -1,6 +1,12 @@
 const pool = require("./index");
 const tablesNames = require("./table_name_constants");
 const ALL_VALID_TABLES = Object.values(tablesNames).join(", ");
+const VALID_TABLES_FOR_GET_BY_NAME = [
+  tablesNames.AUTHORS,
+  tablesNames.GENRES,
+  tablesNames.PUBLISHERS,
+];
+const VALID_TABLES_FOR_GET_BY_TITLE = [tablesNames.COMICS, tablesNames.VOLUMES];
 
 // SELECT query for getting ALL entries in a table
 exports.getAllFromTable = async (tabName) => {
@@ -34,7 +40,7 @@ exports.getAllFromTable = async (tabName) => {
   }
 };
 
-// SELECT query for getting data about a specific entry in a table
+// SELECT query for getting data about a specific entry in a table using its ID
 exports.getSingleFromTable = async (tabName, entryId) => {
   let result;
 
@@ -78,6 +84,38 @@ exports.getSingleFromTable = async (tabName, entryId) => {
     console.log(e);
   }
 };
+
+// SELECT query for getting data about a specific entry in a table using its name column
+exports.getSingleFromTableByName = async (tabName, entryName) => {
+  let result;
+
+  try {
+    switch (tabName) {
+      case tablesNames.GENRES:
+        result = await pool.query(`SELECT * FROM genres WHERE name ILIKE $1`, [
+          entryName,
+        ]);
+        break;
+      case tablesNames.AUTHORS:
+        result = await pool.query(`SELECT * FROM authors WHERE name ILIKE $1`, [
+          entryName,
+        ]);
+        break;
+      case tablesNames.PUBLISHERS:
+        result = await pool.query(
+          `SELECT * FROM publishers WHERE name ILIKE $1`,
+          [entryName],
+        );
+        break;
+      default:
+        throw Error(`Invalid table name! \nValid names: ${ALL_VALID_TABLES}`);
+    }
+    return result.rows[0];
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // SELECT query for getting a genre by genre name (case-insensitive)
 exports.getGenreByName = async (genreName) => {
   const text = `SELECT * FROM genres WHERE name ILIKE $1`;
